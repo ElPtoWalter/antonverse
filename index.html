@@ -31,7 +31,7 @@
       <div class="hero-content">
         <p class="eyebrow glow">EDICIÓN DESPEDIDA DE SOLTERO · GAME OVER ANTON</p>
         <h1>LA TIENDA OFICIAL DE CONDENAS DE ANTÓN</h1>
-        <p class="hero-copy">Cada alma descarriada que entre aquí recibe <strong>5 tokens</strong>. Úsalos con sabiduría, maldad y sentido del espectáculo.</p>
+        <p class="hero-copy">Cada alma descarriada que entre aquí recibe <strong>5 tokens</strong>. Los nombres secretos de amigo desbloquean <strong>15 tokens</strong> y las putadas gordas, todo mezclado en la misma tienda.</p>
         <div class="marquee-wrap">
           <div class="marquee-track">
             <span>⚡ ÚLTIMA NOCHE DE LIBERTAD ⚡</span>
@@ -52,6 +52,7 @@
             <p class="card-label">PARTICIPANTE</p>
             <h2 id="player-name">Invitado misterioso</h2>
             <p id="player-subcopy">Todavía no te has bautizado. Hazlo para que conste en acta.</p>
+            <p id="friend-mode-badge" class="friend-mode-badge hidden">🔓 MODO AMIGO DESBLOQUEADO · 15 TOKENS</p>
             <div class="button-row compact">
               <button id="rename-button" class="secondary-button">Poner / cambiar nombre</button>
               <button id="copy-summary-button" class="ghost-button">Copiar mis condenas</button>
@@ -60,7 +61,7 @@
 
           <div class="dashboard-card token-card">
             <p class="card-label">TOKENS RESTANTES</p>
-            <div class="token-counter"><span id="token-count">5</span><small>/ 5</small></div>
+            <div class="token-counter"><span id="token-count">5</span><small>/ <span id="token-max">5</span></small></div>
             <div class="meter">
               <div id="meter-fill" class="meter-fill"></div>
             </div>
@@ -85,8 +86,8 @@
             <h3>¿Cómo funciona este circo?</h3>
             <ol>
               <li>Entras en la web.</li>
-              <li>Recibes 5 tokens por móvil.</li>
-              <li>Compras condenas para Antón según tu nivel de crueldad.</li>
+              <li>Recibes 5 tokens por móvil. Algunos nombres secretos de amigos desbloquean 15 tokens y las putadas gordas.</li>
+              <li>Compras condenas para Antón según tu nivel de crueldad. Los retos de consumo o contacto físico son siempre voluntarios y con cabeza.</li>
               <li>Le enseñas la compra al comité organizador y se ejecuta la sentencia.</li>
             </ol>
           </article>
@@ -119,10 +120,20 @@
             <p class="eyebrow">MERCADO DE CONDENAS</p>
             <h2>Gasta tus tokens sabiamente</h2>
           </div>
-          <div class="filter-group" role="tablist" aria-label="Filtros de retos">
-            <button class="filter-button active" data-filter="all">Todo</button>
-            <button class="filter-button" data-filter="original">Tus retos</button>
-            <button class="filter-button" data-filter="extra">Mis extras</button>
+          <p class="section-copy">Todo junto, sin secciones. Las putadas de amigo aparecen mezcladas, pero se bloquean si no metes un nombre secreto.</p>
+        </div>
+        <div class="roulette-box">
+          <div class="roulette-copy">
+            <p class="eyebrow">RULETA DE PUTADAS</p>
+            <h3>¿No sabes qué comprar? Que decida el destino.</h3>
+            <p>La ruleta solo elige retos que puedas pagar con tus tokens y que tengas desbloqueados con tu nombre.</p>
+          </div>
+          <div class="roulette-machine">
+            <div id="roulette-result" class="roulette-result">Pulsa para girar la desgracia</div>
+            <div class="button-row compact">
+              <button id="roulette-spin" class="secondary-button">Girar ruleta</button>
+              <button id="roulette-buy" class="big-button" disabled>Comprar resultado</button>
+            </div>
           </div>
         </div>
         <div id="challenge-grid" class="challenge-grid"></div>

@@ -1,10 +1,39 @@
-const STARTING_TOKENS = 5;
+const PUBLIC_TOKENS = 5;
+const FRIEND_TOKENS = 15;
+
 const STORAGE_KEYS = {
   name: 'antonverse_name',
-  tokens: 'antonverse_tokens',
-  purchases: 'antonverse_purchases',
-  entered: 'antonverse_entered'
+  purchases: 'antonverse_purchases'
 };
+
+const FRIEND_NAMES = [
+  'macoy',
+  'buah',
+  'parlita',
+  'il consigliere',
+  'caqui',
+  'pocoyo',
+  '...',
+  '…',
+  'pol',
+  'sara',
+  'yomen',
+  'cabesa',
+  'walter',
+  'nil',
+  'putero',
+  'puta',
+  'nat',
+  'natrix',
+  'padre del parlita',
+  'negri',
+  'no me duele',
+  'valen',
+  'dynamic gamers',
+  'dynamic gaymers',
+  'dios',
+  'se mutran de tu menda'
+];
 
 const phrases = [
   '“Compatriotas, hoy se acaba una era.”',
@@ -14,7 +43,9 @@ const phrases = [
   '“Si el multiverso existe, en alguno Antón ya está arrepentido.”',
   '“Compra tu condena como un ciudadano responsable.”',
   '“Hay despedidas... y luego está este atentado visual.”',
-  '“La historia no la escriben los valientes: la compran con tokens.”'
+  '“La historia no la escriben los valientes: la compran con tokens.”',
+  '“Los amigos verdaderos no preguntan: desbloquean modo amigo.”',
+  '“La ruleta nunca se equivoca; solo humilla.”'
 ];
 
 const galleryImages = [
@@ -43,146 +74,63 @@ const galleryImages = [
 ];
 
 const challenges = [
-  {
-    id: 'original-2',
-    text: 'Que haga 10 sentadillas',
-    cost: 1,
-    level: 'Suave',
-    source: 'original'
-  },
-  {
-    id: 'original-4',
-    text: 'Que pida un aplauso en mitad del bar',
-    cost: 1,
-    level: 'Suave',
-    source: 'original'
-  },
-  {
-    id: 'extra-brindis',
-    text: 'Que haga un brindis gritando “¡Vivan los novios y viva Antón!”',
-    cost: 1,
-    level: 'Suave',
-    source: 'extra'
-  },
-  {
-    id: 'extra-desfile',
-    text: 'Que desfile como si estuviera en la final de Miss Universo',
-    cost: 1,
-    level: 'Suave',
-    source: 'extra'
-  },
-  {
-    id: 'original-1',
-    text: 'Que de un abrazo al siguiente desconocido',
-    cost: 2,
-    level: 'Medio',
-    source: 'original'
-  },
-  {
-    id: 'original-6',
-    text: 'Bebe de la botella con misterio',
-    cost: 2,
-    level: 'Medio',
-    source: 'original'
-  },
-  {
-    id: 'original-9',
-    text: 'Baila y canta la cacion de Bitches Bitches',
-    cost: 2,
-    level: 'Medio',
-    source: 'original'
-  },
-  {
-    id: 'extra-discurso',
-    text: 'Que improvise un discurso de dimisión como hombre libre',
-    cost: 2,
-    level: 'Medio',
-    source: 'extra'
-  },
-  {
-    id: 'extra-foto-campana',
-    text: 'Que se haga una foto de campaña con 3 amigos como si fuese candidato',
-    cost: 2,
-    level: 'Medio',
-    source: 'extra'
-  },
-  {
-    id: 'extra-audio',
-    text: 'Que grabe un audio diciendo “Estoy bien, pero me están humillando”',
-    cost: 2,
-    level: 'Medio',
-    source: 'extra'
-  },
-  {
-    id: 'original-3',
-    text: 'Que haga una declaración de amor a su futura mujer (desconocida que se encuentre)',
-    cost: 3,
-    level: 'Potente',
-    source: 'original'
-  },
-  {
-    id: 'original-8',
-    text: 'Collejote por parte del comprador o +1 al bote de collejas',
-    cost: 3,
-    level: 'Potente',
-    source: 'original'
-  },
-  {
-    id: 'original-7',
-    text: 'Rueda como aprendiste en la mili en Ceuta y entona un alehop',
-    cost: 3,
-    level: 'Potente',
-    source: 'original'
-  },
-  {
-    id: 'extra-vals',
-    text: 'Que baile 30 segundos con uno de sus amigos como si fuese el vals nupcial',
-    cost: 3,
-    level: 'Potente',
-    source: 'extra'
-  },
-  {
-    id: 'extra-rueda-prensa',
-    text: 'Que dos amigos le hagan una rueda de prensa y él responda totalmente serio',
-    cost: 3,
-    level: 'Potente',
-    source: 'extra'
-  },
-  {
-    id: 'original-5',
-    text: '2 huelidas al Popper',
-    cost: 4,
-    level: 'Legendario',
-    source: 'original'
-  },
-  {
-    id: 'original-10',
-    text: 'Tumbate en la toalla de algún desconocido',
-    cost: 4,
-    level: 'Legendario',
-    source: 'original'
-  },
-  {
-    id: 'extra-trono',
-    text: 'Que se suba a una silla y dé un discurso oficial despidiéndose de la soltería',
-    cost: 4,
-    level: 'Legendario',
-    source: 'extra'
-  },
-  {
-    id: 'extra-personaje',
-    text: 'Que el comprador elija una versión de Antón y se meta en el personaje durante 2 minutos',
-    cost: 4,
-    level: 'Legendario',
-    source: 'extra'
-  }
+  // Retos originales tuyos. Texto respetado tal cual.
+  { id: 'original-2', text: 'Que haga 10 sentadillas', cost: 1, level: 'Suave', source: 'original' },
+  { id: 'original-4', text: 'Que pida un aplauso en mitad del bar', cost: 1, level: 'Suave', source: 'original' },
+  { id: 'original-1', text: 'Que de un abrazo al siguiente desconocido', cost: 2, level: 'Medio', source: 'original' },
+  { id: 'original-9', text: 'Baila y canta la cacion de Bitches Bitches', cost: 2, level: 'Medio', source: 'original' },
+  { id: 'original-3', text: 'Que haga una declaración de amor a su futura mujer (desconocida que se encuentre)', cost: 3, level: 'Potente', source: 'original' },
+  { id: 'original-8', text: 'Collejote por parte del comprador o +1 al bote de collejas', cost: 3, level: 'Potente', source: 'original' },
+  { id: 'original-7', text: 'Rueda como aprendiste en la mili en Ceuta y entona un alehop', cost: 3, level: 'Potente', source: 'original' },
+  { id: 'original-10', text: 'Tumbate en la toalla de algún desconocido', cost: 4, level: 'Legendario', source: 'original' },
+  { id: 'original-5', text: '2 huelidas al Popper', cost: 10, level: 'Putada gorda', source: 'original', friendsOnly: true },
+  { id: 'original-6', text: 'Bebe de la botella con misterio', cost: 10, level: 'Putada gorda', source: 'original', friendsOnly: true },
+
+  // Retos de Walter. Texto respetado tal cual.
+  { id: 'walter-pandereta-1', text: '1 pandereta', cost: 1, level: 'Suave', source: 'walter' },
+  { id: 'walter-flexion-1', text: '1 flexion', cost: 1, level: 'Suave', source: 'walter' },
+  { id: 'walter-orejas-1', text: '1 tirón de orejas', cost: 1, level: 'Suave', source: 'walter' },
+  { id: 'walter-dab', text: 'Haz un dab 6-7', cost: 1, level: 'Suave', source: 'walter' },
+  { id: 'walter-chupito-1', text: '1 chupito', cost: 2, level: 'Medio', source: 'walter' },
+  { id: 'walter-hidalgo-1', text: '1 hidalgo', cost: 2, level: 'Medio', source: 'walter' },
+  { id: 'walter-lanza-edge-1', text: '1 lanza de edge', cost: 2, level: 'Medio', source: 'walter' },
+  { id: 'walter-vaper-1', text: '1 calada al vaper del caqui', cost: 3, level: 'Potente', source: 'walter' },
+  { id: 'walter-acento-5', text: 'habla con un acento 5 minutos (si no lo cumple chupito)', cost: 3, level: 'Potente', source: 'walter' },
+  { id: 'walter-cigarro-1', text: '1 caladita al cigarro', cost: 3, level: 'Potente', source: 'walter' },
+  { id: 'walter-tiktok', text: 'Haces un baile viral de TikTok', cost: 4, level: 'Legendario', source: 'walter' },
+  { id: 'walter-tiktok-redes', text: 'Haces un baile viral de TikTok y se publica en redes', cost: 10, level: 'Putada gorda', source: 'walter', friendsOnly: true },
+
+  // Variaciones para que haya más variedad y merezca la pena gastar tokens.
+  { id: 'extra-brindis', text: 'Que haga un brindis gritando “¡Vivan los novios y viva Antón!”', cost: 1, level: 'Suave', source: 'extra' },
+  { id: 'extra-desfile', text: 'Que desfile como si estuviera en la final de Miss Universo', cost: 1, level: 'Suave', source: 'extra' },
+  { id: 'extra-pandereta-3', text: '3 panderetas seguidas, con cara seria y mirada al infinito', cost: 2, level: 'Medio', source: 'extra' },
+  { id: 'extra-flexiones-5', text: '5 flexiones mientras el grupo cuenta fatal a propósito', cost: 2, level: 'Medio', source: 'extra' },
+  { id: 'extra-foto-campana', text: 'Que se haga una foto de campaña con 3 amigos como si fuese candidato', cost: 2, level: 'Medio', source: 'extra' },
+  { id: 'extra-audio', text: 'Que grabe un audio diciendo “Estoy bien, pero me están humillando”', cost: 2, level: 'Medio', source: 'extra' },
+  { id: 'extra-discurso', text: 'Que improvise un discurso de dimisión como hombre libre', cost: 2, level: 'Medio', source: 'extra' },
+  { id: 'extra-flexiones-10', text: '10 flexiones y al acabar grita “todavía soy libre”', cost: 3, level: 'Potente', source: 'extra' },
+  { id: 'extra-vals', text: 'Que baile 30 segundos con uno de sus amigos como si fuese el vals nupcial', cost: 3, level: 'Potente', source: 'extra' },
+  { id: 'extra-rueda-prensa', text: 'Que dos amigos le hagan una rueda de prensa y él responda totalmente serio', cost: 3, level: 'Potente', source: 'extra' },
+  { id: 'extra-acento-10', text: 'Que hable con un acento elegido por el comprador durante 10 minutos', cost: 4, level: 'Legendario', source: 'extra' },
+  { id: 'extra-trono', text: 'Que se suba a una silla y dé un discurso oficial despidiéndose de la soltería', cost: 4, level: 'Legendario', source: 'extra' },
+  { id: 'extra-personaje', text: 'Que el comprador elija una versión de Antón y se meta en el personaje durante 2 minutos', cost: 4, level: 'Legendario', source: 'extra' },
+
+  // Putadas gordas desbloqueables por nombres de amigo. Van mezcladas en la misma tienda.
+  { id: 'friends-combo-mili', text: 'Combo militar: rueda de Ceuta + alehop + dab final', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true },
+  { id: 'friends-bitches-xxl', text: 'Pack Bitches Bitches XXL: canta y baila el doble con público alrededor', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true },
+  { id: 'friends-juicio-final', text: 'Juicio final de Antón: juez, fiscal, abogado y sentencia pública', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true },
+  { id: 'friends-multiverso', text: 'Modo multiverso: durante 5 minutos actúa como la versión de Antón que elija el comprador', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true },
+  { id: 'friends-combo-pandereta', text: 'Combo vergüenza: 3 panderetas + 10 flexiones + discurso de dimisión', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true }
 ];
 
 let state = {
   name: 'Invitado misterioso',
-  tokens: STARTING_TOKENS,
   purchases: []
 };
+
+let rouletteSelection = null;
+let rouletteTimer = null;
+let toastTimer = null;
 
 const appShell = document.getElementById('app-shell');
 const entryScreen = document.getElementById('entry-screen');
@@ -192,10 +140,12 @@ const musicToggle = document.getElementById('music-toggle');
 const musicMute = document.getElementById('music-mute');
 const volumeSlider = document.getElementById('volume-slider');
 const tokenCount = document.getElementById('token-count');
+const tokenMax = document.getElementById('token-max');
 const meterFill = document.getElementById('meter-fill');
 const tokenMessage = document.getElementById('token-message');
 const playerName = document.getElementById('player-name');
 const playerSubcopy = document.getElementById('player-subcopy');
+const friendModeBadge = document.getElementById('friend-mode-badge');
 const renameButton = document.getElementById('rename-button');
 const phraseButton = document.getElementById('phrase-button');
 const randomPhrase = document.getElementById('random-phrase');
@@ -210,32 +160,50 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxCaption = document.getElementById('lightbox-caption');
 const lightboxClose = document.getElementById('lightbox-close');
-const filterButtons = Array.from(document.querySelectorAll('.filter-button'));
+const rouletteSpin = document.getElementById('roulette-spin');
+const rouletteBuy = document.getElementById('roulette-buy');
+const rouletteResult = document.getElementById('roulette-result');
 
-let activeFilter = 'all';
-let toastTimer;
+function normalizeName(name) {
+  return String(name || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+function isFriendName(name) {
+  return FRIEND_NAMES.includes(normalizeName(name));
+}
+
+function getMaxTokens() {
+  return isFriendName(state.name) ? FRIEND_TOKENS : PUBLIC_TOKENS;
+}
+
+function getSpentTokens() {
+  return state.purchases.reduce((total, item) => total + Number(item.cost || 0), 0);
+}
+
+function getCurrentTokens() {
+  return Math.max(0, getMaxTokens() - getSpentTokens());
+}
 
 function readStorage() {
   const savedName = localStorage.getItem(STORAGE_KEYS.name);
-  const savedTokens = Number(localStorage.getItem(STORAGE_KEYS.tokens));
   const savedPurchases = JSON.parse(localStorage.getItem(STORAGE_KEYS.purchases) || '[]');
 
   if (savedName && savedName.trim()) {
     state.name = savedName.trim();
   }
 
-  if (!Number.isNaN(savedTokens) && savedTokens >= 0 && savedTokens <= STARTING_TOKENS) {
-    state.tokens = savedTokens;
-  }
-
   if (Array.isArray(savedPurchases)) {
-    state.purchases = savedPurchases;
+    state.purchases = savedPurchases.filter(item => item && item.id && item.text);
   }
 }
 
 function persistState() {
   localStorage.setItem(STORAGE_KEYS.name, state.name);
-  localStorage.setItem(STORAGE_KEYS.tokens, String(state.tokens));
   localStorage.setItem(STORAGE_KEYS.purchases, JSON.stringify(state.purchases));
 }
 
@@ -244,19 +212,31 @@ function getPurchasedIds() {
 }
 
 function updateDashboard() {
+  const max = getMaxTokens();
+  const tokens = getCurrentTokens();
+  const isFriend = isFriendName(state.name);
+
   playerName.textContent = state.name;
-  playerSubcopy.textContent = state.name === 'Invitado misterioso'
-    ? 'Todavía no te has bautizado. Hazlo para que conste en acta.'
-    : `Bienvenido, ${state.name}. El tribunal de la vergüenza confía en ti.`;
+  if (state.name === 'Invitado misterioso') {
+    playerSubcopy.textContent = 'Todavía no te has bautizado. Hazlo para que conste en acta.';
+  } else if (isFriend) {
+    playerSubcopy.textContent = `Bienvenido, ${state.name}. Modo amigo activo: 15 tokens y putadas gordas mezcladas en la tienda.`;
+  } else {
+    playerSubcopy.textContent = `Bienvenido, ${state.name}. Tienes acceso público al mercado de condenas.`;
+  }
 
-  tokenCount.textContent = state.tokens;
-  meterFill.style.width = `${(state.tokens / STARTING_TOKENS) * 100}%`;
+  friendModeBadge.classList.toggle('hidden', !isFriend);
+  tokenCount.textContent = tokens;
+  tokenMax.textContent = max;
+  meterFill.style.width = `${max ? (tokens / max) * 100 : 0}%`;
 
-  if (state.tokens === STARTING_TOKENS) {
+  if (isFriend && tokens >= 10) {
+    tokenMessage.textContent = 'Tienes crédito suficiente para putadas gordas.';
+  } else if (tokens === max) {
     tokenMessage.textContent = 'Tienes margen para sembrar el caos.';
-  } else if (state.tokens >= 3) {
+  } else if (tokens >= 3) {
     tokenMessage.textContent = 'Todavía puedes hacer bastante daño.';
-  } else if (state.tokens >= 1) {
+  } else if (tokens >= 1) {
     tokenMessage.textContent = 'Te queda poco crédito de maldad.';
   } else {
     tokenMessage.textContent = 'Sin tokens. Tu crueldad ha sido completamente invertida.';
@@ -276,28 +256,49 @@ function renderGallery() {
   });
 }
 
+function canAccessChallenge(challenge) {
+  return !challenge.friendsOnly || isFriendName(state.name);
+}
+
+function getEligibleChallenges() {
+  const purchasedIds = getPurchasedIds();
+  const tokens = getCurrentTokens();
+  return challenges.filter(challenge => {
+    if (purchasedIds.has(challenge.id)) return false;
+    if (!canAccessChallenge(challenge)) return false;
+    return tokens >= challenge.cost;
+  });
+}
+
 function renderChallenges() {
   const purchasedIds = getPurchasedIds();
-  const visibleChallenges = activeFilter === 'all'
-    ? challenges
-    : challenges.filter(challenge => challenge.source === activeFilter);
+  const tokens = getCurrentTokens();
 
-  challengeGrid.innerHTML = visibleChallenges.map(challenge => {
+  challengeGrid.innerHTML = challenges.map(challenge => {
     const isBought = purchasedIds.has(challenge.id);
-    const cantAfford = state.tokens < challenge.cost;
-    const disabled = isBought || cantAfford;
-    const buttonLabel = isBought ? 'Comprado por ti' : cantAfford ? 'Sin tokens suficientes' : `Comprar por ${challenge.cost} token${challenge.cost > 1 ? 's' : ''}`;
+    const locked = !canAccessChallenge(challenge);
+    const cantAfford = tokens < challenge.cost;
+    const disabled = isBought || locked || cantAfford;
+    const buttonLabel = isBought
+      ? 'Comprado por ti'
+      : locked
+        ? 'Bloqueado: nombre de amigo'
+        : cantAfford
+          ? 'Sin tokens suficientes'
+          : `Comprar por ${challenge.cost} token${challenge.cost > 1 ? 's' : ''}`;
+    const sourceLabel = getSourceLabel(challenge.source);
 
     return `
-      <article class="challenge-card ${isBought ? 'bought' : ''}">
+      <article class="challenge-card ${isBought ? 'bought' : ''} ${locked ? 'locked-card' : ''}">
         <div class="challenge-badges">
           <span class="badge cost">💰 ${challenge.cost} token${challenge.cost > 1 ? 's' : ''}</span>
-          <span class="badge ${challenge.source}">${challenge.source === 'original' ? 'TU RETO' : 'EXTRA'}</span>
+          <span class="badge ${challenge.source}">${sourceLabel}</span>
           <span class="badge level">${challenge.level}</span>
+          ${challenge.friendsOnly ? '<span class="badge locked">🔐 AMIGOS</span>' : ''}
         </div>
         <p class="challenge-text">${escapeHtml(challenge.text)}</p>
         <div class="challenge-meta">
-          <p class="challenge-note">${challenge.source === 'original' ? 'Texto original respetado tal cual.' : 'Añadido extra para enriquecer el desastre.'}</p>
+          <p class="challenge-note">${getChallengeNote(challenge, locked)}</p>
           <button class="buy-button" data-id="${challenge.id}" ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
         </div>
       </article>
@@ -307,6 +308,21 @@ function renderChallenges() {
   challengeGrid.querySelectorAll('.buy-button').forEach(button => {
     button.addEventListener('click', () => buyChallenge(button.dataset.id));
   });
+}
+
+function getSourceLabel(source) {
+  if (source === 'original') return 'ORIGINAL';
+  if (source === 'walter') return 'WALTER';
+  if (source === 'friends') return 'GORDA';
+  return 'EXTRA';
+}
+
+function getChallengeNote(challenge, locked) {
+  if (locked) return 'Aparece mezclada, pero solo se puede comprar con un nombre secreto.';
+  if (challenge.friendsOnly) return 'Putada gorda desbloqueada por modo amigo.';
+  if (challenge.source === 'original') return 'Texto original respetado tal cual.';
+  if (challenge.source === 'walter') return 'Aportación de Walter respetada tal cual.';
+  return 'Añadido extra para enriquecer el desastre.';
 }
 
 function renderPurchases() {
@@ -331,17 +347,22 @@ function renderPurchases() {
 function buyChallenge(id) {
   const challenge = challenges.find(item => item.id === id);
   const purchasedIds = getPurchasedIds();
-  if (!challenge) return;
+  const tokens = getCurrentTokens();
+
+  if (!challenge) return false;
+  if (!canAccessChallenge(challenge)) {
+    showToast('Esta putada está mezclada, pero solo se compra con nombre de amigo.');
+    return false;
+  }
   if (purchasedIds.has(id)) {
     showToast('Ese reto ya lo has comprado tú. No abuses tanto.');
-    return;
+    return false;
   }
-  if (state.tokens < challenge.cost) {
+  if (tokens < challenge.cost) {
     showToast('No te llegan los tokens para esa barbaridad.');
-    return;
+    return false;
   }
 
-  state.tokens -= challenge.cost;
   state.purchases.push({
     id: challenge.id,
     text: challenge.text,
@@ -350,10 +371,76 @@ function buyChallenge(id) {
   });
 
   persistState();
+  rouletteSelection = null;
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  updateRouletteUI();
   showToast(`Has comprado: ${challenge.text}`);
+  return true;
+}
+
+function spinRoulette() {
+  const eligible = getEligibleChallenges();
+  if (!eligible.length) {
+    rouletteSelection = null;
+    updateRouletteUI();
+    showToast('La ruleta no encuentra ninguna putada que puedas pagar ahora mismo.');
+    return;
+  }
+
+  rouletteBuy.disabled = true;
+  rouletteSpin.disabled = true;
+  rouletteResult.classList.add('spinning');
+  rouletteResult.textContent = 'Girando la desgracia...';
+
+  let ticks = 0;
+  clearInterval(rouletteTimer);
+  rouletteTimer = setInterval(() => {
+    const preview = eligible[Math.floor(Math.random() * eligible.length)];
+    rouletteResult.textContent = preview.text;
+    ticks += 1;
+
+    if (ticks >= 18) {
+      clearInterval(rouletteTimer);
+      rouletteSelection = eligible[Math.floor(Math.random() * eligible.length)];
+      rouletteResult.innerHTML = `
+        <strong>${escapeHtml(rouletteSelection.text)}</strong>
+        <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}</small>
+      `;
+      rouletteResult.classList.remove('spinning');
+      rouletteSpin.disabled = false;
+      rouletteBuy.disabled = false;
+      showToast('La ruleta ha dictado sentencia.');
+    }
+  }, 75);
+}
+
+function updateRouletteUI() {
+  clearInterval(rouletteTimer);
+  rouletteSpin.disabled = false;
+  rouletteResult.classList.remove('spinning');
+  if (!rouletteSelection) {
+    rouletteResult.textContent = 'Pulsa para girar la desgracia';
+    rouletteBuy.disabled = true;
+    return;
+  }
+
+  const selected = challenges.find(item => item.id === rouletteSelection.id);
+  const canStillBuy = selected && getEligibleChallenges().some(item => item.id === selected.id);
+  rouletteBuy.disabled = !canStillBuy;
+  if (!canStillBuy) {
+    rouletteSelection = null;
+    rouletteResult.textContent = 'Pulsa para girar la desgracia';
+  }
+}
+
+function buyRouletteSelection() {
+  if (!rouletteSelection) {
+    showToast('Primero gira la ruleta.');
+    return;
+  }
+  buyChallenge(rouletteSelection.id);
 }
 
 function setRandomPhrase() {
@@ -363,32 +450,40 @@ function setRandomPhrase() {
 
 function renamePlayer() {
   const current = state.name === 'Invitado misterioso' ? '' : state.name;
-  const input = window.prompt('¿Cómo quieres salir en acta?', current);
+  const input = window.prompt('¿Cómo quieres salir en acta? Hay nombres secretos de amigo.', current);
   if (input === null) return;
 
   const cleaned = input.trim();
   state.name = cleaned || 'Invitado misterioso';
   persistState();
   updateDashboard();
+  renderChallenges();
   renderPurchases();
-  showToast(`Nombre actualizado: ${state.name}`);
+  updateRouletteUI();
+
+  if (isFriendName(state.name)) {
+    showToast(`Modo amigo desbloqueado para ${state.name}: 15 tokens y putadas gordas mezcladas.`);
+  } else {
+    showToast(`Nombre actualizado: ${state.name}`);
+  }
 }
 
 function resetSession() {
-  const confirmed = window.confirm('¿Seguro que quieres resetear tus tokens y tus compras en este móvil?');
+  const confirmed = window.confirm('¿Seguro que quieres resetear tu nombre y tus compras en este móvil?');
   if (!confirmed) return;
 
   state = {
     name: 'Invitado misterioso',
-    tokens: STARTING_TOKENS,
     purchases: []
   };
+  rouletteSelection = null;
 
   persistState();
   updateDashboard();
   renderChallenges();
   renderPurchases();
-  showToast('Sesión reseteada. Vuelves a tener 5 tokens y cero remordimientos.');
+  updateRouletteUI();
+  showToast('Sesión reseteada. Vuelves a empezar con tokens limpios.');
 }
 
 function copySummary() {
@@ -398,7 +493,8 @@ function copySummary() {
 
   const summary = [
     `Participante: ${state.name}`,
-    `Tokens restantes: ${state.tokens}/${STARTING_TOKENS}`,
+    `Modo amigo: ${isFriendName(state.name) ? 'Sí' : 'No'}`,
+    `Tokens restantes: ${getCurrentTokens()}/${getMaxTokens()}`,
     'Condenas compradas:',
     ...lines
   ].join('\n');
@@ -479,7 +575,7 @@ function hydrateUI() {
   renderGallery();
   renderChallenges();
   renderPurchases();
-
+  updateRouletteUI();
 }
 
 enterButton.addEventListener('click', handleEntry);
@@ -489,6 +585,8 @@ resetButton.addEventListener('click', resetSession);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
 musicMute.addEventListener('click', toggleMute);
+rouletteSpin.addEventListener('click', spinRoulette);
+rouletteBuy.addEventListener('click', buyRouletteSelection);
 volumeSlider.addEventListener('input', event => {
   bgMusic.volume = Number(event.target.value);
 });
@@ -498,14 +596,6 @@ lightbox.addEventListener('click', event => {
 });
 window.addEventListener('keydown', event => {
   if (event.key === 'Escape') closeLightbox();
-});
-filterButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    activeFilter = button.dataset.filter;
-    filterButtons.forEach(item => item.classList.remove('active'));
-    button.classList.add('active');
-    renderChallenges();
-  });
 });
 
 hydrateUI();

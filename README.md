@@ -1,47 +1,39 @@
-# ANTONVERSO · Proyecto web listo para GitHub Pages
+# ANTONVERSO · V3
 
-## Qué incluye
-- `index.html`
-- `style.css`
-- `script.js`
-- `assets/images/` con la galería de Antón
-- `assets/audio/himno-anton.mpeg` para el hilo musical
+## Cambios de esta versión
 
-## Qué hace esta versión
-- Diseño **cutre-premium** pensado para móvil.
-- Pantalla de entrada para arrancar la música.
-- Cada móvil recibe **5 tokens**.
-- Los retos comprados se guardan en el propio navegador usando `localStorage`.
-- Se puede:
-  - poner nombre,
-  - gastar tokens,
-  - ver retos comprados,
-  - copiar resumen,
-  - resetear la sesión.
+- Retos/putadas todos juntos en una única tienda.
+- Las putadas gordas de amigos aparecen mezcladas, pero quedan bloqueadas si el nombre no está en la lista secreta.
+- Usuarios normales: 5 tokens.
+- Nombres secretos de amigos: 15 tokens.
+- Añadida la **Ruleta de Putadas**.
+  - Solo elige retos que el usuario pueda pagar.
+  - Solo elige retos desbloqueados para ese usuario.
+  - No repite retos ya comprados por ese móvil.
+- Añadidos los retos nuevos de Walter.
+- Los textos originales del usuario y Walter se han respetado tal cual.
 
-## Importante
-Esta versión es **frontend puro**. Eso significa:
-- funciona perfecta en **GitHub Pages**,
-- pero los tokens y compras son **por móvil / por navegador**,
-- no hay base de datos compartida entre todos.
+## Nombres secretos de amigo
 
-Si luego quieres, se puede hacer una **v2 conectada a Supabase o Firebase** para que todos voten sobre una base común y se vea en tiempo real.
+macoy, buah, parlita, il consigliere, caqui, pocoyo, ..., pol, sara, yomen, cabesa, walter, nil, putero, puta, nat, natrix, padre del parlita, negri, no me duele, valen, dynamic gamers, dynamic gaymers, Dios, se mutran de tu menda.
 
-## Cómo subirlo a GitHub Pages
-1. Crea un repositorio nuevo en GitHub.
-2. Sube todo el contenido de esta carpeta.
-3. Ve a **Settings > Pages**.
-4. En **Build and deployment**, elige:
-   - **Source:** Deploy from a branch
-   - **Branch:** `main`
-   - **Folder:** `/root`
-5. Guarda los cambios.
-6. GitHub te dará una URL pública.
+## Cómo actualizar GitHub Pages
 
-## Sugerencia
-Si quieres que quede todavía más canalla, la siguiente fase puede ser:
-- pantalla final de "sentencia activada",
-- ranking de retos más caros,
-- modo admin,
-- panel compartido en tiempo real,
-- QR para abrir la web en la despedida.
+1. Descomprime este ZIP.
+2. Entra en el repositorio `antonverse` de GitHub.
+3. Sube/sustituye estos archivos en la raíz del repo:
+   - `index.html`
+   - `style.css`
+   - `script.js`
+   - `README.md`
+   - `assets/`
+4. Haz commit.
+5. Espera 1-3 minutos.
+
+El QR no cambia mientras el enlace siga siendo:
+
+`https://elptowalter.github.io/antonverse/`
+
+## Nota técnica
+
+Es una web estática para GitHub Pages. Los tokens se guardan en cada móvil/navegador mediante `localStorage`; no hay base de datos común.
