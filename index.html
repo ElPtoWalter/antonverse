@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANTONVERSO FINAL BOSS</title>
+  <meta name="description" content="La tienda oficial de condenas de Antón. Una web cutrísima y gloriosa para una despedida de soltero histórica." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="entry-screen" class="entry-screen">
+    <div class="entry-box sparkle">
+      <p class="eyebrow blink">⚠️ ACCESO RESTRINGIDO ⚠️</p>
+      <h1>ANTONVERSO</h1>
+      <p class="entry-copy">La última noche de libertad está en tus manos.<br>Entra, activa el himno y gasta tus tokens con maldad.</p>
+      <button id="enter-button" class="big-button">ENTRAR AL SANTUARIO</button>
+      <p class="entry-note">* Al entrar arrancará el temazo de fondo porque esta web no respeta la vergüenza ajena.</p>
+    </div>
+  </div>
+
+  <audio id="bg-music" loop preload="auto">
+    <source src="assets/audio/himno-anton.mpeg" type="audio/mpeg">
+  </audio>
+
+  <div class="page-shell hidden" id="app-shell">
+    <header class="hero">
+      <div class="hero-noise"></div>
+      <div class="hero-content">
+        <p class="eyebrow glow">EDICIÓN DESPEDIDA DE SOLTERO · GAME OVER ANTON</p>
+        <h1>LA TIENDA OFICIAL DE CONDENAS DE ANTÓN</h1>
+        <p class="hero-copy">Cada alma descarriada que entre aquí recibe <strong>5 tokens</strong>. Úsalos con sabiduría, maldad y sentido del espectáculo.</p>
+        <div class="marquee-wrap">
+          <div class="marquee-track">
+            <span>⚡ ÚLTIMA NOCHE DE LIBERTAD ⚡</span>
+            <span>⚡ COMPRA TU CONDENA ⚡</span>
+            <span>⚡ QUE NO QUEDE DIGNIDAD ⚡</span>
+            <span>⚡ ANTONVERSO MULTIVERSAL ⚡</span>
+            <span>⚡ ÚLTIMA NOCHE DE LIBERTAD ⚡</span>
+            <span>⚡ COMPRA TU CONDENA ⚡</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel dashboard-panel">
+        <div class="dashboard-grid">
+          <div class="dashboard-card important sparkle">
+            <p class="card-label">PARTICIPANTE</p>
+            <h2 id="player-name">Invitado misterioso</h2>
+            <p id="player-subcopy">Todavía no te has bautizado. Hazlo para que conste en acta.</p>
+            <div class="button-row compact">
+              <button id="rename-button" class="secondary-button">Poner / cambiar nombre</button>
+              <button id="copy-summary-button" class="ghost-button">Copiar mis condenas</button>
+            </div>
+          </div>
+
+          <div class="dashboard-card token-card">
+            <p class="card-label">TOKENS RESTANTES</p>
+            <div class="token-counter"><span id="token-count">5</span><small>/ 5</small></div>
+            <div class="meter">
+              <div id="meter-fill" class="meter-fill"></div>
+            </div>
+            <p id="token-message" class="muted">Tienes margen para sembrar el caos.</p>
+          </div>
+
+          <div class="dashboard-card music-card">
+            <p class="card-label">REPRODUCTOR CUTRE DE ÉLITE</p>
+            <div class="music-controls">
+              <button id="music-toggle" class="secondary-button">Pausar himno</button>
+              <button id="music-mute" class="ghost-button">Silenciar</button>
+            </div>
+            <label class="volume-label" for="volume-slider">Volumen del hilillo musical</label>
+            <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="0.18" />
+          </div>
+        </div>
+      </section>
+
+      <section class="panel info-panel">
+        <div class="info-grid">
+          <article class="info-card">
+            <h3>¿Cómo funciona este circo?</h3>
+            <ol>
+              <li>Entras en la web.</li>
+              <li>Recibes 5 tokens por móvil.</li>
+              <li>Compras condenas para Antón según tu nivel de crueldad.</li>
+              <li>Le enseñas la compra al comité organizador y se ejecuta la sentencia.</li>
+            </ol>
+          </article>
+          <article class="info-card loud-card">
+            <h3>Frase aleatoria del consejo de guerra</h3>
+            <blockquote id="random-phrase">“Compatriotas, hoy se acaba una era.”</blockquote>
+            <button id="phrase-button" class="secondary-button">Dame otra frase</button>
+          </article>
+          <article class="info-card">
+            <h3>Norma sagrada</h3>
+            <p>La web está hecha para que sea <strong>cutre, divertida y fácil de usar desde el móvil</strong>. El tono es de cachondeo, pero usad siempre el sentido común con el entorno y con la gente.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel gallery-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MULTIVERSO VISUAL</p>
+            <h2>Galería oficial de versiones de Antón</h2>
+          </div>
+          <p class="section-copy">Para recordar que Antón no es una persona: es una franquicia.</p>
+        </div>
+        <div id="gallery-grid" class="gallery-grid"></div>
+      </section>
+
+      <section class="panel shop-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MERCADO DE CONDENAS</p>
+            <h2>Gasta tus tokens sabiamente</h2>
+          </div>
+          <div class="filter-group" role="tablist" aria-label="Filtros de retos">
+            <button class="filter-button active" data-filter="all">Todo</button>
+            <button class="filter-button" data-filter="original">Tus retos</button>
+            <button class="filter-button" data-filter="extra">Mis extras</button>
+          </div>
+        </div>
+        <div id="challenge-grid" class="challenge-grid"></div>
+      </section>
+
+      <section class="panel summary-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ACTA DE SENTENCIAS</p>
+            <h2>Lo que ya has comprado</h2>
+          </div>
+          <button id="reset-button" class="danger-button">Resetear mi sesión</button>
+        </div>
+        <div id="purchases-empty" class="empty-state">Todavía no has comprado nada. Qué decepción.</div>
+        <div id="purchases-list" class="purchases-list"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Hecho con muy poco respeto por la sobriedad y mucho amor por la desgracia ajena.</p>
+      <p class="footer-small">Proyecto listo para subir a GitHub Pages. Frontend puro: HTML, CSS y JavaScript.</p>
+    </footer>
+  </div>
+
+  <div id="lightbox" class="lightbox hidden" aria-hidden="true">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Cerrar imagen">×</button>
+    <img id="lightbox-image" src="" alt="Imagen ampliada" />
+    <p id="lightbox-caption"></p>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
