@@ -68,6 +68,12 @@
             <p id="token-message" class="muted">Tienes margen para sembrar el caos.</p>
           </div>
 
+          <div class="dashboard-card rank-card">
+            <p class="card-label">RANGO DE MALDAD</p>
+            <h2 id="rank-title">Cobarde administrativo</h2>
+            <p id="rank-subcopy" class="muted">Aún no has gastado tokens.</p>
+          </div>
+
           <div class="dashboard-card music-card">
             <p class="card-label">REPRODUCTOR CUTRE DE ÉLITE</p>
             <div class="music-controls">
@@ -132,8 +138,22 @@
             <div id="roulette-result" class="roulette-result">Pulsa para girar la desgracia</div>
             <div class="button-row compact">
               <button id="roulette-spin" class="secondary-button">Girar ruleta</button>
+              <button id="cheap-spin" class="ghost-button">Putada barata</button>
               <button id="roulette-buy" class="big-button" disabled>Comprar resultado</button>
             </div>
+          </div>
+        </div>
+        <div class="cost-filter-box">
+          <p class="eyebrow">FILTRAR POR PRECIO</p>
+          <div id="cost-filter-group" class="filter-group cost-filter-group" aria-label="Filtros por tokens">
+            <button class="filter-button cost-filter-button active" data-cost="all">Todos</button>
+            <button class="filter-button cost-filter-button" data-cost="1">1 token</button>
+            <button class="filter-button cost-filter-button" data-cost="2">2 tokens</button>
+            <button class="filter-button cost-filter-button" data-cost="3">3 tokens</button>
+            <button class="filter-button cost-filter-button" data-cost="4">4 tokens</button>
+            <button class="filter-button cost-filter-button" data-cost="5">5 tokens</button>
+            <button class="filter-button cost-filter-button" data-cost="10">10 tokens</button>
+            <button class="filter-button cost-filter-button" data-cost="15">15 tokens</button>
           </div>
         </div>
         <div id="challenge-grid" class="challenge-grid"></div>
@@ -145,7 +165,10 @@
             <p class="eyebrow">ACTA DE SENTENCIAS</p>
             <h2>Lo que ya has comprado</h2>
           </div>
-          <button id="reset-button" class="danger-button">Resetear mi sesión</button>
+          <div class="button-row compact">
+            <button id="joker-button" class="secondary-button">Usar comodín del novio</button>
+            <button id="reset-button" class="danger-button">Resetear mi sesión</button>
+          </div>
         </div>
         <div id="purchases-empty" class="empty-state">Todavía no has comprado nada. Qué decepción.</div>
         <div id="purchases-list" class="purchases-list"></div>

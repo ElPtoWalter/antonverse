@@ -3,7 +3,8 @@ const FRIEND_TOKENS = 15;
 
 const STORAGE_KEYS = {
   name: 'antonverse_name',
-  purchases: 'antonverse_purchases'
+  purchases: 'antonverse_purchases',
+  jokerUsed: 'antonverse_joker_used'
 };
 
 const FRIEND_NAMES = [
@@ -46,6 +47,17 @@ const phrases = [
   '“La historia no la escriben los valientes: la compran con tokens.”',
   '“Los amigos verdaderos no preguntan: desbloquean modo amigo.”',
   '“La ruleta nunca se equivoca; solo humilla.”'
+];
+
+const verdicts = [
+  'La dignidad de Antón baja un 17%.',
+  'El comité aprueba esta maldad por unanimidad.',
+  'Se recomienda grabar en horizontal y no borrar pruebas.',
+  'Antón ha sido legalmente sentenciado por el pueblo.',
+  'El multiverso tiembla ante esta compra.',
+  'La noche acaba de empeorar para el novio.',
+  'La historia recordará este acto de cobardía organizada.',
+  'La ONU no reconoce esta condena, pero el grupo sí.'
 ];
 
 const galleryImages = [
@@ -115,6 +127,12 @@ const challenges = [
   { id: 'extra-trono', text: 'Que se suba a una silla y dé un discurso oficial despidiéndose de la soltería', cost: 4, level: 'Legendario', source: 'extra' },
   { id: 'extra-personaje', text: 'Que el comprador elija una versión de Antón y se meta en el personaje durante 2 minutos', cost: 4, level: 'Legendario', source: 'extra' },
 
+  // Packs ahorro y sentencia final. Todo va mezclado en la tienda y se filtra por tokens.
+  { id: 'pack-verguenza-express', text: 'Pack vergüenza express: 3 retos pequeños seguidos elegidos por el comité', cost: 3, level: 'Pack ahorro', source: 'extra' },
+  { id: 'pack-noche-destruida', text: 'Pack noche destruida: 1 reto potente + 2 retos suaves elegidos por el comité', cost: 5, level: 'Pack ahorro', source: 'extra' },
+  { id: 'pack-amigo-cabron', text: 'Pack amigo cabrón: combo de putadas medianas elegido por los amigos', cost: 10, level: 'Pack amigo', source: 'friends', friendsOnly: true },
+  { id: 'sentencia-final-anton', text: 'SENTENCIA FINAL DE ANTÓN: videoclip definitivo + discurso de dimisión + foto de preso final', cost: 15, level: 'Sentencia final', source: 'friends', friendsOnly: true },
+
   // Putadas gordas desbloqueables por nombres de amigo. Van mezcladas en la misma tienda.
   { id: 'friends-combo-mili', text: 'Combo militar: rueda de Ceuta + alehop + dab final', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true },
   { id: 'friends-bitches-xxl', text: 'Pack Bitches Bitches XXL: canta y baila el doble con público alrededor', cost: 10, level: 'Putada gorda', source: 'friends', friendsOnly: true },
@@ -125,12 +143,14 @@ const challenges = [
 
 let state = {
   name: 'Invitado misterioso',
-  purchases: []
+  purchases: [],
+  jokerUsed: false
 };
 
 let rouletteSelection = null;
 let rouletteTimer = null;
 let toastTimer = null;
+let activeCostFilter = 'all';
 
 const appShell = document.getElementById('app-shell');
 const entryScreen = document.getElementById('entry-screen');
@@ -143,6 +163,8 @@ const tokenCount = document.getElementById('token-count');
 const tokenMax = document.getElementById('token-max');
 const meterFill = document.getElementById('meter-fill');
 const tokenMessage = document.getElementById('token-message');
+const rankTitle = document.getElementById('rank-title');
+const rankSubcopy = document.getElementById('rank-subcopy');
 const playerName = document.getElementById('player-name');
 const playerSubcopy = document.getElementById('player-subcopy');
 const friendModeBadge = document.getElementById('friend-mode-badge');
@@ -154,6 +176,7 @@ const challengeGrid = document.getElementById('challenge-grid');
 const purchasesList = document.getElementById('purchases-list');
 const purchasesEmpty = document.getElementById('purchases-empty');
 const resetButton = document.getElementById('reset-button');
+const jokerButton = document.getElementById('joker-button');
 const copySummaryButton = document.getElementById('copy-summary-button');
 const toast = document.getElementById('toast');
 const lightbox = document.getElementById('lightbox');
@@ -161,8 +184,10 @@ const lightboxImage = document.getElementById('lightbox-image');
 const lightboxCaption = document.getElementById('lightbox-caption');
 const lightboxClose = document.getElementById('lightbox-close');
 const rouletteSpin = document.getElementById('roulette-spin');
+const cheapSpin = document.getElementById('cheap-spin');
 const rouletteBuy = document.getElementById('roulette-buy');
 const rouletteResult = document.getElementById('roulette-result');
+const costFilterButtons = Array.from(document.querySelectorAll('.cost-filter-button'));
 
 function normalizeName(name) {
   return String(name || '')
@@ -189,9 +214,23 @@ function getCurrentTokens() {
   return Math.max(0, getMaxTokens() - getSpentTokens());
 }
 
+function getRank() {
+  const spent = getSpentTokens();
+  if (spent === 0) return { title: 'Cobarde administrativo', text: 'Aún no has gastado nada. Antón respira tranquilo.' };
+  if (spent <= 3) return { title: 'Cómplice menor', text: 'Has empezado a dañar la dignidad del novio.' };
+  if (spent <= 7) return { title: 'Destructor de dignidad', text: 'Tu nombre empieza a sonar en el comité.' };
+  if (spent <= 12) return { title: 'Enemigo íntimo de Antón', text: 'Esto ya no es amistad, es vocación.' };
+  return { title: 'Criminal del Antonverso', text: 'Has exprimido el sistema como una mala persona profesional.' };
+}
+
+function randomVerdict() {
+  return verdicts[Math.floor(Math.random() * verdicts.length)];
+}
+
 function readStorage() {
   const savedName = localStorage.getItem(STORAGE_KEYS.name);
   const savedPurchases = JSON.parse(localStorage.getItem(STORAGE_KEYS.purchases) || '[]');
+  const savedJoker = localStorage.getItem(STORAGE_KEYS.jokerUsed);
 
   if (savedName && savedName.trim()) {
     state.name = savedName.trim();
@@ -200,11 +239,14 @@ function readStorage() {
   if (Array.isArray(savedPurchases)) {
     state.purchases = savedPurchases.filter(item => item && item.id && item.text);
   }
+
+  state.jokerUsed = savedJoker === 'true';
 }
 
 function persistState() {
   localStorage.setItem(STORAGE_KEYS.name, state.name);
   localStorage.setItem(STORAGE_KEYS.purchases, JSON.stringify(state.purchases));
+  localStorage.setItem(STORAGE_KEYS.jokerUsed, String(state.jokerUsed));
 }
 
 function getPurchasedIds() {
@@ -229,6 +271,15 @@ function updateDashboard() {
   tokenCount.textContent = tokens;
   tokenMax.textContent = max;
   meterFill.style.width = `${max ? (tokens / max) * 100 : 0}%`;
+
+  const rank = getRank();
+  rankTitle.textContent = rank.title;
+  rankSubcopy.textContent = rank.text;
+
+  if (jokerButton) {
+    jokerButton.disabled = state.jokerUsed || !state.purchases.length;
+    jokerButton.textContent = state.jokerUsed ? 'Comodín ya usado' : 'Usar comodín del novio';
+  }
 
   if (isFriend && tokens >= 10) {
     tokenMessage.textContent = 'Tienes crédito suficiente para putadas gordas.';
@@ -274,7 +325,16 @@ function renderChallenges() {
   const purchasedIds = getPurchasedIds();
   const tokens = getCurrentTokens();
 
-  challengeGrid.innerHTML = challenges.map(challenge => {
+  const visibleChallenges = activeCostFilter === 'all'
+    ? challenges
+    : challenges.filter(challenge => challenge.cost === Number(activeCostFilter));
+
+  if (!visibleChallenges.length) {
+    challengeGrid.innerHTML = '<div class="empty-state">No hay putadas con ese precio todavía.</div>';
+    return;
+  }
+
+  challengeGrid.innerHTML = visibleChallenges.map(challenge => {
     const isBought = purchasedIds.has(challenge.id);
     const locked = !canAccessChallenge(challenge);
     const cantAfford = tokens < challenge.cost;
@@ -338,6 +398,7 @@ function renderPurchases() {
       <div>
         <p><strong>${escapeHtml(item.text)}</strong></p>
         <small>Comprado por ${escapeHtml(state.name)} · ${escapeHtml(item.time)}</small>
+        ${item.verdict ? `<small class="verdict-line">${escapeHtml(item.verdict)}</small>` : ''}
       </div>
       <span class="badge cost">-${item.cost} token${item.cost > 1 ? 's' : ''}</span>
     </article>
@@ -367,6 +428,7 @@ function buyChallenge(id) {
     id: challenge.id,
     text: challenge.text,
     cost: challenge.cost,
+    verdict: randomVerdict(),
     time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
   });
 
@@ -380,19 +442,19 @@ function buyChallenge(id) {
   return true;
 }
 
-function spinRoulette() {
-  const eligible = getEligibleChallenges();
+function spinRoulette(cheap = false) {
+  const eligible = getEligibleChallenges().filter(challenge => !cheap || challenge.cost <= 2);
   if (!eligible.length) {
     rouletteSelection = null;
     updateRouletteUI();
-    showToast('La ruleta no encuentra ninguna putada que puedas pagar ahora mismo.');
+    showToast(cheap ? 'No hay putadas baratas que puedas pagar ahora mismo.' : 'La ruleta no encuentra ninguna putada que puedas pagar ahora mismo.');
     return;
   }
 
   rouletteBuy.disabled = true;
   rouletteSpin.disabled = true;
   rouletteResult.classList.add('spinning');
-  rouletteResult.textContent = 'Girando la desgracia...';
+  rouletteResult.textContent = cheap ? 'Buscando putada barata...' : 'Girando la desgracia...';
 
   let ticks = 0;
   clearInterval(rouletteTimer);
@@ -411,7 +473,7 @@ function spinRoulette() {
       rouletteResult.classList.remove('spinning');
       rouletteSpin.disabled = false;
       rouletteBuy.disabled = false;
-      showToast('La ruleta ha dictado sentencia.');
+      showToast(cheap ? 'La putada barata ha sido seleccionada.' : 'La ruleta ha dictado sentencia.');
     }
   }, 75);
 }
@@ -474,7 +536,8 @@ function resetSession() {
 
   state = {
     name: 'Invitado misterioso',
-    purchases: []
+    purchases: [],
+    jokerUsed: false
   };
   rouletteSelection = null;
 
@@ -486,15 +549,62 @@ function resetSession() {
   showToast('Sesión reseteada. Vuelves a empezar con tokens limpios.');
 }
 
+function useJoker() {
+  if (state.jokerUsed) {
+    showToast('Ya has usado el comodín del novio en este móvil.');
+    return;
+  }
+  if (!state.purchases.length) {
+    showToast('Primero compra algo; si no, no hay nada que cambiar.');
+    return;
+  }
+
+  const oldPurchase = state.purchases[state.purchases.length - 1];
+  const purchasedIds = getPurchasedIds();
+  purchasedIds.delete(oldPurchase.id);
+
+  const alternatives = challenges.filter(challenge => {
+    if (challenge.id === oldPurchase.id) return false;
+    if (purchasedIds.has(challenge.id)) return false;
+    if (!canAccessChallenge(challenge)) return false;
+    return challenge.cost <= Number(oldPurchase.cost || 0);
+  });
+
+  if (!alternatives.length) {
+    showToast('No hay una alternativa válida igual o más barata para cambiar el último reto.');
+    return;
+  }
+
+  const replacement = alternatives[Math.floor(Math.random() * alternatives.length)];
+  state.purchases[state.purchases.length - 1] = {
+    id: replacement.id,
+    text: replacement.text,
+    cost: replacement.cost,
+    verdict: `COMODÍN DEL NOVIO: sustituye a “${oldPurchase.text}”. ${randomVerdict()}`,
+    time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+  };
+  state.jokerUsed = true;
+  rouletteSelection = null;
+
+  persistState();
+  updateDashboard();
+  renderChallenges();
+  renderPurchases();
+  updateRouletteUI();
+  showToast(`Comodín usado. Nuevo reto: ${replacement.text}`);
+}
+
 function copySummary() {
   const lines = state.purchases.length
-    ? state.purchases.map((item, index) => `${index + 1}. ${item.text} (-${item.cost} token${item.cost > 1 ? 's' : ''})`)
+    ? state.purchases.map((item, index) => `${index + 1}. ${item.text} (-${item.cost} token${item.cost > 1 ? 's' : ''})${item.verdict ? ' · ' + item.verdict : ''}`)
     : ['Todavía no he comprado ninguna condena.'];
 
   const summary = [
     `Participante: ${state.name}`,
     `Modo amigo: ${isFriendName(state.name) ? 'Sí' : 'No'}`,
     `Tokens restantes: ${getCurrentTokens()}/${getMaxTokens()}`,
+    `Rango: ${getRank().title}`,
+    `Comodín usado: ${state.jokerUsed ? 'Sí' : 'No'}`,
     'Condenas compradas:',
     ...lines
   ].join('\n');
@@ -582,10 +692,12 @@ enterButton.addEventListener('click', handleEntry);
 renameButton.addEventListener('click', renamePlayer);
 phraseButton.addEventListener('click', setRandomPhrase);
 resetButton.addEventListener('click', resetSession);
+jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
 musicMute.addEventListener('click', toggleMute);
-rouletteSpin.addEventListener('click', spinRoulette);
+rouletteSpin.addEventListener('click', () => spinRoulette(false));
+cheapSpin.addEventListener('click', () => spinRoulette(true));
 rouletteBuy.addEventListener('click', buyRouletteSelection);
 volumeSlider.addEventListener('input', event => {
   bgMusic.volume = Number(event.target.value);
@@ -596,6 +708,15 @@ lightbox.addEventListener('click', event => {
 });
 window.addEventListener('keydown', event => {
   if (event.key === 'Escape') closeLightbox();
+});
+
+costFilterButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    activeCostFilter = button.dataset.cost;
+    costFilterButtons.forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+    renderChallenges();
+  });
 });
 
 hydrateUI();

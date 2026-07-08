@@ -1,39 +1,34 @@
-# ANTONVERSO · V3
+# ANTONVERSO · v4
 
-## Cambios de esta versión
+Versión lista para subir a GitHub Pages.
 
-- Retos/putadas todos juntos en una única tienda.
-- Las putadas gordas de amigos aparecen mezcladas, pero quedan bloqueadas si el nombre no está en la lista secreta.
-- Usuarios normales: 5 tokens.
-- Nombres secretos de amigos: 15 tokens.
-- Añadida la **Ruleta de Putadas**.
-  - Solo elige retos que el usuario pueda pagar.
-  - Solo elige retos desbloqueados para ese usuario.
-  - No repite retos ya comprados por ese móvil.
-- Añadidos los retos nuevos de Walter.
-- Los textos originales del usuario y Walter se han respetado tal cual.
+## Novedades v4
+- Todos los retos siguen mezclados en la misma tienda.
+- Filtros por coste: 1, 2, 3, 4, 5, 10 y 15 tokens.
+- Ruleta inteligente: solo elige retos que puedas pagar y tengas desbloqueados.
+- Botón de putada barata: elige aleatoriamente retos de 1 o 2 tokens.
+- Packs ahorro de desgracias.
+- Sentencia final de Antón de 15 tokens para nombres secretos de amigo.
+- Ranking cutre de maldad según tokens gastados.
+- Historial con frases épicas por cada compra.
+- Comodín del novio: una vez por móvil, sustituye el último reto comprado por otro aleatorio igual o más barato.
 
-## Nombres secretos de amigo
+## Tokens
+- Usuario normal: 5 tokens.
+- Nombres secretos de amigo: 15 tokens.
 
-macoy, buah, parlita, il consigliere, caqui, pocoyo, ..., pol, sara, yomen, cabesa, walter, nil, putero, puta, nat, natrix, padre del parlita, negri, no me duele, valen, dynamic gamers, dynamic gaymers, Dios, se mutran de tu menda.
+## Importante
+La web es estática y funciona con `localStorage`. Cada móvil/navegador guarda sus compras de forma local. No hay base de datos compartida.
 
 ## Cómo actualizar GitHub Pages
+Sube el contenido de esta carpeta al mismo repositorio `antonverse`, sustituyendo los archivos anteriores:
 
-1. Descomprime este ZIP.
-2. Entra en el repositorio `antonverse` de GitHub.
-3. Sube/sustituye estos archivos en la raíz del repo:
-   - `index.html`
-   - `style.css`
-   - `script.js`
-   - `README.md`
-   - `assets/`
-4. Haz commit.
-5. Espera 1-3 minutos.
+- `index.html`
+- `style.css`
+- `script.js`
+- `README.md`
+- `assets/`
 
-El QR no cambia mientras el enlace siga siendo:
+El QR sigue siendo el mismo mientras la URL siga siendo:
 
 `https://elptowalter.github.io/antonverse/`
-
-## Nota técnica
-
-Es una web estática para GitHub Pages. Los tokens se guardan en cada móvil/navegador mediante `localStorage`; no hay base de datos común.

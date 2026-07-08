@@ -813,3 +813,56 @@ blockquote {
     grid-template-columns: 1fr;
   }
 }
+
+/* V4: filtros por tokens, ranking y comodín */
+.dashboard-grid {
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 0.9fr;
+}
+
+.rank-card h2 {
+  color: var(--yellow);
+  text-shadow: 2px 2px 0 #000;
+}
+
+.cost-filter-box {
+  margin: 1rem 0;
+  padding: 0.9rem;
+  border-radius: 22px;
+  background: rgba(0,0,0,0.22);
+  border: 1px dashed rgba(255,255,255,0.18);
+}
+
+.cost-filter-box .eyebrow {
+  margin-bottom: 0.7rem;
+}
+
+.cost-filter-group {
+  align-items: center;
+}
+
+.verdict-line {
+  color: var(--yellow) !important;
+  font-weight: 800;
+}
+
+#joker-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cost-filter-group .filter-button {
+    flex: 1 1 calc(50% - 0.5rem);
+  }
+}
