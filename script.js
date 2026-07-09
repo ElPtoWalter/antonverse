@@ -40,6 +40,80 @@ const radioTracks = [
   { src: 'assets/audio/whatsapp-audio-2026-07-08-at-13-21-26-1.mpeg', title: 'Archivo de WhatsApp · versión 2' }
 ];
 
+
+
+const AUDIO_BASE_PATHS = ['assets/audio/', 'audio/', ''];
+const IMAGE_BASE_PATHS = ['assets/images/', 'images/', ''];
+const ORIGINAL_AUDIO_FILENAMES = {
+  'anton.mp3': ['Antón, antón.mp3'],
+  'anton-cumbia.mp3': ['Antón, antón (Cumbia).mp3'],
+  'anton-cumbia-v2.mp3': ['Antón, antón (Cumbia)v2.mp3'],
+  'anton-cumbia-v3.mp3': ['Antón, antón (Cumbia)v3.mp3'],
+  'anton-electro-latino.mp3': ['Antón, antón (ELECTRO LATINO).mp3'],
+  'anton-electro-latino-v2.mp3': ['Antón, antón (ELECTRO LATINO)v2.mp3'],
+  'anton-electro-latino-v3.mp3': ['Antón, antón (ELECTRO LATINO)v3.mp3'],
+  'anton-pop.mp3': ['Antón, antón (POP).mp3'],
+  'anton-pop-v2.mp3': ['Antón, antón (POP)v2.mp3'],
+  'anton-ranchera.mp3': ['Antón, antón (Ranchera).mp3'],
+  'anton-ranchera-v2.mp3': ['Antón, antón (Ranchera)v2.mp3'],
+  'anton-ranchera-v3.mp3': ['Antón, antón (Ranchera)v3.mp3'],
+  'anton-ranchera-v4.mp3': ['Antón, antón (Ranchera)v4.mp3'],
+  'anton-ranchera-v5.mp3': ['Antón, antón (Ranchera)v5.mp3'],
+  'anton-ranchera-v6.mp3': ['Antón, antón (Ranchera)v6.mp3'],
+  'anton-ranchera-v7.mp3': ['Antón, antón (Ranchera)v7.mp3'],
+  'anton-ranchera-v8.mp3': ['Antón, antón (Ranchera)v8.mp3'],
+  'anton-ranchera-v9.mp3': ['Antón, antón (Ranchera)v9.mp3'],
+  'anton-copla.mp3': ['Antón, antón (Copla).mp3'],
+  'anton-copla-v2.mp3': ['Antón, antón (Copla)v2.mp3'],
+  'anton-corrido-tumbado.mp3': ['Antón, antón (Corrido tumbado).mp3'],
+  'anton-corrido-tumbado-v2.mp3': ['Antón, antón (Corrido tumbado)v2.mp3'],
+  'anton-bachata.mp3': ['Antón, antón (BACHATA).mp3'],
+  'anton-bachata-v2.mp3': ['Antón, antón (BACHATA)v2.mp3'],
+  'anton-christian-ghospel.mp3': ['Antón, antón (Christian ghospel).mp3'],
+  'anton-christian-ghospel-v2.mp3': ['Antón, antón (Christian ghospel)v2.mp3'],
+  'himno-anton.mpeg': ['WhatsApp Audio 2026-07-08 at 13.21.26.mpeg'],
+  'whatsapp-audio-2026-07-08-at-13-21-26-1.mpeg': ['WhatsApp Audio 2026-07-08 at 13.21.26(1).mpeg']
+};
+
+function filenameFromPath(path) {
+  return String(path || '').split('/').pop();
+}
+
+function uniqueList(items) {
+  return [...new Set(items.filter(Boolean))];
+}
+
+function buildAudioCandidates(src) {
+  const normalized = filenameFromPath(src);
+  const originals = ORIGINAL_AUDIO_FILENAMES[normalized] || [];
+  const filenames = uniqueList([normalized, ...originals]);
+  return uniqueList(filenames.flatMap(name => AUDIO_BASE_PATHS.map(base => encodeURI(base + name))));
+}
+
+function buildImageCandidates(src) {
+  const filename = filenameFromPath(src);
+  return uniqueList(IMAGE_BASE_PATHS.map(base => encodeURI(base + filename)));
+}
+
+radioTracks.forEach(track => {
+  track.candidates = buildAudioCandidates(track.src);
+  track.src = track.candidates[0];
+});
+
+let currentTrackCandidateIndex = 0;
+
+window.handleAntonImageError = function handleAntonImageError(img) {
+  const candidates = String(img.dataset.candidates || '').split('|').filter(Boolean);
+  const currentIndex = Number(img.dataset.candidateIndex || 0);
+  const nextIndex = currentIndex + 1;
+  if (nextIndex < candidates.length) {
+    img.dataset.candidateIndex = String(nextIndex);
+    img.src = candidates[nextIndex];
+  } else {
+    img.alt = 'No se pudo cargar esta imagen. Revisa si está en assets/images o images.';
+  }
+};
+
 const FRIEND_NAMES = [
   'macoy',
   'buah',
@@ -195,6 +269,9 @@ let rouletteTimer = null;
 let toastTimer = null;
 let activeCostFilter = 'all';
 let currentTrackIndex = -1;
+let wheelRotation = 0;
+let wheelChallenges = [];
+let wheelSegmentAngle = 0;
 
 const appShell = document.getElementById('app-shell');
 const entryScreen = document.getElementById('entry-screen');
@@ -233,6 +310,7 @@ const rouletteSpin = document.getElementById('roulette-spin');
 const cheapSpin = document.getElementById('cheap-spin');
 const rouletteBuy = document.getElementById('roulette-buy');
 const rouletteResult = document.getElementById('roulette-result');
+const rouletteWheel = document.getElementById('roulette-wheel');
 const costFilterButtons = Array.from(document.querySelectorAll('.cost-filter-button'));
 
 function normalizeName(name) {
@@ -350,12 +428,13 @@ function renderGallery() {
   const revealedSet = new Set(state.revealedImages);
 
   galleryGrid.innerHTML = galleryImages.map((image, index) => {
-    const imageId = image.src;
-    const revealed = revealedSet.has(imageId);
+    const candidates = image.candidates || buildImageCandidates(image.src);
+    const imageId = filenameFromPath(image.src);
+    const revealed = revealedSet.has(imageId) || revealedSet.has(image.src);
     return `
-      <article class="gallery-card ${revealed ? 'revealed' : 'sealed'}" data-src="${image.src}" data-title="${escapeHtml(image.title)}" data-index="${index}">
+      <article class="gallery-card ${revealed ? 'revealed' : 'sealed'}" data-src="${candidates[0]}" data-candidates="${candidates.join('|')}" data-title="${escapeHtml(image.title)}" data-index="${index}" data-image-id="${escapeHtml(imageId)}">
         <div class="gallery-image-wrap">
-          <img src="${image.src}" alt="${escapeHtml(image.title)}" loading="lazy" />
+          <img src="${candidates[0]}" data-candidates="${candidates.join('|')}" data-candidate-index="0" onerror="window.handleAntonImageError(this)" alt="${escapeHtml(image.title)}" loading="lazy" />
           <div class="envelope-cover">
             <div class="envelope-icon">✉️</div>
             <strong>ARCHIVO CLASIFICADO #${String(index + 1).padStart(2, '0')}</strong>
@@ -369,10 +448,12 @@ function renderGallery() {
 
   galleryGrid.querySelectorAll('.gallery-card').forEach(card => {
     card.addEventListener('click', () => {
-      const src = card.dataset.src;
       const title = card.dataset.title;
-      if (!state.revealedImages.includes(src)) {
-        state.revealedImages.push(src);
+      const imageId = card.dataset.imageId;
+      const imgEl = card.querySelector('img');
+      const src = imgEl?.currentSrc || imgEl?.src || card.dataset.src;
+      if (!state.revealedImages.includes(imageId)) {
+        state.revealedImages.push(imageId);
         persistState();
         showToast('Has abierto un sobre que quizá debía permanecer cerrado.');
         renderGallery();
@@ -382,7 +463,6 @@ function renderGallery() {
     });
   });
 }
-
 
 function canAccessChallenge(challenge) {
   return !challenge.friendsOnly || isFriendName(state.name);
@@ -520,8 +600,61 @@ function buyChallenge(id) {
   return true;
 }
 
-function spinRoulette(cheap = false) {
+function buildWheelChallenges(cheap = false) {
   const eligible = getEligibleChallenges().filter(challenge => !cheap || challenge.cost <= 2);
+  // En móvil una ruleta con 25 trozos se vuelve ilegible. Metemos un máximo de 12
+  // candidatos, pero siempre elegidos de entre los retos que puedes pagar.
+  if (eligible.length <= 12) return eligible;
+
+  const shuffled = [...eligible].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 12);
+}
+
+function shortRouletteLabel(text) {
+  const cleaned = String(text)
+    .replace(/Que /i, '')
+    .replace(/Haces /i, '')
+    .replace(/Haz /i, '')
+    .replace(/Antón:?/i, '')
+    .trim();
+  return cleaned.length > 34 ? `${cleaned.slice(0, 31)}...` : cleaned;
+}
+
+function renderRouletteWheel(items = null) {
+  if (!rouletteWheel) return;
+
+  const sourceItems = items || buildWheelChallenges(false);
+  wheelChallenges = sourceItems.length ? sourceItems : [];
+  rouletteWheel.querySelectorAll('.wheel-label').forEach(label => label.remove());
+
+  if (!wheelChallenges.length) {
+    rouletteWheel.style.background = 'conic-gradient(#3b245b 0 360deg)';
+    return;
+  }
+
+  const colors = ['#ff4dc4', '#ffe761', '#43f3ff', '#ff7b00', '#61ff9f', '#8d6bff'];
+  wheelSegmentAngle = 360 / wheelChallenges.length;
+
+  const gradientParts = wheelChallenges.map((item, index) => {
+    const start = index * wheelSegmentAngle;
+    const end = (index + 1) * wheelSegmentAngle;
+    return `${colors[index % colors.length]} ${start}deg ${end}deg`;
+  });
+
+  rouletteWheel.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
+
+  wheelChallenges.forEach((challenge, index) => {
+    const label = document.createElement('div');
+    label.className = 'wheel-label';
+    const angle = index * wheelSegmentAngle + wheelSegmentAngle / 2;
+    label.style.transform = `rotate(${angle}deg)`;
+    label.innerHTML = `<span>${escapeHtml(shortRouletteLabel(challenge.text))}<br>${challenge.cost}T</span>`;
+    rouletteWheel.appendChild(label);
+  });
+}
+
+function spinRoulette(cheap = false) {
+  const eligible = buildWheelChallenges(cheap);
   if (!eligible.length) {
     rouletteSelection = null;
     updateRouletteUI();
@@ -529,39 +662,54 @@ function spinRoulette(cheap = false) {
     return;
   }
 
+  renderRouletteWheel(eligible);
   rouletteBuy.disabled = true;
   rouletteSpin.disabled = true;
+  cheapSpin.disabled = true;
+  rouletteResult.classList.remove('final-result');
   rouletteResult.classList.add('spinning');
-  rouletteResult.textContent = cheap ? 'Buscando putada barata...' : 'Girando la desgracia...';
+  rouletteResult.textContent = cheap ? 'Girando ruleta barata...' : 'Girando la ruleta del destino...';
 
-  let ticks = 0;
-  clearInterval(rouletteTimer);
-  rouletteTimer = setInterval(() => {
-    const preview = eligible[Math.floor(Math.random() * eligible.length)];
-    rouletteResult.textContent = preview.text;
-    ticks += 1;
+  const selectedIndex = Math.floor(Math.random() * eligible.length);
+  rouletteSelection = eligible[selectedIndex];
 
-    if (ticks >= 18) {
-      clearInterval(rouletteTimer);
-      rouletteSelection = eligible[Math.floor(Math.random() * eligible.length)];
-      rouletteResult.innerHTML = `
-        <strong>${escapeHtml(rouletteSelection.text)}</strong>
-        <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}</small>
-      `;
-      rouletteResult.classList.remove('spinning');
-      rouletteSpin.disabled = false;
-      rouletteBuy.disabled = false;
-      showToast(cheap ? 'La putada barata ha sido seleccionada.' : 'La ruleta ha dictado sentencia.');
-    }
-  }, 75);
+  // La flecha está arriba. El centro del segmento seleccionado debe acabar arriba.
+  const selectedCenter = selectedIndex * wheelSegmentAngle + wheelSegmentAngle / 2;
+  const fullSpins = 5 + Math.floor(Math.random() * 3);
+  const targetRotation = fullSpins * 360 + (360 - selectedCenter);
+  wheelRotation += targetRotation;
+
+  if (rouletteWheel) {
+    rouletteWheel.classList.add('spinning');
+    rouletteWheel.style.transform = `rotate(${wheelRotation}deg)`;
+  }
+
+  clearTimeout(rouletteTimer);
+  rouletteTimer = setTimeout(() => {
+    rouletteResult.innerHTML = `
+      <strong>${escapeHtml(rouletteSelection.text)}</strong>
+      <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}</small>
+    `;
+    rouletteResult.classList.remove('spinning');
+    rouletteResult.classList.add('final-result');
+    if (rouletteWheel) rouletteWheel.classList.remove('spinning');
+    rouletteSpin.disabled = false;
+    cheapSpin.disabled = false;
+    rouletteBuy.disabled = false;
+    showToast(cheap ? 'La ruleta barata ha sentenciado.' : 'La ruleta real ha dictado sentencia.');
+  }, 5050);
 }
 
 function updateRouletteUI() {
-  clearInterval(rouletteTimer);
-  rouletteSpin.disabled = false;
+  clearTimeout(rouletteTimer);
+  if (rouletteSpin) rouletteSpin.disabled = false;
+  if (cheapSpin) cheapSpin.disabled = false;
   rouletteResult.classList.remove('spinning');
+  renderRouletteWheel();
+
   if (!rouletteSelection) {
-    rouletteResult.textContent = 'Pulsa para girar la desgracia';
+    rouletteResult.classList.remove('final-result');
+    rouletteResult.textContent = 'Pulsa para girar la ruleta de putadas';
     rouletteBuy.disabled = true;
     return;
   }
@@ -571,7 +719,8 @@ function updateRouletteUI() {
   rouletteBuy.disabled = !canStillBuy;
   if (!canStillBuy) {
     rouletteSelection = null;
-    rouletteResult.textContent = 'Pulsa para girar la desgracia';
+    rouletteResult.classList.remove('final-result');
+    rouletteResult.textContent = 'Pulsa para girar la ruleta de putadas';
   }
 }
 
@@ -712,8 +861,9 @@ function setRadioTrack(index, shouldPlay = false) {
   if (!radioTracks.length) return;
 
   currentTrackIndex = index;
+  currentTrackCandidateIndex = 0;
   const track = radioTracks[currentTrackIndex];
-  bgMusic.src = track.src;
+  bgMusic.src = track.candidates?.[0] || track.src;
   bgMusic.load();
   if (nowPlaying) {
     nowPlaying.textContent = `Ahora suena: ${track.title}`;
@@ -811,6 +961,29 @@ function hydrateUI() {
   renderPurchases();
   if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
+}
+
+
+if (bgMusic) {
+  bgMusic.addEventListener('error', () => {
+    const track = radioTracks[currentTrackIndex];
+    const candidates = track?.candidates || [];
+    if (!track || !candidates.length) return;
+
+    const nextCandidate = currentTrackCandidateIndex + 1;
+    if (nextCandidate < candidates.length) {
+      currentTrackCandidateIndex = nextCandidate;
+      bgMusic.src = candidates[currentTrackCandidateIndex];
+      bgMusic.load();
+      if (nowPlaying) {
+        nowPlaying.textContent = `Ahora suena: ${track.title}`;
+      }
+      showToast('No encontraba el audio. Estoy probando otra ruta automáticamente.');
+      return;
+    }
+
+    showToast('No encuentro ese audio. Revisa que esté en assets/audio/ y que el nombre coincida.');
+  });
 }
 
 enterButton.addEventListener('click', handleEntry);

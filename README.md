@@ -1,31 +1,24 @@
-# ANTONVERSO v6 · Radio Antonverse + Sobres clasificados + Galería ampliada
+# Antonverse v8 · Ruleta visual real
 
-## Qué incluye esta versión
+Esta versión es un parche ligero: contiene solo código (`index.html`, `style.css`, `script.js`, `README.md`).
 
-- Radio Antonverse FM con canciones aleatorias.
-- Botón para cambiar canción.
-- Reproducción continua: cuando acaba una canción, salta otra al azar.
-- Texto de “Ahora suena”.
-- Galería tipo sobre clasificado:
-  - las fotos aparecen tapadas;
-  - al pulsar se revelan;
-  - al volver a pulsar se amplían.
-- Galería ampliada con las nuevas imágenes.
-- Tienda de retos, tokens, ruleta, packs, ranking y modo amigo de las versiones anteriores.
+## Qué cambia
+- La ruleta ahora es una ruleta circular visual real.
+- Tiene flecha fija arriba.
+- Gira con animación y desacelera.
+- Se para en una putada concreta.
+- Solo mete en la ruleta retos que el usuario pueda pagar y tenga desbloqueados.
+- El botón "Putada barata" genera una ruleta con retos de 1 o 2 tokens.
 
-## Cómo actualizar en GitHub Pages
+## Qué subir a GitHub
+Sube estos archivos a la raíz del repo, sustituyendo los anteriores:
 
-1. Descomprime este ZIP.
-2. Entra en tu repositorio `antonverse` en GitHub.
-3. Pulsa `Add file` → `Upload files`.
-4. Arrastra todo el contenido de la carpeta:
-   - `index.html`
-   - `style.css`
-   - `script.js`
-   - `README.md`
-   - `assets/`
-5. Pulsa `Commit changes`.
-6. Espera 1-3 minutos.
-7. Abre la web y usa Ctrl+F5 o modo incógnito si no ves cambios.
+- `index.html`
+- `style.css`
+- `script.js`
+- `README.md`
 
-Mientras mantengas la URL `https://elptowalter.github.io/antonverse/`, el QR sigue siendo el mismo.
+No hace falta subir de nuevo `assets/` si ya tienes las imágenes y audios en GitHub.
+
+## Importante
+Si la música no suena, revisa que los nombres de los audios en `assets/audio/` coincidan con los nombres que usa `script.js`.
