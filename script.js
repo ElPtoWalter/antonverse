@@ -312,6 +312,7 @@ const rouletteBuy = document.getElementById('roulette-buy');
 const rouletteResult = document.getElementById('roulette-result');
 const rouletteWheel = document.getElementById('roulette-wheel');
 const costFilterButtons = Array.from(document.querySelectorAll('.cost-filter-button'));
+const rouletteLegend = document.getElementById('roulette-legend');
 
 function normalizeName(name) {
   return String(name || '')
@@ -610,14 +611,14 @@ function buildWheelChallenges(cheap = false) {
   return shuffled.slice(0, 12);
 }
 
-function shortRouletteLabel(text) {
+function shortRouletteLabel(text, maxLength = 72) {
   const cleaned = String(text)
-    .replace(/Que /i, '')
-    .replace(/Haces /i, '')
-    .replace(/Haz /i, '')
-    .replace(/Antón:?/i, '')
+    .replace(/^Que /i, '')
+    .replace(/^Haces /i, '')
+    .replace(/^Haz /i, '')
+    .replace(/^Antón:?/i, '')
     .trim();
-  return cleaned.length > 34 ? `${cleaned.slice(0, 31)}...` : cleaned;
+  return cleaned.length > maxLength ? `${cleaned.slice(0, maxLength - 3)}...` : cleaned;
 }
 
 function renderRouletteWheel(items = null) {
@@ -645,12 +646,33 @@ function renderRouletteWheel(items = null) {
 
   wheelChallenges.forEach((challenge, index) => {
     const label = document.createElement('div');
-    label.className = 'wheel-label';
+    label.className = 'wheel-label wheel-number';
     const angle = index * wheelSegmentAngle + wheelSegmentAngle / 2;
     label.style.transform = `rotate(${angle}deg)`;
-    label.innerHTML = `<span>${escapeHtml(shortRouletteLabel(challenge.text))}<br>${challenge.cost}T</span>`;
+    label.innerHTML = `<span>${index + 1}</span>`;
     rouletteWheel.appendChild(label);
   });
+
+  renderRouletteLegend(wheelChallenges);
+}
+
+function renderRouletteLegend(items) {
+  if (!rouletteLegend) return;
+
+  if (!items || !items.length) {
+    rouletteLegend.innerHTML = '<p class="legend-empty">No hay retos disponibles para tus tokens.</p>';
+    return;
+  }
+
+  rouletteLegend.innerHTML = items.map((challenge, index) => `
+    <div class="legend-item">
+      <span class="legend-number">${index + 1}</span>
+      <div>
+        <strong>${escapeHtml(shortRouletteLabel(challenge.text, 58))}</strong>
+        <small>${challenge.cost} token${challenge.cost > 1 ? 's' : ''} · ${escapeHtml(challenge.level)}</small>
+      </div>
+    </div>
+  `).join('');
 }
 
 function spinRoulette(cheap = false) {

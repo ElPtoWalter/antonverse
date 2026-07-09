@@ -1,24 +1,18 @@
-# Antonverse v8 · Ruleta visual real
+# Antonverse v9 · Ruleta limpia
 
-Esta versión es un parche ligero: contiene solo código (`index.html`, `style.css`, `script.js`, `README.md`).
+Versión ligera de código. No incluye assets.
 
-## Qué cambia
-- La ruleta ahora es una ruleta circular visual real.
-- Tiene flecha fija arriba.
-- Gira con animación y desacelera.
-- Se para en una putada concreta.
-- Solo mete en la ruleta retos que el usuario pueda pagar y tenga desbloqueados.
-- El botón "Putada barata" genera una ruleta con retos de 1 o 2 tokens.
+Cambios:
+- Ruleta visual sin texto apelotonado dentro del círculo.
+- Segmentos con números claros.
+- Leyenda externa con el reto correspondiente a cada número.
+- Máximo 8 opciones por tirada para que se vea limpio.
+- Mantiene botones: girar, putada barata y comprar resultado.
 
-## Qué subir a GitHub
-Sube estos archivos a la raíz del repo, sustituyendo los anteriores:
+Sube a la raíz del repo:
+- index.html
+- style.css
+- script.js
+- README.md
 
-- `index.html`
-- `style.css`
-- `script.js`
-- `README.md`
-
-No hace falta subir de nuevo `assets/` si ya tienes las imágenes y audios en GitHub.
-
-## Importante
-Si la música no suena, revisa que los nombres de los audios en `assets/audio/` coincidan con los nombres que usa `script.js`.
+No hace falta subir de nuevo assets si ya están en GitHub.
