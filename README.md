@@ -1,34 +1,31 @@
-# ANTONVERSO · v4
+# ANTONVERSO v6 · Radio Antonverse + Sobres clasificados + Galería ampliada
 
-Versión lista para subir a GitHub Pages.
+## Qué incluye esta versión
 
-## Novedades v4
-- Todos los retos siguen mezclados en la misma tienda.
-- Filtros por coste: 1, 2, 3, 4, 5, 10 y 15 tokens.
-- Ruleta inteligente: solo elige retos que puedas pagar y tengas desbloqueados.
-- Botón de putada barata: elige aleatoriamente retos de 1 o 2 tokens.
-- Packs ahorro de desgracias.
-- Sentencia final de Antón de 15 tokens para nombres secretos de amigo.
-- Ranking cutre de maldad según tokens gastados.
-- Historial con frases épicas por cada compra.
-- Comodín del novio: una vez por móvil, sustituye el último reto comprado por otro aleatorio igual o más barato.
+- Radio Antonverse FM con canciones aleatorias.
+- Botón para cambiar canción.
+- Reproducción continua: cuando acaba una canción, salta otra al azar.
+- Texto de “Ahora suena”.
+- Galería tipo sobre clasificado:
+  - las fotos aparecen tapadas;
+  - al pulsar se revelan;
+  - al volver a pulsar se amplían.
+- Galería ampliada con las nuevas imágenes.
+- Tienda de retos, tokens, ruleta, packs, ranking y modo amigo de las versiones anteriores.
 
-## Tokens
-- Usuario normal: 5 tokens.
-- Nombres secretos de amigo: 15 tokens.
+## Cómo actualizar en GitHub Pages
 
-## Importante
-La web es estática y funciona con `localStorage`. Cada móvil/navegador guarda sus compras de forma local. No hay base de datos compartida.
+1. Descomprime este ZIP.
+2. Entra en tu repositorio `antonverse` en GitHub.
+3. Pulsa `Add file` → `Upload files`.
+4. Arrastra todo el contenido de la carpeta:
+   - `index.html`
+   - `style.css`
+   - `script.js`
+   - `README.md`
+   - `assets/`
+5. Pulsa `Commit changes`.
+6. Espera 1-3 minutos.
+7. Abre la web y usa Ctrl+F5 o modo incógnito si no ves cambios.
 
-## Cómo actualizar GitHub Pages
-Sube el contenido de esta carpeta al mismo repositorio `antonverse`, sustituyendo los archivos anteriores:
-
-- `index.html`
-- `style.css`
-- `script.js`
-- `README.md`
-- `assets/`
-
-El QR sigue siendo el mismo mientras la URL siga siendo:
-
-`https://elptowalter.github.io/antonverse/`
+Mientras mantengas la URL `https://elptowalter.github.io/antonverse/`, el QR sigue siendo el mismo.

@@ -15,15 +15,13 @@
     <div class="entry-box sparkle">
       <p class="eyebrow blink">⚠️ ACCESO RESTRINGIDO ⚠️</p>
       <h1>ANTONVERSO</h1>
-      <p class="entry-copy">La última noche de libertad está en tus manos.<br>Entra, activa el himno y gasta tus tokens con maldad.</p>
+      <p class="entry-copy">La última noche de libertad está en tus manos.<br>Entra, activa Radio Antonverse FM y gasta tus tokens con maldad.</p>
       <button id="enter-button" class="big-button">ENTRAR AL SANTUARIO</button>
-      <p class="entry-note">* Al entrar arrancará el temazo de fondo porque esta web no respeta la vergüenza ajena.</p>
+      <p class="entry-note">* Al entrar sonará una canción aleatoria del archivo musical de Antón. Nadie está a salvo.</p>
     </div>
   </div>
 
-  <audio id="bg-music" loop preload="auto">
-    <source src="assets/audio/himno-anton.mpeg" type="audio/mpeg">
-  </audio>
+  <audio id="bg-music" preload="auto"></audio>
 
   <div class="page-shell hidden" id="app-shell">
     <header class="hero">
@@ -75,9 +73,12 @@
           </div>
 
           <div class="dashboard-card music-card">
-            <p class="card-label">REPRODUCTOR CUTRE DE ÉLITE</p>
+            <p class="card-label">RADIO ANTONVERSE FM</p>
+            <h2 class="radio-title">Hilo musical aleatorio</h2>
+            <p id="now-playing" class="now-playing">Ahora suena: esperando sentencia musical...</p>
             <div class="music-controls">
-              <button id="music-toggle" class="secondary-button">Pausar himno</button>
+              <button id="music-toggle" class="secondary-button">Pausar radio</button>
+              <button id="music-next" class="secondary-button">Cambiar canción</button>
               <button id="music-mute" class="ghost-button">Silenciar</button>
             </div>
             <label class="volume-label" for="volume-slider">Volumen del hilillo musical</label>
@@ -113,9 +114,9 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">MULTIVERSO VISUAL</p>
-            <h2>Galería oficial de versiones de Antón</h2>
+            <h2>Museo secreto de Antón</h2>
           </div>
-          <p class="section-copy">Para recordar que Antón no es una persona: es una franquicia.</p>
+          <p class="section-copy">Las fotos salen tapadas como sobres clasificados. Pincha para revelar cada atrocidad visual.</p>
         </div>
         <div id="gallery-grid" class="gallery-grid"></div>
       </section>

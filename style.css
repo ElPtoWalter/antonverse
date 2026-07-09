@@ -866,3 +866,100 @@ blockquote {
     flex: 1 1 calc(50% - 0.5rem);
   }
 }
+
+
+.radio-title {
+  margin: 0.2rem 0 0.35rem;
+  font-size: 1.8rem;
+}
+
+.now-playing {
+  margin: 0.25rem 0 0.9rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 16px;
+  background: rgba(67, 243, 255, 0.09);
+  border: 1px dashed rgba(67, 243, 255, 0.35);
+  color: var(--cyan);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.gallery-image-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.gallery-card.sealed img {
+  filter: blur(10px) saturate(0.75) brightness(0.55);
+  transform: scale(1.05);
+}
+
+.gallery-card.revealed img {
+  filter: none;
+  transform: none;
+}
+
+.envelope-cover {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: 0.28rem;
+  text-align: center;
+  padding: 1rem;
+  background:
+    linear-gradient(135deg, rgba(255,231,97,0.22), rgba(255,77,196,0.24)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.10) 0 8px, rgba(0,0,0,0.05) 8px 16px),
+    rgba(17, 6, 31, 0.83);
+  border: 2px dashed rgba(255,255,255,0.22);
+  color: white;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.gallery-card.revealed .envelope-cover {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.05);
+}
+
+.envelope-cover strong {
+  font-family: 'Bangers', 'Comic Sans MS', cursive;
+  letter-spacing: 0.08em;
+  color: var(--yellow);
+  text-shadow: 2px 2px 0 #000;
+  font-size: 1.25rem;
+}
+
+.envelope-cover span {
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.envelope-icon {
+  font-size: 2.4rem;
+  filter: drop-shadow(0 8px 12px rgba(0,0,0,0.35));
+  animation: envelopeWobble 1.5s ease-in-out infinite;
+}
+
+.gallery-card.sealed {
+  cursor: pointer;
+  border-color: rgba(255, 231, 97, 0.24);
+}
+
+.gallery-card.sealed:hover .envelope-cover {
+  background:
+    linear-gradient(135deg, rgba(255,231,97,0.28), rgba(67,243,255,0.24)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 8px, rgba(0,0,0,0.06) 8px 16px),
+    rgba(17, 6, 31, 0.78);
+}
+
+.gallery-card.sealed p {
+  color: var(--yellow);
+}
+
+@keyframes envelopeWobble {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50% { transform: rotate(3deg) scale(1.08); }
+}

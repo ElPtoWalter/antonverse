@@ -4,8 +4,41 @@ const FRIEND_TOKENS = 15;
 const STORAGE_KEYS = {
   name: 'antonverse_name',
   purchases: 'antonverse_purchases',
-  jokerUsed: 'antonverse_joker_used'
+  jokerUsed: 'antonverse_joker_used',
+  revealedImages: 'antonverse_revealed_images'
 };
+
+const radioTracks = [
+  { src: 'assets/audio/anton.mp3', title: 'Antón, Antón · Versión base' },
+  { src: 'assets/audio/anton-cumbia.mp3', title: 'Antón, Antón · Cumbia' },
+  { src: 'assets/audio/anton-cumbia-v2.mp3', title: 'Antón, Antón · Cumbia v2' },
+  { src: 'assets/audio/anton-cumbia-v3.mp3', title: 'Antón, Antón · Cumbia v3' },
+  { src: 'assets/audio/anton-electro-latino.mp3', title: 'Antón, Antón · Electro latino' },
+  { src: 'assets/audio/anton-electro-latino-v2.mp3', title: 'Antón, Antón · Electro latino v2' },
+  { src: 'assets/audio/anton-electro-latino-v3.mp3', title: 'Antón, Antón · Electro latino v3' },
+  { src: 'assets/audio/anton-pop.mp3', title: 'Antón, Antón · Pop' },
+  { src: 'assets/audio/anton-pop-v2.mp3', title: 'Antón, Antón · Pop v2' },
+  { src: 'assets/audio/anton-ranchera.mp3', title: 'Antón, Antón · Ranchera' },
+  { src: 'assets/audio/anton-ranchera-v2.mp3', title: 'Antón, Antón · Ranchera v2' },
+  { src: 'assets/audio/anton-ranchera-v3.mp3', title: 'Antón, Antón · Ranchera v3' },
+  { src: 'assets/audio/anton-ranchera-v4.mp3', title: 'Antón, Antón · Ranchera v4' },
+  { src: 'assets/audio/anton-ranchera-v5.mp3', title: 'Antón, Antón · Ranchera v5' },
+  { src: 'assets/audio/anton-ranchera-v6.mp3', title: 'Antón, Antón · Ranchera v6' },
+  { src: 'assets/audio/anton-ranchera-v7.mp3', title: 'Antón, Antón · Ranchera v7' },
+  { src: 'assets/audio/anton-ranchera-v8.mp3', title: 'Antón, Antón · Ranchera v8' },
+  { src: 'assets/audio/anton-ranchera-v9.mp3', title: 'Antón, Antón · Ranchera v9' },
+  { src: 'assets/audio/anton-copla.mp3', title: 'Antón, Antón · Copla' },
+  { src: 'assets/audio/anton-copla-v2.mp3', title: 'Antón, Antón · Copla v2' },
+  { src: 'assets/audio/anton-corrido-tumbado.mp3', title: 'Antón, Antón · Corrido tumbado' },
+  { src: 'assets/audio/anton-corrido-tumbado-v2.mp3', title: 'Antón, Antón · Corrido tumbado v2' },
+  { src: 'assets/audio/anton-bachata.mp3', title: 'Antón, Antón · Bachata' },
+  { src: 'assets/audio/anton-bachata-v2.mp3', title: 'Antón, Antón · Bachata v2' },
+  { src: 'assets/audio/anton-christian-ghospel.mp3', title: 'Antón, Antón · Christian gospel' },
+  { src: 'assets/audio/anton-christian-ghospel-v2.mp3', title: 'Antón, Antón · Christian gospel v2' },
+  { src: 'assets/audio/himno-anton.mpeg', title: 'Himno Antón · WhatsApp original' },
+  { src: 'assets/audio/whatsapp-audio-2026-07-08-at-13-21-26.mpeg', title: 'Archivo de WhatsApp · versión 1' },
+  { src: 'assets/audio/whatsapp-audio-2026-07-08-at-13-21-26-1.mpeg', title: 'Archivo de WhatsApp · versión 2' }
+];
 
 const FRIEND_NAMES = [
   'macoy',
@@ -82,8 +115,17 @@ const galleryImages = [
   { src: 'assets/images/anton_water_bottle.jpg', title: 'Antón: cata de agua táctica' },
   { src: 'assets/images/anton_dark_bar.jpg', title: 'Antón: mirada de estar viendo el abismo' },
   { src: 'assets/images/anton_mall_pose.jpg', title: 'Antón: paseo comercial con flow' },
-  { src: 'assets/images/anton_comic_buuaaaah.jpg', title: 'Antón: colapso oficial del sistema' }
+  { src: 'assets/images/anton_comic_buuaaaah.jpg', title: 'Antón: colapso oficial del sistema' },
+  { src: 'assets/images/anton_general_caballo_bandera.jpg', title: 'Antón: generalísimo del Antonverso' },
+  { src: 'assets/images/anton_su_vida_acabado.jpg', title: 'Antón: su vida se ha acabado' },
+  { src: 'assets/images/anton_gran_figure.jpg', title: 'Antón: se casa el gran figure' },
+  { src: 'assets/images/anton_minecraft_diamante.jpg', title: 'Antón: armadura de diamante ceremonial' },
+  { src: 'assets/images/anton_amigo_padre_parlita.jpg', title: 'Antón: el amigo del padre del hijo del Parlita' },
+  { src: 'assets/images/anton_conquistar_puti.jpg', title: 'Antón: a conquistar el puti' },
+  { src: 'assets/images/anton_epstein_files.jpg', title: 'Antón: archivo geopolítico clasificado' },
+  { src: 'assets/images/anton_llorando_brazo.jpg', title: 'Antón: lágrimas de despedida' }
 ];
+
 
 const challenges = [
   // Retos originales tuyos. Texto respetado tal cual.
@@ -144,21 +186,25 @@ const challenges = [
 let state = {
   name: 'Invitado misterioso',
   purchases: [],
-  jokerUsed: false
+  jokerUsed: false,
+  revealedImages: []
 };
 
 let rouletteSelection = null;
 let rouletteTimer = null;
 let toastTimer = null;
 let activeCostFilter = 'all';
+let currentTrackIndex = -1;
 
 const appShell = document.getElementById('app-shell');
 const entryScreen = document.getElementById('entry-screen');
 const enterButton = document.getElementById('enter-button');
 const bgMusic = document.getElementById('bg-music');
 const musicToggle = document.getElementById('music-toggle');
+const musicNext = document.getElementById('music-next');
 const musicMute = document.getElementById('music-mute');
 const volumeSlider = document.getElementById('volume-slider');
+const nowPlaying = document.getElementById('now-playing');
 const tokenCount = document.getElementById('token-count');
 const tokenMax = document.getElementById('token-max');
 const meterFill = document.getElementById('meter-fill');
@@ -231,6 +277,7 @@ function readStorage() {
   const savedName = localStorage.getItem(STORAGE_KEYS.name);
   const savedPurchases = JSON.parse(localStorage.getItem(STORAGE_KEYS.purchases) || '[]');
   const savedJoker = localStorage.getItem(STORAGE_KEYS.jokerUsed);
+  const savedRevealedImages = JSON.parse(localStorage.getItem(STORAGE_KEYS.revealedImages) || '[]');
 
   if (savedName && savedName.trim()) {
     state.name = savedName.trim();
@@ -241,12 +288,17 @@ function readStorage() {
   }
 
   state.jokerUsed = savedJoker === 'true';
+
+  if (Array.isArray(savedRevealedImages)) {
+    state.revealedImages = savedRevealedImages.filter(Boolean);
+  }
 }
 
 function persistState() {
   localStorage.setItem(STORAGE_KEYS.name, state.name);
   localStorage.setItem(STORAGE_KEYS.purchases, JSON.stringify(state.purchases));
   localStorage.setItem(STORAGE_KEYS.jokerUsed, String(state.jokerUsed));
+  localStorage.setItem(STORAGE_KEYS.revealedImages, JSON.stringify(state.revealedImages));
 }
 
 function getPurchasedIds() {
@@ -295,17 +347,42 @@ function updateDashboard() {
 }
 
 function renderGallery() {
-  galleryGrid.innerHTML = galleryImages.map(image => `
-    <article class="gallery-card" data-src="${image.src}" data-title="${escapeHtml(image.title)}">
-      <img src="${image.src}" alt="${escapeHtml(image.title)}" loading="lazy" />
-      <p>${escapeHtml(image.title)}</p>
-    </article>
-  `).join('');
+  const revealedSet = new Set(state.revealedImages);
+
+  galleryGrid.innerHTML = galleryImages.map((image, index) => {
+    const imageId = image.src;
+    const revealed = revealedSet.has(imageId);
+    return `
+      <article class="gallery-card ${revealed ? 'revealed' : 'sealed'}" data-src="${image.src}" data-title="${escapeHtml(image.title)}" data-index="${index}">
+        <div class="gallery-image-wrap">
+          <img src="${image.src}" alt="${escapeHtml(image.title)}" loading="lazy" />
+          <div class="envelope-cover">
+            <div class="envelope-icon">✉️</div>
+            <strong>ARCHIVO CLASIFICADO #${String(index + 1).padStart(2, '0')}</strong>
+            <span>Pincha para revelar</span>
+          </div>
+        </div>
+        <p>${revealed ? escapeHtml(image.title) : 'Sobre cerrado del Antonverso'}</p>
+      </article>
+    `;
+  }).join('');
 
   galleryGrid.querySelectorAll('.gallery-card').forEach(card => {
-    card.addEventListener('click', () => openLightbox(card.dataset.src, card.dataset.title));
+    card.addEventListener('click', () => {
+      const src = card.dataset.src;
+      const title = card.dataset.title;
+      if (!state.revealedImages.includes(src)) {
+        state.revealedImages.push(src);
+        persistState();
+        showToast('Has abierto un sobre que quizá debía permanecer cerrado.');
+        renderGallery();
+        return;
+      }
+      openLightbox(src, title);
+    });
   });
 }
+
 
 function canAccessChallenge(challenge) {
   return !challenge.friendsOnly || isFriendName(state.name);
@@ -437,6 +514,7 @@ function buyChallenge(id) {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
   showToast(`Has comprado: ${challenge.text}`);
   return true;
@@ -521,6 +599,7 @@ function renamePlayer() {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
 
   if (isFriendName(state.name)) {
@@ -537,7 +616,8 @@ function resetSession() {
   state = {
     name: 'Invitado misterioso',
     purchases: [],
-    jokerUsed: false
+    jokerUsed: false,
+    revealedImages: []
   };
   rouletteSelection = null;
 
@@ -545,6 +625,7 @@ function resetSession() {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
   showToast('Sesión reseteada. Vuelves a empezar con tokens limpios.');
 }
@@ -590,6 +671,7 @@ function useJoker() {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
   showToast(`Comodín usado. Nuevo reto: ${replacement.text}`);
 }
@@ -614,16 +696,64 @@ function copySummary() {
     .catch(() => showToast('No se pudo copiar. Hazlo a mano como en la prehistoria.'));
 }
 
+function getRandomTrackIndex(excludeIndex = -1) {
+  if (radioTracks.length <= 1) return 0;
+
+  let nextIndex = Math.floor(Math.random() * radioTracks.length);
+  let attempts = 0;
+  while (nextIndex === excludeIndex && attempts < 12) {
+    nextIndex = Math.floor(Math.random() * radioTracks.length);
+    attempts += 1;
+  }
+  return nextIndex;
+}
+
+function setRadioTrack(index, shouldPlay = false) {
+  if (!radioTracks.length) return;
+
+  currentTrackIndex = index;
+  const track = radioTracks[currentTrackIndex];
+  bgMusic.src = track.src;
+  bgMusic.load();
+  if (nowPlaying) {
+    nowPlaying.textContent = `Ahora suena: ${track.title}`;
+  }
+
+  if (shouldPlay) {
+    playRadio();
+  }
+}
+
+function playRandomTrack(shouldPlay = false) {
+  const nextIndex = getRandomTrackIndex(currentTrackIndex);
+  setRadioTrack(nextIndex, shouldPlay);
+}
+
+function playRadio() {
+  if (!bgMusic.src) {
+    playRandomTrack(false);
+  }
+
+  bgMusic.volume = Number(volumeSlider.value);
+  bgMusic.play().then(() => {
+    musicToggle.textContent = 'Pausar radio';
+  }).catch(() => {
+    musicToggle.textContent = 'Reanudar radio';
+    showToast('El navegador ha bloqueado la radio. Pulsa otra vez para reproducir.');
+  });
+}
+
+function nextRadioTrack() {
+  playRandomTrack(true);
+  showToast('Radio Antonverse FM ha cambiado de condena musical.');
+}
+
 function toggleMusic() {
   if (bgMusic.paused) {
-    bgMusic.play().then(() => {
-      musicToggle.textContent = 'Pausar himno';
-    }).catch(() => {
-      showToast('El navegador ha bloqueado el audio. Prueba a volver a pulsar.');
-    });
+    playRadio();
   } else {
     bgMusic.pause();
-    musicToggle.textContent = 'Reanudar himno';
+    musicToggle.textContent = 'Reanudar radio';
   }
 }
 
@@ -665,13 +795,7 @@ function escapeHtml(text) {
 function handleEntry() {
   entryScreen.classList.add('hidden');
   appShell.classList.remove('hidden');
-  bgMusic.volume = Number(volumeSlider.value);
-  bgMusic.play().then(() => {
-    musicToggle.textContent = 'Pausar himno';
-  }).catch(() => {
-    musicToggle.textContent = 'Reanudar himno';
-    showToast('Pulsa otra vez en reproducir si el navegador bloquea la música.');
-  });
+  playRandomTrack(true);
 
   if (state.name === 'Invitado misterioso') {
     setTimeout(renamePlayer, 280);
@@ -685,6 +809,7 @@ function hydrateUI() {
   renderGallery();
   renderChallenges();
   renderPurchases();
+  if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
 }
 
@@ -695,6 +820,8 @@ resetButton.addEventListener('click', resetSession);
 jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
+musicNext.addEventListener('click', nextRadioTrack);
+bgMusic.addEventListener('ended', nextRadioTrack);
 musicMute.addEventListener('click', toggleMute);
 rouletteSpin.addEventListener('click', () => spinRoulette(false));
 cheapSpin.addEventListener('click', () => spinRoulette(true));
