@@ -1,11 +1,12 @@
-# Antonverse v10 · Nombres clave ampliados
+# Antonverse v11 · Retos finales actualizados
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- Añadidos nuevos nombres clave para modo amigo / 15 tokens.
-- Mantiene ruleta limpia v9.
-- Mantiene radio, sobres, retos, tokens y demás lógica.
+- Reemplazada la lista de retos por la lista final enviada.
+- Añadido el reto de acento grupal:
+  3 tokens — Reto de acento grupal: todos hablan con acento 3 minutos. Quien se ría, castigo.
+- Mantiene ruleta limpia, nombres clave ampliados, radio, sobres, tokens y demás lógica.
 
 Sube a la raíz del repo:
 - index.html
