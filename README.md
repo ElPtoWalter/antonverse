@@ -1,13 +1,11 @@
-# Antonverse v9 · Ruleta limpia
+# Antonverse v10 · Nombres clave ampliados
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- Ruleta visual sin texto apelotonado dentro del círculo.
-- Segmentos con números claros.
-- Leyenda externa con el reto correspondiente a cada número.
-- Máximo 8 opciones por tirada para que se vea limpio.
-- Mantiene botones: girar, putada barata y comprar resultado.
+- Añadidos nuevos nombres clave para modo amigo / 15 tokens.
+- Mantiene ruleta limpia v9.
+- Mantiene radio, sobres, retos, tokens y demás lógica.
 
 Sube a la raíz del repo:
 - index.html
