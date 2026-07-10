@@ -87,6 +87,41 @@
         </div>
       </section>
 
+      <section class="panel secret-hunt-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ARCHIVO ULTRASECRETO</p>
+            <h2>Caza de nombres en clave</h2>
+          </div>
+          <button id="reset-secret-names-button" class="ghost-button">Resetear nombres en clave</button>
+        </div>
+
+        <div class="secret-grid">
+          <article class="secret-card">
+            <p class="card-label">NOMBRES DESCUBIERTOS</p>
+            <div class="secret-counter"><span id="secret-found-count">0</span><small>/ <span id="secret-total-count">0</span></small></div>
+            <div class="meter secret-meter">
+              <div id="secret-meter-fill" class="meter-fill"></div>
+            </div>
+            <p id="secret-progress-copy" class="muted">Todavía no se ha descubierto ningún nombre secreto.</p>
+          </article>
+
+          <article id="ultimate-secret-card" class="secret-card ultimate-secret locked">
+            <div class="lock-icon" id="ultimate-lock-icon">🔒</div>
+            <div>
+              <p class="card-label">PUTADA FINAL</p>
+              <h3 id="ultimate-secret-title">????????????????</h3>
+              <p id="ultimate-secret-copy">Candado activo. Descubrid todos los nombres en clave para revelar la putada más tocha.</p>
+            </div>
+          </article>
+        </div>
+
+        <details class="secret-details">
+          <summary>Ver nombres ya descubiertos</summary>
+          <div id="found-secret-names" class="found-secret-names"></div>
+        </details>
+      </section>
+
       <section class="panel info-panel">
         <div class="info-grid">
           <article class="info-card">
