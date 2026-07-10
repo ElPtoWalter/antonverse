@@ -673,31 +673,31 @@ function renderRouletteWheel(items = null) {
 
   const sourceItems = items || buildWheelChallenges(false);
   wheelChallenges = sourceItems.length ? sourceItems : [];
+
+  // La rueda visual se mantiene limpia: no dibuja los 80 retos encima.
+  // La relación número → reto aparece en la tabla desplegable.
   rouletteWheel.querySelectorAll('.wheel-label').forEach(label => label.remove());
 
-  if (!wheelChallenges.length) {
-    rouletteWheel.style.background = 'conic-gradient(#3b245b 0 360deg)';
-    if (rouletteLegend) rouletteLegend.innerHTML = '<p class="legend-empty">No hay retos disponibles.</p>';
-    return;
+  const casinoNumbers = 37;
+  const colors = ['#0b0b0d', '#cf1020', '#159447', '#f9d94a'];
+  const segmentAngle = 360 / casinoNumbers;
+  const gradientParts = [];
+
+  for (let index = 0; index < casinoNumbers; index += 1) {
+    const start = index * segmentAngle;
+    const end = (index + 1) * segmentAngle;
+    gradientParts.push(`${colors[index % colors.length]} ${start}deg ${end}deg`);
   }
-
-  const colors = ['#f9d94a', '#cf1020', '#101820', '#159447', '#ffffff', '#e86be8', '#2c7cff', '#ff7b00'];
-  wheelSegmentAngle = 360 / wheelChallenges.length;
-
-  const gradientParts = wheelChallenges.map((item, index) => {
-    const start = index * wheelSegmentAngle;
-    const end = (index + 1) * wheelSegmentAngle;
-    return `${colors[index % colors.length]} ${start}deg ${end}deg`;
-  });
 
   rouletteWheel.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
 
-  wheelChallenges.forEach((challenge, index) => {
+  // Solo mostramos números cada pocas casillas para que no quede sucio.
+  [0, 3, 7, 11, 15, 19, 23, 27, 31, 35].forEach((num, visualIndex) => {
     const label = document.createElement('div');
-    label.className = 'wheel-label wheel-number';
-    const angle = index * wheelSegmentAngle + wheelSegmentAngle / 2;
+    label.className = 'wheel-label wheel-number clean-wheel-number';
+    const angle = num * segmentAngle + segmentAngle / 2;
     label.style.transform = `rotate(${angle}deg)`;
-    label.innerHTML = `<span>${index + 1}</span>`;
+    label.innerHTML = `<span>${num}</span>`;
     rouletteWheel.appendChild(label);
   });
 
@@ -707,13 +707,18 @@ function renderRouletteWheel(items = null) {
 function renderRouletteLegend(items) {
   if (!rouletteLegend) return;
 
+  if (!items || !items.length) {
+    rouletteLegend.innerHTML = '<p class="legend-empty">No hay retos disponibles.</p>';
+    return;
+  }
+
   rouletteLegend.innerHTML = items.map((challenge, index) => {
     const canAfford = getCurrentTokens() >= challenge.cost;
     return `
       <div class="legend-item ${canAfford ? '' : 'legend-locked'}">
         <span class="legend-number">${index + 1}</span>
         <div>
-          <strong>${escapeHtml(shortRouletteLabel(challenge.text, 58))}</strong>
+          <strong>${escapeHtml(shortRouletteLabel(challenge.text, 72))}</strong>
           <small>${challenge.cost} token${challenge.cost > 1 ? 's' : ''} · ${escapeHtml(challenge.level)}${canAfford ? '' : ' · sin saldo'}</small>
         </div>
       </div>
@@ -736,15 +741,18 @@ function spinRoulette(cheap = false) {
   if (cheapSpin) cheapSpin.disabled = true;
   rouletteResult.classList.remove('final-result');
   rouletteResult.classList.add('spinning');
-  rouletteResult.textContent = cheap ? 'Girando ruleta barata...' : 'La bolita está girando...';
+  rouletteResult.innerHTML = `
+    <span class="result-kicker">Girando</span>
+    <strong>La bolita está decidiendo...</strong>
+    <small>El destino de Antón está en trámite.</small>
+  `;
 
   const selectedIndex = Math.floor(Math.random() * eligible.length);
   rouletteSelection = eligible[selectedIndex];
 
-  const selectedCenter = selectedIndex * wheelSegmentAngle + wheelSegmentAngle / 2;
   const fullSpins = 6 + Math.floor(Math.random() * 3);
-  const targetRotation = fullSpins * 360 + (360 - selectedCenter);
-  wheelRotation += targetRotation;
+  const randomOffset = Math.floor(Math.random() * 360);
+  wheelRotation += fullSpins * 360 + randomOffset;
 
   if (rouletteWheel) {
     rouletteWheel.classList.add('spinning');
@@ -760,7 +768,8 @@ function spinRoulette(cheap = false) {
   window.setTimeout(() => {
     const canAfford = getCurrentTokens() >= rouletteSelection.cost;
     rouletteResult.innerHTML = `
-      <strong>Resultado ${selectedIndex + 1}: ${escapeHtml(rouletteSelection.text)}</strong>
+      <span class="result-kicker">Resultado ${selectedIndex + 1}</span>
+      <strong>${escapeHtml(rouletteSelection.text)}</strong>
       <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}${canAfford ? '' : ' · no tienes saldo suficiente'}</small>
     `;
     rouletteResult.classList.remove('spinning');
@@ -781,7 +790,11 @@ function updateRouletteUI() {
   rouletteResult.classList.remove('spinning');
 
   if (!rouletteSelection) {
-    rouletteResult.textContent = 'Pulsa para girar la desgracia';
+    rouletteResult.innerHTML = `
+      <span class="result-kicker">Esperando tirada</span>
+      <strong>Pulsa para girar la desgracia</strong>
+      <small>Puede salir cualquier reto desbloqueado.</small>
+    `;
     rouletteBuy.disabled = true;
     return;
   }
@@ -793,7 +806,11 @@ function updateRouletteUI() {
 
   if (!unlocked) {
     rouletteSelection = null;
-    rouletteResult.textContent = 'Pulsa para girar la desgracia';
+    rouletteResult.innerHTML = `
+      <span class="result-kicker">Esperando tirada</span>
+      <strong>Pulsa para girar la desgracia</strong>
+      <small>Puede salir cualquier reto desbloqueado.</small>
+    `;
   }
 }
 

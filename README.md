@@ -1,21 +1,14 @@
-# Antonverse v12 · Ruleta casino + retos de grupo
+# Antonverse v13 · Casino limpio
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- Quitados de la radio los audios tipo "Archivo de WhatsApp".
-- Ruleta estilo casino con bolita.
-- La ruleta puede caer en cualquier reto desbloqueado por nombre, aunque no tengas tokens suficientes.
-- Si no tienes tokens suficientes, no puedes comprar el resultado, pero puedes seguir tirando.
-- Cada reto está asignado a un número en la leyenda de la ruleta.
-- Añadidos juegos:
-  - Juego de las sillas — 1 token
-  - Balón prisionero — 2 tokens
-  - Juego de la cuerda — 3 tokens
-  - Juego del pañuelo — 4 tokens
-- Unificados los conceptos de castigo:
-  - Individual: beber, flexiones, sentadillas, pandereta, colleja simbólica o tirón de orejas.
-  - Grupal: castigo conjunto para equipo/perdedores.
+- La ruleta ya no muestra 80 números/textos encima.
+- Ruleta visual limpia estilo casino.
+- Bolita girando.
+- Resultado grande y claro en una tarjeta.
+- Tabla número → reto oculta en desplegable.
+- Mantiene la lógica de v12: audios de WhatsApp eliminados, juegos de grupo, castigo unificado y compras por tokens.
 
 Sube a la raíz del repo:
 - index.html
