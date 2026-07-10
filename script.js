@@ -786,19 +786,11 @@ function spinRoulette(cheap = false) {
   rouletteResult.classList.add('spinning');
   rouletteResult.textContent = cheap ? 'Cargando putadas baratas nuevas...' : 'Cargando putadas nuevas...';
 
-  const selectedIndex = Math.floor(Math.random() * wheelSet.length);
-  rouletteSelection = wheelSet[selectedIndex];
-
-  const selectedCenter = selectedIndex * wheelSegmentAngle + wheelSegmentAngle / 2;
+  // V17: primero gira la ruleta y DESPUÉS se calcula qué segmento ha quedado bajo la flecha.
+  // Así el resultado no puede descuadrarse visualmente.
   const fullSpins = 6 + Math.floor(Math.random() * 3);
-
-  // La ruleta debe terminar EXACTAMENTE con el triángulo elegido bajo la flecha.
-  // Como wheelRotation es acumulativo entre tiradas, calculamos el delta real
-  // a partir de la orientación actual para que nunca se descuadre.
-  const desiredAbsolute = (360 - selectedCenter) % 360;
-  const currentAbsolute = ((wheelRotation % 360) + 360) % 360;
-  const deltaToTarget = (desiredAbsolute - currentAbsolute + 360) % 360;
-  const targetRotation = fullSpins * 360 + deltaToTarget;
+  const randomLanding = Math.random() * 360;
+  const targetRotation = fullSpins * 360 + randomLanding;
   wheelRotation += targetRotation;
 
   if (rouletteWheel) {
@@ -807,15 +799,27 @@ function spinRoulette(cheap = false) {
   }
 
   window.setTimeout(() => {
+    const normalizedRotation = ((wheelRotation % 360) + 360) % 360;
+
+    // La flecha está arriba. Convertimos la rotación final en el ángulo local de la rueda
+    // que ha quedado justo debajo de la flecha.
+    const angleUnderPointer = (360 - normalizedRotation + 0.0001) % 360;
+    const landedIndex = Math.min(
+      wheelSet.length - 1,
+      Math.floor(angleUnderPointer / wheelSegmentAngle)
+    );
+
+    rouletteSelection = wheelSet[landedIndex];
     const canAfford = getCurrentTokens() >= rouletteSelection.cost;
+
     rouletteResult.innerHTML = `
-      <strong>Resultado ${selectedIndex + 1}: ${escapeHtml(rouletteSelection.text)}</strong>
+      <strong>Resultado ${landedIndex + 1}: ${escapeHtml(rouletteSelection.text)}</strong>
       <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}${canAfford ? '' : ' · no tienes saldo suficiente'}</small>
     `;
     rouletteResult.classList.remove('spinning');
     rouletteResult.classList.add('final-result');
     if (rouletteWheel) rouletteWheel.classList.remove('spinning');
-    setWinningRouletteHighlight(selectedIndex);
+    setWinningRouletteHighlight(landedIndex);
     rouletteSpin.disabled = false;
     if (cheapSpin) cheapSpin.disabled = false;
     rouletteBuy.disabled = !canAfford;
