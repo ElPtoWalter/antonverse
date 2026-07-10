@@ -1,21 +1,20 @@
-# Antonverse v18 · nombres secretos + candado final
+# Antonverse v19 · panel independiente de nombres en clave
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- Añadido contador de nombres en clave descubiertos.
-- Cada nombre en clave descubierto se guarda y no vuelve a sumar al contador.
-- Botón para resetear la lista de nombres en clave descubiertos.
-- Candado ultrasecreto final.
-- Si se descubren todos los nombres en clave, se revela la putada final:
+- El contador de nombres en clave ya NO depende del nombre con el que entras a la web.
+- Añadido apartado propio: "Probar nombre en clave".
+- Ahí se introducen los nombres de amigos y se van sumando al contador.
+- Si se repite un nombre ya descubierto, no suma otra vez.
+- El botón de reset limpia la lista de nombres descubiertos y vuelve a cerrar el candado.
+- Entrar con un nombre de amigo sigue sirviendo para tener modo amigo/tokens, pero no suma al contador.
+- Al descubrir todos los nombres se desbloquea el candado final:
   "Contratar a Steisy".
-- La putada final también aparece en la tienda/ruleta cuando el candado está abierto y entras con un nombre en clave.
-- Mantiene la ruleta de v17 y el resto de mejoras.
 
 Importante:
-- Esta versión guarda el progreso en el navegador/móvil usando localStorage.
-- En GitHub Pages puro no hay base de datos compartida entre todos los móviles.
-- Para contador global real entre todos los invitados haría falta Firebase, Supabase o similar.
+- El progreso se guarda en localStorage del dispositivo.
+- En GitHub Pages puro no hay progreso global entre móviles. Para progreso global real haría falta Firebase/Supabase.
 
 Sube a la raíz del repo:
 - index.html
