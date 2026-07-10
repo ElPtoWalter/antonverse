@@ -236,39 +236,41 @@ const challenges = [
   { id: "r-desfile-miss", text: "Que desfile como si estuviera en la final de Miss Universo", cost: 1, level: "Suave", source: "extra" },
   { id: "r-audio-cuki", text: "Que grabe un audio diciendo “Ay mi cuuuuuuuuuuuki”", cost: 1, level: "Suave", source: "extra" },
   { id: "r-haz-colada", text: "Haz una colada", cost: 1, level: "Suave", source: "normal" },
-  { id: "r-10-sentadillas-simple", text: "10 sentadillas", cost: 1, level: "Físico", source: "normal" },
   { id: "r-5-flexiones", text: "5 flexiones", cost: 1, level: "Físico", source: "normal" },
   { id: "r-plancha-20", text: "20 segundos de plancha", cost: 1, level: "Físico", source: "normal" },
   { id: "r-vuelta-corriendo", text: "1 vuelta corriendo alrededor del grupo", cost: 1, level: "Físico", source: "normal" },
   { id: "r-10-abdominales", text: "10 abdominales", cost: 1, level: "Físico", source: "normal" },
   { id: "r-sentadilla-20", text: "Mantener postura de sentadilla 20 segundos", cost: 1, level: "Físico", source: "normal" },
   { id: "r-pose-culturista", text: "Hacer una pose de culturista durante 15 segundos", cost: 1, level: "Físico", source: "normal" },
+  { id: "r-juego-sillas", text: "Jugar al juego de las sillas. Castigo grupal para perdedores", cost: 1, level: "Grupo", source: "normal" },
   { id: "r-abrazo-desconocido", text: "Que de un abrazo al siguiente desconocido", cost: 2, level: "Medio", source: "normal" },
   { id: "r-baila-cancion-anton", text: "Baila y canta la canción de Antón, antón", cost: 2, level: "Medio", source: "normal" },
   { id: "r-1-chupito", text: "1 chupito", cost: 2, level: "Medio", source: "normal" },
   { id: "r-lanza-edge", text: "Recibe 1 lanza de edge", cost: 2, level: "Medio", source: "normal" },
   { id: "r-bano-mujeres", text: "Entra a mear al baño de mujeres", cost: 2, level: "Medio", source: "extra" },
   { id: "r-vaper-caqui", text: "1 calada al vaper del caqui", cost: 2, level: "Medio", source: "normal" },
-  { id: "r-duelo-sentadillas", text: "Duelo de sentadillas contra el comprador", cost: 2, level: "Grupo", source: "normal" },
+  { id: "r-duelo-sentadillas", text: "Duelo de sentadillas contra el comprador. Castigo para el perdedor", cost: 2, level: "Grupo", source: "normal" },
   { id: "r-plancha-bitches-cantada", text: "Plancha mientras le cantan Bitches Bitches", cost: 2, level: "Físico", source: "normal" },
   { id: "r-10-flexiones", text: "10 flexiones", cost: 2, level: "Físico", source: "normal" },
   { id: "r-20-sentadillas", text: "20 sentadillas", cost: 2, level: "Físico", source: "normal" },
   { id: "r-plancha-30", text: "30 segundos de plancha", cost: 2, level: "Físico", source: "normal" },
-  { id: "r-carrera-ida-vuelta", text: "Carrera ida y vuelta hasta un punto cercano (todos los perdedores beben o castigo)", cost: 2, level: "Grupo", source: "normal" },
+  { id: "r-carrera-ida-vuelta", text: "Carrera ida y vuelta hasta un punto cercano. Castigo grupal para perdedores", cost: 2, level: "Grupo", source: "normal" },
   { id: "r-gusano", text: "Hacer el gusano o intentarlo", cost: 2, level: "Físico", source: "normal" },
   { id: "r-5-burpees", text: "Hacer 5 burpees", cost: 2, level: "Físico", source: "normal" },
   { id: "r-pato-barra", text: "andar como pato hasta la barra", cost: 2, level: "Físico", source: "normal" },
+  { id: "r-balon-prisionero", text: "Balón prisionero. Castigo grupal para el equipo perdedor", cost: 2, level: "Grupo", source: "normal" },
   { id: "r-collejote", text: "Collejote por parte del comprador o +1 al bote de collejas", cost: 3, level: "Potente", source: "normal" },
   { id: "r-rueda-ceuta", text: "Rueda como aprendiste en la mili en Ceuta y entona un alehop", cost: 3, level: "Potente", source: "normal" },
-  { id: "r-acento-5-min", text: "habla con un acento 5 minutos (si no lo cumple chupito)", cost: 3, level: "Potente", source: "normal" },
+  { id: "r-acento-5-min", text: "habla con un acento 5 minutos. Si no lo cumple, castigo", cost: 3, level: "Potente", source: "normal" },
   { id: "r-vals-amigo", text: "Que baile 30 segundos con uno de sus amigos como si fuese el vals nupcial", cost: 3, level: "Grupo", source: "extra" },
   { id: "r-rueda-prensa", text: "Que dos amigos le hagan una rueda de prensa y él responda totalmente serio", cost: 3, level: "Grupo", source: "extra" },
   { id: "r-pack-verguenza-express", text: "Pack vergüenza express: 3 retos pequeños seguidos elegidos por el comité", cost: 3, level: "Pack", source: "pack" },
   { id: "r-rueda-militar-ceuta-alehop", text: "rueda militar de Ceuta y alehop", cost: 3, level: "Físico", source: "normal" },
   { id: "r-carretilla-amigo", text: "carrera de carretilla con un amigo", cost: 3, level: "Grupo", source: "normal" },
   { id: "r-boxeador-entrada", text: "Hacer una entrada de boxeador con sombra, saltitos y pose final", cost: 3, level: "Físico", source: "normal" },
-  { id: "r-no-letra", text: "No se dice durante 5 minutos la letra indicada por el comprador (el que pierde bebe o castigo)", cost: 3, level: "Grupo", source: "normal" },
+  { id: "r-no-letra", text: "No se dice durante 5 minutos la letra indicada por el comprador. Quien pierda, castigo", cost: 3, level: "Grupo", source: "normal" },
   { id: "r-acento-grupal", text: "Reto de acento grupal: todos hablan con acento 3 minutos. Quien se ría, castigo", cost: 3, level: "Grupo", source: "normal" },
+  { id: "r-juego-cuerda", text: "Jugar a la cuerda. Castigo grupal para el equipo perdedor", cost: 3, level: "Grupo", source: "normal" },
   { id: "r-flexiones-cuenta-mal", text: "5 flexiones mientras el grupo cuenta fatal a propósito", cost: 4, level: "Potente", source: "extra" },
   { id: "r-numero-mamasita", text: "Consigue el numero móvil de una mamasita", cost: 4, level: "Potente", source: "extra" },
   { id: "r-toalla-desconocido", text: "Tumbate en la toalla de algún desconocido", cost: 4, level: "Potente", source: "normal" },
@@ -277,15 +279,16 @@ const challenges = [
   { id: "r-modo-version-anton", text: "Que el comprador elija una versión de Antón y se meta en el personaje durante 2 minutos", cost: 4, level: "Potente", source: "extra" },
   { id: "r-pasillito", text: "Pasillito", cost: 4, level: "Grupo", source: "normal" },
   { id: "r-circuito-militar", text: "circuito militar", cost: 4, level: "Físico", source: "normal" },
+  { id: "r-juego-panuelo", text: "Jugar al pañuelo. Castigo grupal para el equipo perdedor", cost: 4, level: "Grupo", source: "normal" },
   { id: "r-1-hidalgo", text: "1 hidalgo", cost: 5, level: "Fuerte", source: "normal" },
   { id: "r-3-panderetas", text: "3 panderetas seguidas", cost: 5, level: "Fuerte", source: "extra" },
   { id: "r-caladita-cigarro", text: "1 caladita al cigarro", cost: 5, level: "Fuerte", source: "normal" },
   { id: "r-discurso-silla", text: "Que se suba a una silla y dé un discurso oficial despidiéndose de la soltería", cost: 5, level: "Fuerte", source: "extra" },
   { id: "r-pack-noche-destruida", text: "Pack noche destruida: 1 reto potente + 2 retos suaves elegidos por el comité", cost: 5, level: "Pack", source: "pack" },
-  { id: "r-foto-color", text: "Sacarte foto con alguien con la camiseta de un determinado color( 3 minutos y si no castigo(chupito, flexiones, colleja, pandereta, sentadilla)", cost: 5, level: "Grupo", source: "normal" },
-  { id: "r-comer-beber-letra", text: "debe comer o beber algo que comience con una letra del abecedario (si no castigo(chupito, flexiones, colleja, pandereta, sentadilla))", cost: 5, level: "Grupo", source: "normal" },
+  { id: "r-foto-color", text: "Sacarte foto con alguien con la camiseta de un determinado color en 3 minutos. Si no, castigo", cost: 5, level: "Grupo", source: "normal" },
+  { id: "r-comer-beber-letra", text: "Debe comer o beber algo que comience con una letra del abecedario. Si no, castigo", cost: 5, level: "Grupo", source: "normal" },
   { id: "r-plancha-bitches", text: "plancha mientras suena Bitches Bitches", cost: 5, level: "Físico", source: "normal" },
-  { id: "r-caballitos", text: "Carrera de caballitos (todos los perdedores beben o castigo)", cost: 5, level: "Grupo", source: "normal" },
+  { id: "r-caballitos", text: "Carrera de caballitos. Castigo grupal para perdedores", cost: 5, level: "Grupo", source: "normal" },
   { id: "r-declaracion-amor", text: "Que haga una declaración de amor a su futura mujer (desconocida que se encuentre)", cost: 10, level: "Putada gorda", source: "normal" },
   { id: "r-brindis-hidalgo-todos", text: "Brindis +  hidalgo por parte de todos", cost: 10, level: "Grupo", source: "extra" },
   { id: "r-ropa-interior-encima", text: "Se debe poner la ropa interior por encima de la ropa", cost: 10, level: "Putada gorda", source: "normal" },
@@ -359,6 +362,7 @@ const cheapSpin = document.getElementById('cheap-spin');
 const rouletteBuy = document.getElementById('roulette-buy');
 const rouletteResult = document.getElementById('roulette-result');
 const rouletteWheel = document.getElementById('roulette-wheel');
+const casinoBall = document.getElementById('casino-ball');
 const costFilterButtons = Array.from(document.querySelectorAll('.cost-filter-button'));
 const rouletteLegend = document.getElementById('roulette-legend');
 
@@ -651,12 +655,7 @@ function buyChallenge(id) {
 
 function buildWheelChallenges(cheap = false) {
   const eligible = getEligibleChallenges().filter(challenge => !cheap || challenge.cost <= 2);
-  // En móvil una ruleta con 25 trozos se vuelve ilegible. Metemos un máximo de 12
-  // candidatos, pero siempre elegidos de entre los retos que puedes pagar.
-  if (eligible.length <= 12) return eligible;
-
-  const shuffled = [...eligible].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 12);
+  return eligible;
 }
 
 function shortRouletteLabel(text, maxLength = 72) {
@@ -678,10 +677,11 @@ function renderRouletteWheel(items = null) {
 
   if (!wheelChallenges.length) {
     rouletteWheel.style.background = 'conic-gradient(#3b245b 0 360deg)';
+    if (rouletteLegend) rouletteLegend.innerHTML = '<p class="legend-empty">No hay retos disponibles.</p>';
     return;
   }
 
-  const colors = ['#ff4dc4', '#ffe761', '#43f3ff', '#ff7b00', '#61ff9f', '#8d6bff'];
+  const colors = ['#f9d94a', '#cf1020', '#101820', '#159447', '#ffffff', '#e86be8', '#2c7cff', '#ff7b00'];
   wheelSegmentAngle = 360 / wheelChallenges.length;
 
   const gradientParts = wheelChallenges.map((item, index) => {
@@ -707,20 +707,18 @@ function renderRouletteWheel(items = null) {
 function renderRouletteLegend(items) {
   if (!rouletteLegend) return;
 
-  if (!items || !items.length) {
-    rouletteLegend.innerHTML = '<p class="legend-empty">No hay retos disponibles para tus tokens.</p>';
-    return;
-  }
-
-  rouletteLegend.innerHTML = items.map((challenge, index) => `
-    <div class="legend-item">
-      <span class="legend-number">${index + 1}</span>
-      <div>
-        <strong>${escapeHtml(shortRouletteLabel(challenge.text, 58))}</strong>
-        <small>${challenge.cost} token${challenge.cost > 1 ? 's' : ''} · ${escapeHtml(challenge.level)}</small>
+  rouletteLegend.innerHTML = items.map((challenge, index) => {
+    const canAfford = getCurrentTokens() >= challenge.cost;
+    return `
+      <div class="legend-item ${canAfford ? '' : 'legend-locked'}">
+        <span class="legend-number">${index + 1}</span>
+        <div>
+          <strong>${escapeHtml(shortRouletteLabel(challenge.text, 58))}</strong>
+          <small>${challenge.cost} token${challenge.cost > 1 ? 's' : ''} · ${escapeHtml(challenge.level)}${canAfford ? '' : ' · sin saldo'}</small>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function spinRoulette(cheap = false) {
@@ -728,24 +726,23 @@ function spinRoulette(cheap = false) {
   if (!eligible.length) {
     rouletteSelection = null;
     updateRouletteUI();
-    showToast(cheap ? 'No hay putadas baratas que puedas pagar ahora mismo.' : 'La ruleta no encuentra ninguna putada que puedas pagar ahora mismo.');
+    showToast(cheap ? 'No hay putadas baratas disponibles ahora mismo.' : 'La ruleta no encuentra ninguna putada disponible ahora mismo.');
     return;
   }
 
   renderRouletteWheel(eligible);
   rouletteBuy.disabled = true;
   rouletteSpin.disabled = true;
-  cheapSpin.disabled = true;
+  if (cheapSpin) cheapSpin.disabled = true;
   rouletteResult.classList.remove('final-result');
   rouletteResult.classList.add('spinning');
-  rouletteResult.textContent = cheap ? 'Girando ruleta barata...' : 'Girando la ruleta del destino...';
+  rouletteResult.textContent = cheap ? 'Girando ruleta barata...' : 'La bolita está girando...';
 
   const selectedIndex = Math.floor(Math.random() * eligible.length);
   rouletteSelection = eligible[selectedIndex];
 
-  // La flecha está arriba. El centro del segmento seleccionado debe acabar arriba.
   const selectedCenter = selectedIndex * wheelSegmentAngle + wheelSegmentAngle / 2;
-  const fullSpins = 5 + Math.floor(Math.random() * 3);
+  const fullSpins = 6 + Math.floor(Math.random() * 3);
   const targetRotation = fullSpins * 360 + (360 - selectedCenter);
   wheelRotation += targetRotation;
 
@@ -754,43 +751,49 @@ function spinRoulette(cheap = false) {
     rouletteWheel.style.transform = `rotate(${wheelRotation}deg)`;
   }
 
-  clearTimeout(rouletteTimer);
-  rouletteTimer = setTimeout(() => {
+  if (casinoBall) {
+    casinoBall.classList.remove('ball-spinning');
+    void casinoBall.offsetWidth;
+    casinoBall.classList.add('ball-spinning');
+  }
+
+  window.setTimeout(() => {
+    const canAfford = getCurrentTokens() >= rouletteSelection.cost;
     rouletteResult.innerHTML = `
-      <strong>${escapeHtml(rouletteSelection.text)}</strong>
-      <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}</small>
+      <strong>Resultado ${selectedIndex + 1}: ${escapeHtml(rouletteSelection.text)}</strong>
+      <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}${canAfford ? '' : ' · no tienes saldo suficiente'}</small>
     `;
     rouletteResult.classList.remove('spinning');
     rouletteResult.classList.add('final-result');
     if (rouletteWheel) rouletteWheel.classList.remove('spinning');
+    if (casinoBall) casinoBall.classList.remove('ball-spinning');
     rouletteSpin.disabled = false;
-    cheapSpin.disabled = false;
-    rouletteBuy.disabled = false;
-    showToast(cheap ? 'La ruleta barata ha sentenciado.' : 'La ruleta real ha dictado sentencia.');
-  }, 5050);
+    if (cheapSpin) cheapSpin.disabled = false;
+    rouletteBuy.disabled = !canAfford;
+    showToast(canAfford ? 'La ruleta ha dictado sentencia.' : 'Ha caído una putada cara. No tienes tokens suficientes.');
+  }, 5000);
 }
 
 function updateRouletteUI() {
-  clearTimeout(rouletteTimer);
-  if (rouletteSpin) rouletteSpin.disabled = false;
+  clearInterval(rouletteTimer);
+  rouletteSpin.disabled = false;
   if (cheapSpin) cheapSpin.disabled = false;
   rouletteResult.classList.remove('spinning');
-  renderRouletteWheel();
 
   if (!rouletteSelection) {
-    rouletteResult.classList.remove('final-result');
-    rouletteResult.textContent = 'Pulsa para girar la ruleta de putadas';
+    rouletteResult.textContent = 'Pulsa para girar la desgracia';
     rouletteBuy.disabled = true;
     return;
   }
 
   const selected = challenges.find(item => item.id === rouletteSelection.id);
-  const canStillBuy = selected && getEligibleChallenges().some(item => item.id === selected.id);
-  rouletteBuy.disabled = !canStillBuy;
-  if (!canStillBuy) {
+  const unlocked = selected && getEligibleChallenges().some(item => item.id === selected.id);
+  const canAfford = selected && getCurrentTokens() >= selected.cost;
+  rouletteBuy.disabled = !(unlocked && canAfford);
+
+  if (!unlocked) {
     rouletteSelection = null;
-    rouletteResult.classList.remove('final-result');
-    rouletteResult.textContent = 'Pulsa para girar la ruleta de putadas';
+    rouletteResult.textContent = 'Pulsa para girar la desgracia';
   }
 }
 
