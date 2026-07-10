@@ -1361,190 +1361,79 @@ blockquote {
 }
 
 
-/* ===== Antonverse v13: casino limpio ===== */
-.casino-clean-layout {
+/* ===== Antonverse v14: vuelta a ruleta anterior + retos random por tirada ===== */
+.random-wheel-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 390px) minmax(280px, 1fr);
+  grid-template-columns: minmax(250px, 340px) minmax(250px, 1fr);
   align-items: center;
-  gap: 1.35rem;
+  gap: 1.15rem;
   width: 100%;
 }
 
-.casino-clean-left {
-  display: grid;
-  justify-items: center;
-  gap: 0.55rem;
+.random-wheel {
+  border: 10px solid rgba(255,255,255,0.92);
+  outline: 6px solid rgba(255,77,196,0.55);
+  box-shadow:
+    inset 0 0 0 8px rgba(0,0,0,0.12),
+    0 20px 34px rgba(0,0,0,0.38);
 }
 
-.casino-wheel-wrap {
-  position: relative;
-  width: min(360px, 76vw);
-  aspect-ratio: 1;
+.random-wheel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.12) 0 18%, transparent 19% 52%, rgba(0,0,0,0.18) 53% 100%),
+    repeating-conic-gradient(from 0deg, rgba(255,255,255,0.34) 0 1deg, transparent 1deg 36deg);
+  pointer-events: none;
+}
+
+.wheel-pointer {
+  display: block !important;
+}
+
+.wheel-number span {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin-left: 62%;
+  transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
-  filter: drop-shadow(0 22px 34px rgba(0,0,0,0.46));
-}
-
-.clean-wheel {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 14px solid #f7df83;
-  outline: 8px solid rgba(0,0,0,0.38);
-  overflow: hidden;
-  box-shadow:
-    inset 0 0 0 10px rgba(255,255,255,0.12),
-    inset 0 0 0 32px rgba(0,0,0,0.18),
-    0 0 0 8px rgba(255,255,255,0.18);
-}
-
-.clean-wheel::before {
-  content: '';
-  position: absolute;
-  inset: 13%;
-  border-radius: 50%;
-  border: 7px solid rgba(255,255,255,0.62);
-  box-shadow:
-    inset 0 0 0 12px rgba(0,0,0,0.22),
-    0 0 0 3px rgba(0,0,0,0.22);
-  pointer-events: none;
-}
-
-.clean-wheel::after {
-  content: '';
-  position: absolute;
-  inset: 30%;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(255,231,97,0.36) 0 16%, rgba(25,7,42,0.9) 17% 100%);
-  border: 5px solid rgba(255,231,97,0.82);
-  pointer-events: none;
-}
-
-.clean-ball {
-  width: 20px;
-  height: 20px;
-  z-index: 10;
-  transform: rotate(0deg) translateY(-150px);
-}
-
-.clean-ball.ball-spinning {
-  animation: cleanBallSpin 5s cubic-bezier(0.08, 0.76, 0.12, 1) forwards;
-}
-
-@keyframes cleanBallSpin {
-  0% { transform: rotate(0deg) translateY(-150px) scale(1); }
-  54% { transform: rotate(1720deg) translateY(-150px) scale(1); }
-  78% { transform: rotate(2360deg) translateY(-132px) scale(0.96); }
-  100% { transform: rotate(2920deg) translateY(-116px) scale(0.92); }
-}
-
-.clean-wheel-number span {
-  width: 28px;
-  height: 28px;
-  margin-left: 70%;
-  background: rgba(255,255,255,0.92);
-  color: #15101d;
-  border: 2px solid rgba(0,0,0,0.35);
-  font-size: 0.9rem;
-}
-
-.casino-hint {
-  margin: 0;
-  color: var(--muted);
-  font-weight: 800;
-  text-align: center;
-}
-
-.casino-clean-right {
-  display: grid;
-  gap: 0.9rem;
-  align-content: center;
-}
-
-.clean-result {
-  min-height: 145px;
-  display: grid;
-  align-content: center;
-  gap: 0.4rem;
-  text-align: left;
-  border: 2px solid rgba(255,231,97,0.72);
-  background:
-    linear-gradient(135deg, rgba(255,231,97,0.16), rgba(255,77,196,0.11)),
-    rgba(0,0,0,0.18);
-}
-
-.result-kicker {
-  color: var(--cyan);
-  font-size: 0.82rem;
-  font-weight: 1000;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.clean-result strong {
+  border-radius: 999px;
+  background: rgba(17, 6, 31, 0.90);
   color: white;
-  font-size: clamp(1.1rem, 2vw, 1.65rem);
-  line-height: 1.15;
+  border: 2px solid rgba(255,255,255,0.88);
+  font-family: 'Bangers', 'Comic Sans MS', cursive;
+  font-size: 1.08rem;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.28);
 }
 
-.clean-result small {
-  color: var(--yellow);
-  font-weight: 900;
+.roulette-legend {
+  max-height: 330px;
 }
 
-.roulette-table-details {
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.055);
-  overflow: hidden;
-}
-
-.roulette-table-details summary {
-  cursor: pointer;
-  padding: 0.85rem 1rem;
-  color: var(--yellow);
-  font-weight: 1000;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.clean-legend {
-  max-height: 290px;
-  overflow: auto;
-  padding: 0 0.8rem 0.8rem;
-}
-
-.clean-legend .legend-item {
-  grid-template-columns: 38px 1fr;
-}
-
-.clean-legend .legend-number {
-  background: linear-gradient(135deg, #f7df83, #ff6f61);
-  color: #160426;
+.legend-locked {
+  opacity: 0.62;
+  border-style: dashed;
 }
 
 @media (max-width: 860px) {
-  .casino-clean-layout {
+  .random-wheel-layout {
     grid-template-columns: 1fr;
   }
+}
 
-  .casino-wheel-wrap {
-    width: min(310px, 82vw);
+@media (max-width: 520px) {
+  .wheel-stage {
+    width: min(280px, 82vw);
   }
 
-  .clean-ball {
-    transform: rotate(0deg) translateY(-128px);
-  }
-
-  @keyframes cleanBallSpin {
-    0% { transform: rotate(0deg) translateY(-128px) scale(1); }
-    54% { transform: rotate(1720deg) translateY(-128px) scale(1); }
-    78% { transform: rotate(2360deg) translateY(-112px) scale(0.96); }
-    100% { transform: rotate(2920deg) translateY(-98px) scale(0.92); }
-  }
-
-  .clean-result {
-    text-align: center;
+  .wheel-number span {
+    width: 28px;
+    height: 28px;
+    font-size: 0.98rem;
+    margin-left: 61%;
   }
 }

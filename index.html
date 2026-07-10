@@ -138,33 +138,22 @@
           <div class="roulette-copy">
             <p class="eyebrow">RULETA DE PUTADAS</p>
             <h3>¿No sabes qué comprar? Que decida el destino.</h3>
-            <p>Ruleta casino limpia: gira una bolita, sale un número y ese número revela el reto. La lista completa queda oculta para no reventar la pantalla.</p>
+            <p>Ruleta de putadas: en cada tirada se cargan retos aleatorios nuevos. Si cae uno que no puedes pagar, no podrás comprarlo, pero puedes volver a girar.</p>
           </div>
           <div class="roulette-machine roulette-machine-real">
-            <div class="casino-clean-layout">
-              <div class="casino-clean-left">
-                <div class="casino-wheel-wrap" aria-label="Ruleta casino de putadas">
-                  <div id="casino-ball" class="casino-ball clean-ball"></div>
-                  <div id="roulette-wheel" class="roulette-wheel casino-wheel clean-wheel">
-                    <div class="wheel-center">ANTÓN</div>
-                  </div>
+            <div class="wheel-layout random-wheel-layout">
+              <div class="wheel-stage" aria-label="Ruleta visual de putadas">
+                <div class="wheel-pointer">▼</div>
+                <div id="roulette-wheel" class="roulette-wheel random-wheel">
+                  <div class="wheel-center">ANTÓN</div>
                 </div>
-                <p class="casino-hint">La bolita decide. El comité ejecuta.</p>
               </div>
-
-              <div class="casino-clean-right">
-                <div id="roulette-result" class="roulette-result clean-result">
-                  <span class="result-kicker">Esperando tirada</span>
-                  <strong>Pulsa para girar la desgracia</strong>
-                  <small>Puede salir cualquier reto desbloqueado.</small>
-                </div>
-
-                <details class="roulette-table-details">
-                  <summary>Ver tabla de números y retos</summary>
-                  <div id="roulette-legend" class="roulette-legend clean-legend"></div>
-                </details>
+              <div class="wheel-side">
+                <p class="mini-title">Retos de esta tirada</p>
+                <div id="roulette-legend" class="roulette-legend"></div>
               </div>
             </div>
+            <div id="roulette-result" class="roulette-result">Pulsa para girar la desgracia</div>
             <div class="button-row compact">
               <button id="roulette-spin" class="secondary-button">Girar ruleta</button>
               <button id="cheap-spin" class="ghost-button">Putada barata</button>

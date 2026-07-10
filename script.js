@@ -655,7 +655,12 @@ function buyChallenge(id) {
 
 function buildWheelChallenges(cheap = false) {
   const eligible = getEligibleChallenges().filter(challenge => !cheap || challenge.cost <= 2);
-  return eligible;
+
+  // Modo random: en cada tirada se reconstruye la ruleta con retos nuevos.
+  // No filtramos por tokens: si cae uno caro, no se puede comprar, pero se puede volver a tirar.
+  const maxVisible = cheap ? 8 : 10;
+  const shuffled = [...eligible].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(maxVisible, shuffled.length));
 }
 
 function shortRouletteLabel(text, maxLength = 72) {
@@ -673,31 +678,31 @@ function renderRouletteWheel(items = null) {
 
   const sourceItems = items || buildWheelChallenges(false);
   wheelChallenges = sourceItems.length ? sourceItems : [];
-
-  // La rueda visual se mantiene limpia: no dibuja los 80 retos encima.
-  // La relación número → reto aparece en la tabla desplegable.
   rouletteWheel.querySelectorAll('.wheel-label').forEach(label => label.remove());
 
-  const casinoNumbers = 37;
-  const colors = ['#0b0b0d', '#cf1020', '#159447', '#f9d94a'];
-  const segmentAngle = 360 / casinoNumbers;
-  const gradientParts = [];
-
-  for (let index = 0; index < casinoNumbers; index += 1) {
-    const start = index * segmentAngle;
-    const end = (index + 1) * segmentAngle;
-    gradientParts.push(`${colors[index % colors.length]} ${start}deg ${end}deg`);
+  if (!wheelChallenges.length) {
+    rouletteWheel.style.background = 'conic-gradient(#3b245b 0 360deg)';
+    if (rouletteLegend) rouletteLegend.innerHTML = '<p class="legend-empty">No hay retos disponibles.</p>';
+    return;
   }
+
+  const colors = ['#ff4dc4', '#ffe761', '#43f3ff', '#ff7b00', '#61ff9f', '#8d6bff', '#ffffff', '#ff3562', '#3be07f', '#00b7ff'];
+  wheelSegmentAngle = 360 / wheelChallenges.length;
+
+  const gradientParts = wheelChallenges.map((item, index) => {
+    const start = index * wheelSegmentAngle;
+    const end = (index + 1) * wheelSegmentAngle;
+    return `${colors[index % colors.length]} ${start}deg ${end}deg`;
+  });
 
   rouletteWheel.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
 
-  // Solo mostramos números cada pocas casillas para que no quede sucio.
-  [0, 3, 7, 11, 15, 19, 23, 27, 31, 35].forEach((num, visualIndex) => {
+  wheelChallenges.forEach((challenge, index) => {
     const label = document.createElement('div');
-    label.className = 'wheel-label wheel-number clean-wheel-number';
-    const angle = num * segmentAngle + segmentAngle / 2;
+    label.className = 'wheel-label wheel-number';
+    const angle = index * wheelSegmentAngle + wheelSegmentAngle / 2;
     label.style.transform = `rotate(${angle}deg)`;
-    label.innerHTML = `<span>${num}</span>`;
+    label.innerHTML = `<span>${index + 1}</span>`;
     rouletteWheel.appendChild(label);
   });
 
@@ -718,7 +723,7 @@ function renderRouletteLegend(items) {
       <div class="legend-item ${canAfford ? '' : 'legend-locked'}">
         <span class="legend-number">${index + 1}</span>
         <div>
-          <strong>${escapeHtml(shortRouletteLabel(challenge.text, 72))}</strong>
+          <strong>${escapeHtml(shortRouletteLabel(challenge.text, 62))}</strong>
           <small>${challenge.cost} token${challenge.cost > 1 ? 's' : ''} · ${escapeHtml(challenge.level)}${canAfford ? '' : ' · sin saldo'}</small>
         </div>
       </div>
@@ -727,60 +732,49 @@ function renderRouletteLegend(items) {
 }
 
 function spinRoulette(cheap = false) {
-  const eligible = buildWheelChallenges(cheap);
-  if (!eligible.length) {
+  const wheelSet = buildWheelChallenges(cheap);
+  if (!wheelSet.length) {
     rouletteSelection = null;
     updateRouletteUI();
     showToast(cheap ? 'No hay putadas baratas disponibles ahora mismo.' : 'La ruleta no encuentra ninguna putada disponible ahora mismo.');
     return;
   }
 
-  renderRouletteWheel(eligible);
+  renderRouletteWheel(wheelSet);
   rouletteBuy.disabled = true;
   rouletteSpin.disabled = true;
   if (cheapSpin) cheapSpin.disabled = true;
   rouletteResult.classList.remove('final-result');
   rouletteResult.classList.add('spinning');
-  rouletteResult.innerHTML = `
-    <span class="result-kicker">Girando</span>
-    <strong>La bolita está decidiendo...</strong>
-    <small>El destino de Antón está en trámite.</small>
-  `;
+  rouletteResult.textContent = cheap ? 'Cargando putadas baratas nuevas...' : 'Cargando putadas nuevas...';
 
-  const selectedIndex = Math.floor(Math.random() * eligible.length);
-  rouletteSelection = eligible[selectedIndex];
+  const selectedIndex = Math.floor(Math.random() * wheelSet.length);
+  rouletteSelection = wheelSet[selectedIndex];
 
+  const selectedCenter = selectedIndex * wheelSegmentAngle + wheelSegmentAngle / 2;
   const fullSpins = 6 + Math.floor(Math.random() * 3);
-  const randomOffset = Math.floor(Math.random() * 360);
-  wheelRotation += fullSpins * 360 + randomOffset;
+  const targetRotation = fullSpins * 360 + (360 - selectedCenter);
+  wheelRotation += targetRotation;
 
   if (rouletteWheel) {
     rouletteWheel.classList.add('spinning');
     rouletteWheel.style.transform = `rotate(${wheelRotation}deg)`;
   }
 
-  if (casinoBall) {
-    casinoBall.classList.remove('ball-spinning');
-    void casinoBall.offsetWidth;
-    casinoBall.classList.add('ball-spinning');
-  }
-
   window.setTimeout(() => {
     const canAfford = getCurrentTokens() >= rouletteSelection.cost;
     rouletteResult.innerHTML = `
-      <span class="result-kicker">Resultado ${selectedIndex + 1}</span>
-      <strong>${escapeHtml(rouletteSelection.text)}</strong>
+      <strong>Resultado ${selectedIndex + 1}: ${escapeHtml(rouletteSelection.text)}</strong>
       <small>${rouletteSelection.cost} token${rouletteSelection.cost > 1 ? 's' : ''} · ${escapeHtml(rouletteSelection.level)}${canAfford ? '' : ' · no tienes saldo suficiente'}</small>
     `;
     rouletteResult.classList.remove('spinning');
     rouletteResult.classList.add('final-result');
     if (rouletteWheel) rouletteWheel.classList.remove('spinning');
-    if (casinoBall) casinoBall.classList.remove('ball-spinning');
     rouletteSpin.disabled = false;
     if (cheapSpin) cheapSpin.disabled = false;
     rouletteBuy.disabled = !canAfford;
     showToast(canAfford ? 'La ruleta ha dictado sentencia.' : 'Ha caído una putada cara. No tienes tokens suficientes.');
-  }, 5000);
+  }, 4800);
 }
 
 function updateRouletteUI() {
@@ -790,11 +784,7 @@ function updateRouletteUI() {
   rouletteResult.classList.remove('spinning');
 
   if (!rouletteSelection) {
-    rouletteResult.innerHTML = `
-      <span class="result-kicker">Esperando tirada</span>
-      <strong>Pulsa para girar la desgracia</strong>
-      <small>Puede salir cualquier reto desbloqueado.</small>
-    `;
+    rouletteResult.textContent = 'Pulsa para girar la desgracia';
     rouletteBuy.disabled = true;
     return;
   }
@@ -806,11 +796,7 @@ function updateRouletteUI() {
 
   if (!unlocked) {
     rouletteSelection = null;
-    rouletteResult.innerHTML = `
-      <span class="result-kicker">Esperando tirada</span>
-      <strong>Pulsa para girar la desgracia</strong>
-      <small>Puede salir cualquier reto desbloqueado.</small>
-    `;
+    rouletteResult.textContent = 'Pulsa para girar la desgracia';
   }
 }
 
