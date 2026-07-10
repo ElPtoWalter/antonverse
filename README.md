@@ -1,14 +1,13 @@
-# Antonverse v14 · ruleta random
+# Antonverse v16 · ruleta sincronizada + ganador iluminado
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- Se vuelve al estilo de ruleta anterior: rueda circular con números y leyenda.
-- En cada tirada se cargan retos aleatorios nuevos.
-- Ruleta normal: muestra hasta 10 retos aleatorios.
-- Putada barata: muestra hasta 8 retos baratos aleatorios.
-- Puede salir un reto que no puedas pagar; en ese caso no se puede comprar, pero puedes volver a girar.
-- Mantiene v12: sin audios de WhatsApp, juegos de grupo, castigo unificado, nombres clave, radio y sobres.
+- Mantiene la corrección de v15: el segmento de la flecha coincide con el resultado.
+- El reto ganador se ilumina en la lista lateral.
+- El triángulo/segmento ganador parpadea al terminar la tirada.
+- El número ganador de la ruleta se agranda y brilla.
+- El elemento ganador de la leyenda se desplaza automáticamente a la vista.
 
 Sube a la raíz del repo:
 - index.html
@@ -16,4 +15,4 @@ Sube a la raíz del repo:
 - script.js
 - README.md
 
-No hace falta subir de nuevo assets si ya están en GitHub.
+No hace falta tocar assets. El QR no cambia mientras mantengas la misma URL de GitHub Pages.

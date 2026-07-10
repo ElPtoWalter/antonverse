@@ -679,6 +679,7 @@ function renderRouletteWheel(items = null) {
   const sourceItems = items || buildWheelChallenges(false);
   wheelChallenges = sourceItems.length ? sourceItems : [];
   rouletteWheel.querySelectorAll('.wheel-label').forEach(label => label.remove());
+  rouletteWheel.querySelectorAll('.wheel-winning-slice').forEach(slice => slice.remove());
 
   if (!wheelChallenges.length) {
     rouletteWheel.style.background = 'conic-gradient(#3b245b 0 360deg)';
@@ -700,6 +701,7 @@ function renderRouletteWheel(items = null) {
   wheelChallenges.forEach((challenge, index) => {
     const label = document.createElement('div');
     label.className = 'wheel-label wheel-number';
+    label.dataset.wheelIndex = String(index);
     const angle = index * wheelSegmentAngle + wheelSegmentAngle / 2;
     label.style.transform = `rotate(${angle}deg)`;
     label.innerHTML = `<span>${index + 1}</span>`;
@@ -720,7 +722,7 @@ function renderRouletteLegend(items) {
   rouletteLegend.innerHTML = items.map((challenge, index) => {
     const canAfford = getCurrentTokens() >= challenge.cost;
     return `
-      <div class="legend-item ${canAfford ? '' : 'legend-locked'}">
+      <div class="legend-item ${canAfford ? '' : 'legend-locked'}" data-legend-index="${index}">
         <span class="legend-number">${index + 1}</span>
         <div>
           <strong>${escapeHtml(shortRouletteLabel(challenge.text, 62))}</strong>
@@ -729,6 +731,41 @@ function renderRouletteLegend(items) {
       </div>
     `;
   }).join('');
+}
+
+
+function clearRouletteHighlights() {
+  if (rouletteWheel) {
+    rouletteWheel.querySelectorAll('.wheel-label').forEach(label => label.classList.remove('wheel-label-winner'));
+    rouletteWheel.querySelectorAll('.wheel-winning-slice').forEach(slice => slice.remove());
+  }
+
+  if (rouletteLegend) {
+    rouletteLegend.querySelectorAll('.legend-item').forEach(item => item.classList.remove('legend-item-winner'));
+  }
+}
+
+function setWinningRouletteHighlight(selectedIndex) {
+  clearRouletteHighlights();
+
+  if (!rouletteWheel || !wheelChallenges.length) return;
+
+  const start = selectedIndex * wheelSegmentAngle;
+  const end = (selectedIndex + 1) * wheelSegmentAngle;
+
+  const slice = document.createElement('div');
+  slice.className = 'wheel-winning-slice';
+  slice.style.background = `conic-gradient(from 0deg, transparent 0deg ${start}deg, rgba(255, 231, 97, 0.52) ${start}deg ${end}deg, transparent ${end}deg 360deg)`;
+  rouletteWheel.appendChild(slice);
+
+  const wheelLabel = rouletteWheel.querySelector(`[data-wheel-index="${selectedIndex}"]`);
+  if (wheelLabel) wheelLabel.classList.add('wheel-label-winner');
+
+  const legendItem = rouletteLegend?.querySelector(`[data-legend-index="${selectedIndex}"]`);
+  if (legendItem) {
+    legendItem.classList.add('legend-item-winner');
+    legendItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
 }
 
 function spinRoulette(cheap = false) {
@@ -741,6 +778,7 @@ function spinRoulette(cheap = false) {
   }
 
   renderRouletteWheel(wheelSet);
+  clearRouletteHighlights();
   rouletteBuy.disabled = true;
   rouletteSpin.disabled = true;
   if (cheapSpin) cheapSpin.disabled = true;
@@ -753,7 +791,14 @@ function spinRoulette(cheap = false) {
 
   const selectedCenter = selectedIndex * wheelSegmentAngle + wheelSegmentAngle / 2;
   const fullSpins = 6 + Math.floor(Math.random() * 3);
-  const targetRotation = fullSpins * 360 + (360 - selectedCenter);
+
+  // La ruleta debe terminar EXACTAMENTE con el triángulo elegido bajo la flecha.
+  // Como wheelRotation es acumulativo entre tiradas, calculamos el delta real
+  // a partir de la orientación actual para que nunca se descuadre.
+  const desiredAbsolute = (360 - selectedCenter) % 360;
+  const currentAbsolute = ((wheelRotation % 360) + 360) % 360;
+  const deltaToTarget = (desiredAbsolute - currentAbsolute + 360) % 360;
+  const targetRotation = fullSpins * 360 + deltaToTarget;
   wheelRotation += targetRotation;
 
   if (rouletteWheel) {
@@ -770,6 +815,7 @@ function spinRoulette(cheap = false) {
     rouletteResult.classList.remove('spinning');
     rouletteResult.classList.add('final-result');
     if (rouletteWheel) rouletteWheel.classList.remove('spinning');
+    setWinningRouletteHighlight(selectedIndex);
     rouletteSpin.disabled = false;
     if (cheapSpin) cheapSpin.disabled = false;
     rouletteBuy.disabled = !canAfford;
