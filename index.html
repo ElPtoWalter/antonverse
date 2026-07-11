@@ -115,6 +115,51 @@
         </div>
       </section>
 
+
+      <section class="panel secret-hunt-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ARCHIVO ULTRASECRETO</p>
+            <h2>Caza de nombres en clave</h2>
+          </div>
+          <button id="reset-secret-names-button" class="ghost-button">Resetear nombres en clave</button>
+        </div>
+
+        <div class="secret-grid">
+          <article class="secret-card">
+            <p class="card-label">NOMBRES DESCUBIERTOS</p>
+            <div class="secret-counter"><span id="secret-found-count">0</span><small>/ <span id="secret-total-count">0</span></small></div>
+            <div class="meter secret-meter">
+              <div id="secret-meter-fill" class="meter-fill"></div>
+            </div>
+            <p id="secret-progress-copy" class="muted">Probando nombres de amigos se irá abriendo el candado.</p>
+
+            <form id="secret-name-form" class="secret-name-form">
+              <label for="secret-name-input">Probar nombre en clave</label>
+              <div class="secret-input-row">
+                <input id="secret-name-input" type="text" placeholder="Ej: macoy, caqui, walter..." autocomplete="off" />
+                <button type="submit" class="primary-button small-button">Probar</button>
+              </div>
+              <p class="tiny-note">Esto no depende del nombre que pones al entrar. Aquí se adivinan los nombres secretos.</p>
+            </form>
+          </article>
+
+          <article id="ultimate-secret-card" class="secret-card ultimate-secret locked">
+            <div class="lock-icon" id="ultimate-lock-icon">🔒</div>
+            <div>
+              <p class="card-label">PUTADA FINAL</p>
+              <h3 id="ultimate-secret-title">????????????????</h3>
+              <p id="ultimate-secret-copy">Candado activo. Descubrid todos los nombres en clave para revelar la putada más tocha.</p>
+            </div>
+          </article>
+        </div>
+
+        <details class="secret-details">
+          <summary>Ver nombres ya descubiertos</summary>
+          <div id="found-secret-names" class="found-secret-names"></div>
+        </details>
+      </section>
+
       <section class="panel gallery-panel">
         <div class="section-heading">
           <div>

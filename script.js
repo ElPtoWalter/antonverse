@@ -5,7 +5,8 @@ const STORAGE_KEYS = {
   name: 'antonverse_name',
   purchases: 'antonverse_purchases',
   jokerUsed: 'antonverse_joker_used',
-  revealedImages: 'antonverse_revealed_images'
+  revealedImages: 'antonverse_revealed_images',
+  discoveredNames: 'antonverse_discovered_friend_names'
 };
 
 const radioTracks = [
@@ -36,8 +37,6 @@ const radioTracks = [
   { src: 'assets/audio/anton-christian-ghospel.mp3', title: 'Antón, Antón · Christian gospel' },
   { src: 'assets/audio/anton-christian-ghospel-v2.mp3', title: 'Antón, Antón · Christian gospel v2' },
   { src: 'assets/audio/himno-anton.mpeg', title: 'Himno Antón · WhatsApp original' },
-  { src: 'assets/audio/whatsapp-audio-2026-07-08-at-13-21-26.mpeg', title: 'Archivo de WhatsApp · versión 1' },
-  { src: 'assets/audio/whatsapp-audio-2026-07-08-at-13-21-26-1.mpeg', title: 'Archivo de WhatsApp · versión 2' }
 ];
 
 
@@ -71,8 +70,7 @@ const ORIGINAL_AUDIO_FILENAMES = {
   'anton-bachata-v2.mp3': ['Antón, antón (BACHATA)v2.mp3'],
   'anton-christian-ghospel.mp3': ['Antón, antón (Christian ghospel).mp3'],
   'anton-christian-ghospel-v2.mp3': ['Antón, antón (Christian ghospel)v2.mp3'],
-  'himno-anton.mpeg': ['WhatsApp Audio 2026-07-08 at 13.21.26.mpeg'],
-  'whatsapp-audio-2026-07-08-at-13-21-26-1.mpeg': ['WhatsApp Audio 2026-07-08 at 13.21.26(1).mpeg']
+  'himno-anton.mpeg': ['WhatsApp Audio 2026-07-08 at 13.21.26.mpeg']
 };
 
 function filenameFromPath(path) {
@@ -305,14 +303,16 @@ const challenges = [
   { id: "friends-boxeo-asalto", text: "Tocadito de boxeo durante 1 asalto (3 min)", cost: 10, level: "Solo amigos", source: "friends", friendsOnly: true },
   { id: "friends-multiverso", text: "Modo multiverso: durante 5 minutos actúa como la versión de Antón que elija el comprador", cost: 10, level: "Solo amigos", source: "friends", friendsOnly: true },
   { id: "friends-combo-verguenza", text: "Combo vergüenza: 3 panderetas + 10 flexiones + 1 chupito", cost: 10, level: "Solo amigos", source: "friends", friendsOnly: true },
-  { id: "friends-penitencia", text: "Pack penitencia: cada amigo elige un ejercicio corto y Antón los hace seguidos", cost: 15, level: "Solo amigos", source: "friends", friendsOnly: true }
+  { id: "friends-penitencia", text: "Pack penitencia: cada amigo elige un ejercicio corto y Antón los hace seguidos", cost: 15, level: "Solo amigos", source: "friends", friendsOnly: true },
+  { id: "ultimate-steisy", text: "Contratar a Steisy", cost: 15, level: "FINAL BOSS", source: "friends", friendsOnly: true, ultimateOnly: true }
 ];
 
 let state = {
   name: 'Invitado misterioso',
   purchases: [],
   jokerUsed: false,
-  revealedImages: []
+  revealedImages: [],
+  discoveredNames: []
 };
 
 let rouletteSelection = null;
@@ -353,6 +353,19 @@ const resetButton = document.getElementById('reset-button');
 const jokerButton = document.getElementById('joker-button');
 const copySummaryButton = document.getElementById('copy-summary-button');
 const toast = document.getElementById('toast');
+
+const secretFoundCount = document.getElementById('secret-found-count');
+const secretTotalCount = document.getElementById('secret-total-count');
+const secretMeterFill = document.getElementById('secret-meter-fill');
+const secretProgressCopy = document.getElementById('secret-progress-copy');
+const foundSecretNames = document.getElementById('found-secret-names');
+const ultimateSecretCard = document.getElementById('ultimate-secret-card');
+const ultimateSecretTitle = document.getElementById('ultimate-secret-title');
+const ultimateSecretCopy = document.getElementById('ultimate-secret-copy');
+const ultimateLockIcon = document.getElementById('ultimate-lock-icon');
+const resetSecretNamesButton = document.getElementById('reset-secret-names-button');
+const secretNameForm = document.getElementById('secret-name-form');
+const secretNameInput = document.getElementById('secret-name-input');
 const lightbox = document.getElementById('lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxCaption = document.getElementById('lightbox-caption');
@@ -377,6 +390,62 @@ function normalizeName(name) {
 
 function isFriendName(name) {
   return FRIEND_NAMES.includes(normalizeName(name));
+}
+
+function getSecretNameTotal() {
+  return FRIEND_NAMES.length;
+}
+
+function getDiscoveredNameSet() {
+  return new Set((state.discoveredNames || []).map(normalizeName));
+}
+
+function isUltimateUnlocked() {
+  return getDiscoveredNameSet().size >= getSecretNameTotal();
+}
+
+function registerSecretNameGuess(name) {
+  const raw = String(name || '').trim();
+  const normalized = normalizeName(raw);
+
+  if (!normalized) {
+    showToast('Escribe un nombre en clave para probar.');
+    return false;
+  }
+
+  if (!FRIEND_NAMES.includes(normalized)) {
+    showToast('Ese no era nombre en clave. Seguid rascando.');
+    return false;
+  }
+
+  const discovered = getDiscoveredNameSet();
+
+  if (discovered.has(normalized)) {
+    showToast('Ese nombre en clave ya estaba descubierto. No suma otra vez.');
+    return true;
+  }
+
+  discovered.add(normalized);
+  state.discoveredNames = Array.from(discovered);
+  persistState();
+  updateSecretHunt();
+  renderChallenges();
+  renderRouletteWheel();
+  updateRouletteUI();
+
+  if (isUltimateUnlocked()) {
+    showToast('CANDADO FINAL ABIERTO: Contratar a Steisy desbloqueado.');
+  } else {
+    showToast(`Nombre en clave descubierto: ${raw}. Progreso ${state.discoveredNames.length}/${getSecretNameTotal()}.`);
+  }
+
+  return true;
+}
+
+function submitSecretNameGuess(event) {
+  if (event) event.preventDefault();
+  const matched = registerSecretNameGuess(secretNameInput ? secretNameInput.value : '');
+  if (matched && secretNameInput) secretNameInput.value = '';
 }
 
 function getMaxTokens() {
@@ -409,6 +478,7 @@ function readStorage() {
   const savedPurchases = JSON.parse(localStorage.getItem(STORAGE_KEYS.purchases) || '[]');
   const savedJoker = localStorage.getItem(STORAGE_KEYS.jokerUsed);
   const savedRevealedImages = JSON.parse(localStorage.getItem(STORAGE_KEYS.revealedImages) || '[]');
+  const savedDiscoveredNames = JSON.parse(localStorage.getItem(STORAGE_KEYS.discoveredNames) || '[]');
 
   if (savedName && savedName.trim()) {
     state.name = savedName.trim();
@@ -423,6 +493,12 @@ function readStorage() {
   if (Array.isArray(savedRevealedImages)) {
     state.revealedImages = savedRevealedImages.filter(Boolean);
   }
+
+  if (Array.isArray(savedDiscoveredNames)) {
+    state.discoveredNames = savedDiscoveredNames
+      .map(normalizeName)
+      .filter(name => FRIEND_NAMES.includes(name));
+  }
 }
 
 function persistState() {
@@ -430,10 +506,65 @@ function persistState() {
   localStorage.setItem(STORAGE_KEYS.purchases, JSON.stringify(state.purchases));
   localStorage.setItem(STORAGE_KEYS.jokerUsed, String(state.jokerUsed));
   localStorage.setItem(STORAGE_KEYS.revealedImages, JSON.stringify(state.revealedImages));
+  localStorage.setItem(STORAGE_KEYS.discoveredNames, JSON.stringify(state.discoveredNames || []));
 }
 
 function getPurchasedIds() {
   return new Set(state.purchases.map(item => item.id));
+}
+
+
+function updateSecretHunt() {
+  const total = getSecretNameTotal();
+  const discovered = Array.from(getDiscoveredNameSet());
+  const count = discovered.length;
+  const unlocked = count >= total;
+
+  if (secretFoundCount) secretFoundCount.textContent = count;
+  if (secretTotalCount) secretTotalCount.textContent = total;
+  if (secretMeterFill) secretMeterFill.style.width = `${total ? (count / total) * 100 : 0}%`;
+
+  if (secretProgressCopy) {
+    if (unlocked) {
+      secretProgressCopy.textContent = 'Habéis descubierto todos los nombres. La putada final ha sido liberada.';
+    } else if (count === 0) {
+      secretProgressCopy.textContent = 'Todavía no se ha descubierto ningún nombre secreto.';
+    } else {
+      secretProgressCopy.textContent = `Faltan ${total - count} nombres para abrir el candado final.`;
+    }
+  }
+
+  if (foundSecretNames) {
+    foundSecretNames.innerHTML = discovered.length
+      ? discovered.map(name => `<span>${escapeHtml(name)}</span>`).join('')
+      : '<p class="muted">Todavía no hay nombres descubiertos.</p>';
+  }
+
+  if (ultimateSecretCard) {
+    ultimateSecretCard.classList.toggle('locked', !unlocked);
+    ultimateSecretCard.classList.toggle('unlocked', unlocked);
+  }
+  if (ultimateLockIcon) ultimateLockIcon.textContent = unlocked ? '🔓' : '🔒';
+  if (ultimateSecretTitle) ultimateSecretTitle.textContent = unlocked ? 'Contratar a Steisy' : '????????????????';
+  if (ultimateSecretCopy) {
+    ultimateSecretCopy.textContent = unlocked
+      ? 'PUTADA FINAL DESBLOQUEADA. Ya aparece en la tienda y en la ruleta para nombres en clave.'
+      : 'Candado activo. Descubrid todos los nombres en clave para revelar la putada más tocha.';
+  }
+}
+
+function resetSecretNames() {
+  const confirmed = window.confirm('¿Resetear los nombres en clave descubiertos en este móvil? El candado final volverá a cerrarse.');
+  if (!confirmed) return;
+
+  state.discoveredNames = [];
+  persistState();
+  rouletteSelection = null;
+  updateSecretHunt();
+  renderChallenges();
+  renderRouletteWheel();
+  updateRouletteUI();
+  showToast('Nombres en clave reseteados. El candado vuelve a estar cerrado.');
 }
 
 function updateDashboard() {
@@ -475,6 +606,8 @@ function updateDashboard() {
   } else {
     tokenMessage.textContent = 'Sin tokens. Tu crueldad ha sido completamente invertida.';
   }
+
+  updateSecretHunt();
 }
 
 function renderGallery() {
@@ -518,16 +651,16 @@ function renderGallery() {
 }
 
 function canAccessChallenge(challenge) {
+  if (challenge.ultimateOnly) return isUltimateUnlocked() && isFriendName(state.name);
   return !challenge.friendsOnly || isFriendName(state.name);
 }
 
 function getEligibleChallenges() {
   const purchasedIds = getPurchasedIds();
-  const tokens = getCurrentTokens();
   return challenges.filter(challenge => {
     if (purchasedIds.has(challenge.id)) return false;
     if (!canAccessChallenge(challenge)) return false;
-    return tokens >= challenge.cost;
+    return true;
   });
 }
 
@@ -552,7 +685,7 @@ function renderChallenges() {
     const buttonLabel = isBought
       ? 'Comprado por ti'
       : locked
-        ? 'Bloqueado: nombre de amigo'
+        ? (challenge.ultimateOnly ? 'Candado secreto' : 'Bloqueado: nombre de amigo')
         : cantAfford
           ? 'Sin tokens suficientes'
           : `Comprar por ${challenge.cost} token${challenge.cost > 1 ? 's' : ''}`;
@@ -566,7 +699,7 @@ function renderChallenges() {
           <span class="badge level">${challenge.level}</span>
           ${challenge.friendsOnly ? '<span class="badge locked">🔐 AMIGOS</span>' : ''}
         </div>
-        <p class="challenge-text">${escapeHtml(challenge.text)}</p>
+        <p class="challenge-text">${escapeHtml(challenge.ultimateOnly && locked ? '????????????????' : challenge.text)}</p>
         <div class="challenge-meta">
           <p class="challenge-note">${getChallengeNote(challenge, locked)}</p>
           <button class="buy-button" data-id="${challenge.id}" ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
@@ -588,6 +721,8 @@ function getSourceLabel(source) {
 }
 
 function getChallengeNote(challenge, locked) {
+  if (challenge.ultimateOnly && locked) return 'Candado ultrasecreto: descubre todos los nombres en clave para revelar esta putada.';
+  if (challenge.ultimateOnly) return 'PUTADA FINAL DESBLOQUEADA. Que Dios os perdone.';
   if (locked) return 'Aparece mezclada, pero solo se puede comprar con un nombre secreto.';
   if (challenge.friendsOnly) return 'Putada gorda desbloqueada por modo amigo.';
   if (challenge.source === 'original') return 'Texto original respetado tal cual.';
@@ -892,7 +1027,8 @@ function resetSession() {
     name: 'Invitado misterioso',
     purchases: [],
     jokerUsed: false,
-    revealedImages: []
+    revealedImages: [],
+    discoveredNames: state.discoveredNames || []
   };
   rouletteSelection = null;
 
@@ -1116,6 +1252,8 @@ enterButton.addEventListener('click', handleEntry);
 renameButton.addEventListener('click', renamePlayer);
 phraseButton.addEventListener('click', setRandomPhrase);
 resetButton.addEventListener('click', resetSession);
+if (resetSecretNamesButton) resetSecretNamesButton.addEventListener('click', resetSecretNames);
+if (secretNameForm) secretNameForm.addEventListener('submit', submitSecretNameGuess);
 jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
