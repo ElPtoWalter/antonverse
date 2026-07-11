@@ -1116,8 +1116,6 @@ enterButton.addEventListener('click', handleEntry);
 renameButton.addEventListener('click', renamePlayer);
 phraseButton.addEventListener('click', setRandomPhrase);
 resetButton.addEventListener('click', resetSession);
-if (resetSecretNamesButton) resetSecretNamesButton.addEventListener('click', resetSecretNames);
-if (secretNameForm) secretNameForm.addEventListener('submit', submitSecretNameGuess);
 jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);

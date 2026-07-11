@@ -1,20 +1,12 @@
-# Antonverse v19 · panel independiente de nombres en clave
+# Antonverse v17 · resultado según la flecha
 
 Versión ligera de código. No incluye assets.
 
-Cambios:
-- El contador de nombres en clave ya NO depende del nombre con el que entras a la web.
-- Añadido apartado propio: "Probar nombre en clave".
-- Ahí se introducen los nombres de amigos y se van sumando al contador.
-- Si se repite un nombre ya descubierto, no suma otra vez.
-- El botón de reset limpia la lista de nombres descubiertos y vuelve a cerrar el candado.
-- Entrar con un nombre de amigo sigue sirviendo para tener modo amigo/tokens, pero no suma al contador.
-- Al descubrir todos los nombres se desbloquea el candado final:
-  "Contratar a Steisy".
-
-Importante:
-- El progreso se guarda en localStorage del dispositivo.
-- En GitHub Pages puro no hay progreso global entre móviles. Para progreso global real haría falta Firebase/Supabase.
+Cambio principal:
+- La ruleta ya no elige primero el reto y luego intenta caer ahí.
+- Ahora gira de forma aleatoria y, al terminar, calcula qué segmento ha quedado bajo la flecha.
+- El resultado sale de ese segmento real.
+- Por tanto: flecha, triángulo iluminado, número lateral y reto comprado coinciden.
 
 Sube a la raíz del repo:
 - index.html
