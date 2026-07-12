@@ -11,7 +11,35 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="entry-screen" class="entry-screen">
+  <section id="locked-screen" class="lock-screen">
+    <div class="lock-box sparkle">
+      <p class="eyebrow blink">🔒 ACCESO CERRADO 🔒</p>
+      <h1>ANTONVERSE</h1>
+      <h2>La web está sellada hasta la despedida</h2>
+      <p class="lock-copy">Anon ha intentado colarse antes de tiempo. El comité ha activado el protocolo candado.</p>
+
+      <div class="countdown-card">
+        <p class="card-label">SE ABRE EL 31 DE JULIO A LAS 12:00</p>
+        <div id="countdown-timer" class="countdown-timer">
+          <span><strong id="countdown-days">--</strong><small>días</small></span>
+          <span><strong id="countdown-hours">--</strong><small>horas</small></span>
+          <span><strong id="countdown-minutes">--</strong><small>min</small></span>
+          <span><strong id="countdown-seconds">--</strong><small>seg</small></span>
+        </div>
+      </div>
+
+      <details class="admin-access">
+        <summary>Acceso del comité</summary>
+        <form id="gate-code-form" class="gate-code-form">
+          <input id="gate-code-input" type="password" placeholder="Código secreto" autocomplete="off" />
+          <button type="submit" class="primary-button">Entrar</button>
+        </form>
+        <p id="gate-code-message" class="tiny-note">Solo para pruebas antes de la despedida.</p>
+      </details>
+    </div>
+  </section>
+
+  <div id="entry-screen" class="entry-screen hidden">
     <div class="entry-box sparkle">
       <p class="eyebrow blink">⚠️ ACCESO RESTRINGIDO ⚠️</p>
       <h1>ANTONVERSO</h1>

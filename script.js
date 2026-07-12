@@ -6,8 +6,12 @@ const STORAGE_KEYS = {
   purchases: 'antonverse_purchases',
   jokerUsed: 'antonverse_joker_used',
   revealedImages: 'antonverse_revealed_images',
-  discoveredNames: 'antonverse_discovered_friend_names'
+  discoveredNames: 'antonverse_discovered_friend_names',
+  gateOverride: 'antonverse_gate_override'
 };
+
+const GATE_OPEN_AT = new Date('2026-07-31T12:00:00+02:00');
+const GATE_ADMIN_CODE = 'DulceSweet';
 
 const radioTracks = [
   { src: 'assets/audio/anton.mp3', title: 'Antón, Antón · Versión base' },
@@ -323,6 +327,15 @@ let currentTrackIndex = -1;
 let wheelRotation = 0;
 let wheelChallenges = [];
 let wheelSegmentAngle = 0;
+
+const lockedScreen = document.getElementById('locked-screen');
+const gateCodeForm = document.getElementById('gate-code-form');
+const gateCodeInput = document.getElementById('gate-code-input');
+const gateCodeMessage = document.getElementById('gate-code-message');
+const countdownDays = document.getElementById('countdown-days');
+const countdownHours = document.getElementById('countdown-hours');
+const countdownMinutes = document.getElementById('countdown-minutes');
+const countdownSeconds = document.getElementById('countdown-seconds');
 
 const appShell = document.getElementById('app-shell');
 const entryScreen = document.getElementById('entry-screen');
@@ -1204,6 +1217,77 @@ function escapeHtml(text) {
     .replaceAll("'", '&#039;');
 }
 
+
+let gateTimer = null;
+
+function isGateOpen() {
+  return Date.now() >= GATE_OPEN_AT.getTime() || localStorage.getItem(STORAGE_KEYS.gateOverride) === 'true';
+}
+
+function updateCountdown() {
+  const distance = GATE_OPEN_AT.getTime() - Date.now();
+
+  if (distance <= 0) {
+    unlockGate();
+    return;
+  }
+
+  const totalSeconds = Math.floor(distance / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (countdownDays) countdownDays.textContent = String(days);
+  if (countdownHours) countdownHours.textContent = String(hours).padStart(2, '0');
+  if (countdownMinutes) countdownMinutes.textContent = String(minutes).padStart(2, '0');
+  if (countdownSeconds) countdownSeconds.textContent = String(seconds).padStart(2, '0');
+}
+
+function lockGate() {
+  if (lockedScreen) lockedScreen.classList.remove('hidden');
+  if (entryScreen) entryScreen.classList.add('hidden');
+  if (appShell) appShell.classList.add('hidden');
+
+  updateCountdown();
+  clearInterval(gateTimer);
+  gateTimer = window.setInterval(updateCountdown, 1000);
+}
+
+function unlockGate() {
+  clearInterval(gateTimer);
+  if (lockedScreen) lockedScreen.classList.add('hidden');
+  if (entryScreen && appShell?.classList.contains('hidden')) {
+    entryScreen.classList.remove('hidden');
+  }
+}
+
+function handleGateCode(event) {
+  if (event) event.preventDefault();
+
+  const code = String(gateCodeInput?.value || '').trim();
+  if (code === GATE_ADMIN_CODE) {
+    localStorage.setItem(STORAGE_KEYS.gateOverride, 'true');
+    if (gateCodeMessage) gateCodeMessage.textContent = 'Código aceptado. Acceso del comité desbloqueado.';
+    unlockGate();
+    showToast('Acceso del comité desbloqueado.');
+    return;
+  }
+
+  if (gateCodeMessage) gateCodeMessage.textContent = 'Código incorrecto. Anon sigue fuera.';
+  showToast('Código incorrecto.');
+}
+
+function initGate() {
+  if (!lockedScreen) return;
+
+  if (isGateOpen()) {
+    unlockGate();
+  } else {
+    lockGate();
+  }
+}
+
 function handleEntry() {
   entryScreen.classList.add('hidden');
   appShell.classList.remove('hidden');
@@ -1248,6 +1332,7 @@ if (bgMusic) {
   });
 }
 
+if (gateCodeForm) gateCodeForm.addEventListener('submit', handleGateCode);
 enterButton.addEventListener('click', handleEntry);
 renameButton.addEventListener('click', renamePlayer);
 phraseButton.addEventListener('click', setRandomPhrase);
@@ -1284,3 +1369,4 @@ costFilterButtons.forEach(button => {
 });
 
 hydrateUI();
+initGate();

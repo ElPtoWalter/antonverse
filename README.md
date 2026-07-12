@@ -1,17 +1,19 @@
-# Antonverse v21 · sin ejemplos visibles de nombres
+# Antonverse v22 · cuenta atrás cerrada
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- Eliminados los nombres de ejemplo visibles del apartado "Probar nombre en clave".
-- El placeholder ahora no revela ningún nombre real.
-- Se mantiene todo lo demás de v20:
+- La web queda cerrada hasta el 31 de julio de 2026 a las 12:00.
+- Mientras esté cerrada, solo se ve una pantalla de cuenta atrás.
+- Código secreto del comité: DulceSweet
+- Si se introduce el código, se desbloquea la web en ese navegador.
+- El QR no cambia mientras mantengas la misma URL de GitHub Pages.
+- Mantiene todo lo de v21:
   - tienda;
   - ruleta;
   - galería;
-  - contador de nombres en clave;
-  - candado final "Contratar a Steisy";
-  - reset de nombres descubiertos.
+  - panel de nombres en clave sin ejemplos visibles;
+  - candado final "Contratar a Steisy".
 
 Sube a la raíz del repo:
 - index.html
@@ -19,4 +21,4 @@ Sube a la raíz del repo:
 - script.js
 - README.md
 
-No hace falta tocar assets. El QR no cambia mientras mantengas la misma URL de GitHub Pages.
+No hace falta tocar assets.
