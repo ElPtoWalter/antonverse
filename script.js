@@ -1274,7 +1274,7 @@ function handleGateCode(event) {
     return;
   }
 
-  if (gateCodeMessage) gateCodeMessage.textContent = 'Código incorrecto. Anon sigue fuera.';
+  if (gateCodeMessage) gateCodeMessage.textContent = 'Código incorrecto. Antón sigue fuera.';
   showToast('Código incorrecto.');
 }
 
