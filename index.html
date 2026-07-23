@@ -115,6 +115,18 @@
             <p id="rank-subcopy" class="muted">Aún no has gastado tokens.</p>
           </div>
 
+          <div id="committee-panel" class="dashboard-card committee-card hidden">
+            <p class="card-label">PANEL DEL COMITÉ</p>
+            <h2>Modo emergencia</h2>
+            <p class="muted">Solo aparece si has entrado con el código secreto. Para arreglar la web rápido el día de la despedida.</p>
+            <div class="committee-actions">
+              <button id="committee-copy-names-button" class="ghost-button" type="button">Copiar nombres descubiertos</button>
+              <button id="committee-reset-names-button" class="secondary-button" type="button">Resetear nombres</button>
+              <button id="committee-reset-session-button" class="secondary-button" type="button">Resetear compras de este móvil</button>
+              <button id="committee-close-gate-button" class="danger-button" type="button">Cerrar web otra vez</button>
+            </div>
+          </div>
+
           <div class="dashboard-card music-card">
             <p class="card-label">RADIO ANTONVERSE FM</p>
             <h2 class="radio-title">Hilo musical aleatorio</h2>
@@ -132,14 +144,19 @@
 
       <section class="panel info-panel" data-tab-section="inicio">
         <div class="info-grid">
-          <article class="info-card">
-            <h3>¿Cómo funciona este circo?</h3>
+          <article class="info-card event-guide-card">
+            <h3>Guía rápida del día D</h3>
             <ol>
-              <li>Entras en la web.</li>
-              <li>Recibes 5 tokens por móvil. Algunos nombres secretos de amigos desbloquean 15 tokens y las putadas gordas.</li>
-              <li>Compras condenas para Antón según tu nivel de crueldad. Los retos de consumo o contacto físico son siempre voluntarios y con cabeza.</li>
-              <li>Le enseñas la compra al comité organizador y se ejecuta la sentencia.</li>
+              <li>Entra con tu nombre para que conste en acta.</li>
+              <li>Usa <strong>Ruleta</strong> o <strong>Tienda</strong> para comprar condenas.</li>
+              <li>Busca nombres en clave en la pestaña <strong>Nombres</strong>.</li>
+              <li>Si completáis todos los nombres, se abre el candado final.</li>
+              <li>Todo lo comprado se enseña al comité y se ejecuta con cabeza.</li>
             </ol>
+            <div class="quick-action-row">
+              <button class="ghost-button jump-tab-button" type="button" data-jump-tab="ruleta">Ir a ruleta</button>
+              <button class="ghost-button jump-tab-button" type="button" data-jump-tab="nombres">Ir a nombres</button>
+            </div>
           </article>
           <article class="info-card loud-card">
             <h3>Frase aleatoria del consejo de guerra</h3>
@@ -165,7 +182,10 @@
             <p class="eyebrow">ARCHIVO ULTRASECRETO</p>
             <h2>Caza de nombres en clave</h2>
           </div>
-          <button id="reset-secret-names-button" class="ghost-button">Resetear nombres en clave</button>
+          <div class="button-row compact">
+            <button id="copy-secret-names-button" class="ghost-button" type="button">Copiar descubiertos</button>
+            <button id="reset-secret-names-button" class="ghost-button" type="button">Resetear nombres en clave</button>
+          </div>
         </div>
 
         <div class="secret-grid">
@@ -209,7 +229,10 @@
             <p class="eyebrow">MULTIVERSO VISUAL</p>
             <h2>Museo secreto de Antón</h2>
           </div>
-          <p class="section-copy">Las fotos salen tapadas como sobres clasificados. Pincha para revelar cada atrocidad visual.</p>
+          <div class="gallery-heading-copy">
+            <p class="section-copy">Las fotos salen tapadas como sobres clasificados. Pincha para revelar cada atrocidad visual.</p>
+            <p id="gallery-progress" class="gallery-progress">Fotos reveladas: <strong id="gallery-revealed-count">0</strong> / <strong id="gallery-total-count">0</strong></p>
+          </div>
         </div>
         <div id="gallery-grid" class="gallery-grid"></div>
       </section>

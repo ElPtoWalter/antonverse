@@ -1953,3 +1953,74 @@ blockquote {
     font-size: 0.92rem;
   }
 }
+
+
+/* ===== Antonverse v27: modo día del evento ===== */
+.event-guide-card {
+  border-color: rgba(67, 243, 255, 0.35);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(67, 243, 255, 0.16), transparent 38%),
+    rgba(255,255,255,0.055);
+}
+
+.quick-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.committee-card {
+  border-color: rgba(255, 231, 97, 0.55);
+  background:
+    linear-gradient(135deg, rgba(255, 231, 97, 0.12), rgba(255, 77, 196, 0.10)),
+    rgba(255,255,255,0.055);
+}
+
+.committee-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.committee-actions button {
+  width: 100%;
+}
+
+.gallery-heading-copy {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: end;
+  text-align: right;
+}
+
+.gallery-progress {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 231, 97, 0.12);
+  border: 1px solid rgba(255, 231, 97, 0.34);
+  color: var(--yellow);
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.gallery-progress strong {
+  color: white;
+}
+
+@media (max-width: 760px) {
+  .gallery-heading-copy {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .committee-actions {
+    grid-template-columns: 1fr;
+  }
+}

@@ -398,8 +398,19 @@ const ultimateSecretTitle = document.getElementById('ultimate-secret-title');
 const ultimateSecretCopy = document.getElementById('ultimate-secret-copy');
 const ultimateLockIcon = document.getElementById('ultimate-lock-icon');
 const resetSecretNamesButton = document.getElementById('reset-secret-names-button');
+const copySecretNamesButton = document.getElementById('copy-secret-names-button');
 const secretNameForm = document.getElementById('secret-name-form');
 const secretNameInput = document.getElementById('secret-name-input');
+
+const committeePanel = document.getElementById('committee-panel');
+const committeeCopyNamesButton = document.getElementById('committee-copy-names-button');
+const committeeResetNamesButton = document.getElementById('committee-reset-names-button');
+const committeeResetSessionButton = document.getElementById('committee-reset-session-button');
+const committeeCloseGateButton = document.getElementById('committee-close-gate-button');
+
+const galleryRevealedCount = document.getElementById('gallery-revealed-count');
+const galleryTotalCount = document.getElementById('gallery-total-count');
+const jumpTabButtons = Array.from(document.querySelectorAll('.jump-tab-button'));
 const lightbox = document.getElementById('lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxCaption = document.getElementById('lightbox-caption');
@@ -603,6 +614,61 @@ function resetSecretNames() {
   showToast('Nombres en clave reseteados. El candado vuelve a estar cerrado.');
 }
 
+
+function copyDiscoveredSecretNames() {
+  const discovered = Array.from(getDiscoveredNameSet());
+  const total = getSecretNameTotal();
+
+  const lines = discovered.length
+    ? discovered.map((name, index) => `${index + 1}. ${name}`)
+    : ['Todavía no hay nombres descubiertos.'];
+
+  const text = [
+    'ANTONVERSE · Nombres en clave',
+    `Descubiertos: ${discovered.length}/${total}`,
+    `Faltan: ${Math.max(0, total - discovered.length)}`,
+    '',
+    ...lines
+  ].join('\n');
+
+  navigator.clipboard.writeText(text)
+    .then(() => showToast('Lista de nombres descubiertos copiada.'))
+    .catch(() => showToast('No se pudo copiar la lista.'));
+}
+
+function resetPurchasesOnly() {
+  const confirmed = window.confirm('¿Resetear compras, comodín y nombre de este móvil? Los nombres en clave descubiertos se mantienen.');
+  if (!confirmed) return;
+
+  state.name = 'Invitado misterioso';
+  state.purchases = [];
+  state.jokerUsed = false;
+  rouletteSelection = null;
+
+  persistState();
+  updateDashboard();
+  renderChallenges();
+  renderPurchases();
+  updateRouletteUI();
+  showToast('Compras de este móvil reseteadas. Los nombres descubiertos se mantienen.');
+}
+
+function closeGateFromCommittee() {
+  const confirmed = window.confirm('¿Cerrar la web otra vez en este móvil? Luego podrás abrirla con DulceSweet.');
+  if (!confirmed) return;
+
+  localStorage.removeItem(STORAGE_KEYS.gateOverride);
+  showToast('Web cerrada otra vez en este móvil.');
+  lockGate();
+}
+
+function updateCommitteePanel() {
+  if (!committeePanel) return;
+  const isCommittee = localStorage.getItem(STORAGE_KEYS.gateOverride) === 'true';
+  committeePanel.classList.toggle('hidden', !isCommittee);
+}
+
+
 function updateDashboard() {
   const max = getMaxTokens();
   const tokens = getCurrentTokens();
@@ -644,10 +710,18 @@ function updateDashboard() {
   }
 
   updateSecretHunt();
+  updateCommitteePanel();
 }
 
 function renderGallery() {
   const revealedSet = new Set(state.revealedImages);
+  const revealedCount = galleryImages.filter(image => {
+    const imageId = filenameFromPath(image.src);
+    return revealedSet.has(imageId) || revealedSet.has(image.src);
+  }).length;
+
+  if (galleryRevealedCount) galleryRevealedCount.textContent = revealedCount;
+  if (galleryTotalCount) galleryTotalCount.textContent = galleryImages.length;
 
   galleryGrid.innerHTML = galleryImages.map((image, index) => {
     const candidates = image.candidates || buildImageCandidates(image.src);
@@ -1293,6 +1367,7 @@ function handleGateCode(event) {
     localStorage.setItem(STORAGE_KEYS.gateOverride, 'true');
     if (gateCodeMessage) gateCodeMessage.textContent = 'Código aceptado. Acceso del comité desbloqueado.';
     unlockGate();
+    updateCommitteePanel();
     showToast('Acceso del comité desbloqueado.');
     return;
   }
@@ -1407,7 +1482,12 @@ renameButton.addEventListener('click', renamePlayer);
 phraseButton.addEventListener('click', setRandomPhrase);
 resetButton.addEventListener('click', resetSession);
 if (resetSecretNamesButton) resetSecretNamesButton.addEventListener('click', resetSecretNames);
+if (copySecretNamesButton) copySecretNamesButton.addEventListener('click', copyDiscoveredSecretNames);
 if (secretNameForm) secretNameForm.addEventListener('submit', submitSecretNameGuess);
+if (committeeCopyNamesButton) committeeCopyNamesButton.addEventListener('click', copyDiscoveredSecretNames);
+if (committeeResetNamesButton) committeeResetNamesButton.addEventListener('click', resetSecretNames);
+if (committeeResetSessionButton) committeeResetSessionButton.addEventListener('click', resetPurchasesOnly);
+if (committeeCloseGateButton) committeeCloseGateButton.addEventListener('click', closeGateFromCommittee);
 jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
@@ -1441,6 +1521,12 @@ costFilterButtons.forEach(button => {
 appTabButtons.forEach(button => {
   button.addEventListener('click', () => {
     activateAppTab(button.dataset.tabTarget, { scroll: true });
+  });
+});
+
+jumpTabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    activateAppTab(button.dataset.jumpTab, { scroll: true });
   });
 });
 
