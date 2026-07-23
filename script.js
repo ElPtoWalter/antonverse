@@ -226,7 +226,25 @@ const galleryImages = [
   { src: 'assets/images/anton_amigo_padre_parlita.jpg', title: 'Antón: el amigo del padre del hijo del Parlita' },
   { src: 'assets/images/anton_conquistar_puti.jpg', title: 'Antón: a conquistar el puti' },
   { src: 'assets/images/anton_epstein_files.jpg', title: 'Antón: archivo geopolítico clasificado' },
-  { src: 'assets/images/anton_llorando_brazo.jpg', title: 'Antón: lágrimas de despedida' }
+  { src: 'assets/images/anton_llorando_brazo.jpg', title: 'Antón: lágrimas de despedida' },
+  { src: 'assets/images/anton_club_policia.webp', title: 'Antón: interrogatorio premium del comité' },
+  { src: 'assets/images/anton_barcelona_brindis.webp', title: 'Antón: brindis oficial en Barcelona' },
+  { src: 'assets/images/anton_multiverso_apunta.webp', title: 'Antón: el multiverso señala al culpable' },
+  { src: 'assets/images/anton_burn_energy.webp', title: 'Antón: patrocinado por Burn y malas decisiones' },
+  { src: 'assets/images/anton_f1_box.webp', title: 'Antón: estrategia de boxes desastrosa' },
+  { src: 'assets/images/anton_dallas_pov.webp', title: 'Antón: Dallas nunca estuvo preparado' },
+  { src: 'assets/images/anton_multiverso_final.webp', title: 'Antón: juicio final del Antonverso' },
+  { src: 'assets/images/anton_gesto_italiano.webp', title: 'Antón: se viene explicación con las manos' },
+  { src: 'assets/images/anton_stop.webp', title: 'Antón: alto ahí, dignidad bloqueada' },
+  { src: 'assets/images/anton_mirror_abs.webp', title: 'Antón: abdominales por DLC' },
+  { src: 'assets/images/anton_trio_amarillo.webp', title: 'Antón: tres versiones, cero vergüenza' },
+  { src: 'assets/images/anton_minecraft_duelo.webp', title: 'Antón: duelo en el bloque bajo' },
+  { src: 'assets/images/anton_ascensor.webp', title: 'Antón: silencio incómodo de manual' },
+  { src: 'assets/images/anton_cama_confesion.webp', title: 'Antón: conversación que nadie pidió' },
+  { src: 'assets/images/anton_sofa_mochila.webp', title: 'Antón: reunión de vecinos versión premium' },
+  { src: 'assets/images/anton_sabina.webp', title: 'Antón: 19 días y 500 noches' },
+  { src: 'assets/images/anton_buuaaah_comic.webp', title: 'Antón: BUUUUAAAAH modo cómic' },
+  { src: 'assets/images/anton_carta_bloqueo.webp', title: 'Antón: carta trampa definitiva' }
 ];
 
 
