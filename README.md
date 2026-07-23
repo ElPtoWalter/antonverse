@@ -7,14 +7,6 @@ Cambios:
 - Actualizado `script.js` para que aparezcan en la galería de sobres.
 - Imágenes optimizadas en `.webp`.
 - Mantiene v25:
-  - cuenta atrás;
-  - código DulceSweet;
-  - web por pestañas;
-  - tienda;
-  - ruleta;
-  - panel de nombres en clave;
-  - candado final "Contratar a Steisy";
-  - nombres en clave actualizados.
 
 Para subir:
 1. Sube `index.html`, `style.css`, `script.js` y `README.md` a la raíz.
