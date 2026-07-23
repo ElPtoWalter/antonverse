@@ -1841,3 +1841,115 @@ blockquote {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ===== Antonverse v24: navegación por pestañas ===== */
+.app-tabs {
+  position: sticky;
+  top: 0.7rem;
+  z-index: 30;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(14px);
+  background:
+    linear-gradient(135deg, rgba(255, 77, 196, 0.11), rgba(67, 243, 255, 0.07)),
+    rgba(22, 4, 38, 0.86);
+}
+
+.app-tabs-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.6rem;
+}
+
+.app-tabs-head h2 {
+  margin: 0;
+  font-family: 'Bangers', 'Comic Sans MS', cursive;
+  font-size: clamp(1.45rem, 4vw, 2.4rem);
+  letter-spacing: 0.06em;
+  color: white;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.app-tab-row {
+  display: flex;
+  gap: 0.55rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+
+.app-tab {
+  flex: 0 0 auto;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.22);
+  color: rgba(255,255,255,0.86);
+  border-radius: 999px;
+  padding: 0.78rem 1rem;
+  font: inherit;
+  font-weight: 1000;
+  cursor: pointer;
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.22);
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.app-tab:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,231,97,0.62);
+}
+
+.app-tab.active {
+  color: #160426;
+  border-color: rgba(255,231,97,0.95);
+  background: linear-gradient(135deg, #ffe761, #ff4dc4);
+  box-shadow:
+    0 0 0 3px rgba(255,231,97,0.15),
+    0 12px 26px rgba(255,77,196,0.18),
+    inset 0 -3px 0 rgba(0,0,0,0.22);
+}
+
+[data-tab-section] {
+  display: none !important;
+}
+
+[data-tab-section].tab-active {
+  display: block !important;
+  animation: tabSectionEnter 0.22s ease-out;
+}
+
+@keyframes tabSectionEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.roulette-panel .roulette-box {
+  margin-top: 0.8rem;
+}
+
+.shop-panel .section-copy,
+.roulette-panel .section-copy {
+  max-width: 560px;
+}
+
+@media (max-width: 700px) {
+  .app-tabs {
+    top: 0.35rem;
+    border-radius: 22px;
+  }
+
+  .app-tabs-head {
+    display: none;
+  }
+
+  .app-tab-row {
+    gap: 0.45rem;
+  }
+
+  .app-tab {
+    padding: 0.72rem 0.86rem;
+    font-size: 0.92rem;
+  }
+}

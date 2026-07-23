@@ -390,6 +390,8 @@ const rouletteResult = document.getElementById('roulette-result');
 const rouletteWheel = document.getElementById('roulette-wheel');
 const casinoBall = document.getElementById('casino-ball');
 const costFilterButtons = Array.from(document.querySelectorAll('.cost-filter-button'));
+const appTabButtons = Array.from(document.querySelectorAll('.app-tab'));
+const appTabSections = Array.from(document.querySelectorAll('[data-tab-section]'));
 const rouletteLegend = document.getElementById('roulette-legend');
 
 function normalizeName(name) {
@@ -1288,6 +1290,51 @@ function initGate() {
   }
 }
 
+
+function activateAppTab(tabName = 'inicio', options = {}) {
+  const validTabs = new Set(appTabButtons.map(button => button.dataset.tabTarget));
+  const targetTab = validTabs.has(tabName) ? tabName : 'inicio';
+
+  appTabButtons.forEach(button => {
+    const isActive = button.dataset.tabTarget === targetTab;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+
+  appTabSections.forEach(section => {
+    section.classList.toggle('tab-active', section.dataset.tabSection === targetTab);
+  });
+
+  if (targetTab === 'ruleta') {
+    renderRouletteWheel();
+    updateRouletteUI();
+  }
+
+  if (targetTab === 'tienda') {
+    renderChallenges();
+  }
+
+  if (targetTab === 'galeria') {
+    renderGallery();
+  }
+
+  if (targetTab === 'nombres') {
+    updateSecretHunt();
+  }
+
+  if (targetTab === 'compras') {
+    renderPurchases();
+  }
+
+  if (options.scroll) {
+    const firstSection = document.querySelector(`[data-tab-section="${targetTab}"]`);
+    const tabsNav = document.querySelector('.app-tabs');
+    if (firstSection && tabsNav) {
+      tabsNav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+}
+
 function handleEntry() {
   entryScreen.classList.add('hidden');
   appShell.classList.remove('hidden');
@@ -1307,6 +1354,7 @@ function hydrateUI() {
   renderPurchases();
   if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
+  activateAppTab('inicio');
 }
 
 
@@ -1365,6 +1413,13 @@ costFilterButtons.forEach(button => {
     costFilterButtons.forEach(item => item.classList.remove('active'));
     button.classList.add('active');
     renderChallenges();
+  });
+});
+
+
+appTabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    activateAppTab(button.dataset.tabTarget, { scroll: true });
   });
 });
 
