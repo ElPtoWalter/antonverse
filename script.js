@@ -145,14 +145,12 @@ const FRIEND_NAMES = [
   'cabeza',
   'el caqui',
   'el parlita',
-  'padre parlita',
   'dynamic gamer',
   'dynamic gaymer',
   'nomeduele',
   'ilconsigliere',
   'dres',
   'dresete',
-  'figure',
   'el gran figure',
   'se muestran de tu menda',
   'na que que tal',
@@ -166,7 +164,12 @@ const FRIEND_NAMES = [
   'josadri',
   'samu',
   'ou shit',
-  '2t'
+  '2t',
+  'dulce',
+  'el gitanico',
+  'ha!',
+  'se come el bote',
+  'na tu ni de coña'
 ];
 
 const phrases = [

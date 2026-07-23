@@ -1,27 +1,29 @@
-# Antonverse v24 · web organizada por pestañas
+# Antonverse v25 · nombres en clave actualizados
 
 Versión ligera de código. No incluye assets.
 
 Cambios:
-- La web deja de ser una página larguísima.
-- Añadido menú de pestañas al inicio:
-  - Inicio
-  - Ruleta
-  - Tienda
-  - Nombres
-  - Galería
-  - Compras
-- Cada pestaña muestra solo su sección correspondiente.
-- La ruleta y la tienda quedan separadas.
-- Mantiene la cuenta atrás hasta el 31 de julio a las 12:00.
-- Código secreto del comité: DulceSweet.
-- Mantiene:
-  - galería;
-  - radio;
-  - ruleta;
-  - tienda;
-  - contador de nombres en clave sin ejemplos visibles;
-  - candado final "Contratar a Steisy".
+- Eliminados de la lista de nombres en clave:
+  - padre parlita
+  - figure
+- Añadidos:
+  - dulce
+  - el gitanico
+  - ha!
+  - se come el bote
+  - na tu ni de coña
+- "pocoyo" ya estaba en la lista, así que se mantiene sin duplicarlo.
+- Total actual de nombres en clave únicos: 53
+
+Mantiene todo lo anterior:
+- cuenta atrás;
+- código DulceSweet;
+- web organizada por pestañas;
+- tienda;
+- ruleta;
+- galería;
+- panel de nombres en clave;
+- candado final "Contratar a Steisy".
 
 Sube a la raíz del repo:
 - index.html
@@ -29,4 +31,4 @@ Sube a la raíz del repo:
 - script.js
 - README.md
 
-No hace falta tocar assets. El QR no cambia mientras mantengas la misma URL de GitHub Pages.
+No hace falta tocar assets. El QR no cambia.
