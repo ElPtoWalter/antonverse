@@ -406,7 +406,6 @@ const committeePanel = document.getElementById('committee-panel');
 const committeeCopyNamesButton = document.getElementById('committee-copy-names-button');
 const committeeResetNamesButton = document.getElementById('committee-reset-names-button');
 const committeeResetSessionButton = document.getElementById('committee-reset-session-button');
-const committeeCloseGateButton = document.getElementById('committee-close-gate-button');
 
 const galleryRevealedCount = document.getElementById('gallery-revealed-count');
 const galleryTotalCount = document.getElementById('gallery-total-count');
@@ -451,6 +450,84 @@ function isUltimateUnlocked() {
   return getDiscoveredNameSet().size >= getSecretNameTotal();
 }
 
+
+function playSecretSuccessSound() {
+  // Se activa tras un submit/tap del usuario, así que iPhone/Android suelen permitirlo.
+  try {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance('Ouuuu yeah');
+      utterance.lang = 'en-US';
+      utterance.rate = 0.72;
+      utterance.pitch = 0.78;
+      utterance.volume = 1;
+      window.speechSynthesis.speak(utterance);
+      return;
+    }
+  } catch (error) {
+    // Si la voz falla, usamos el beep de respaldo.
+  }
+
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+
+    const ctx = new AudioContext();
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
+    gain.connect(ctx.destination);
+
+    [220, 330, 440].forEach((frequency, index) => {
+      const oscillator = ctx.createOscillator();
+      oscillator.type = 'sawtooth';
+      oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + index * 0.08);
+      oscillator.connect(gain);
+      oscillator.start(ctx.currentTime + index * 0.08);
+      oscillator.stop(ctx.currentTime + 0.68);
+    });
+  } catch (error) {
+    // Sin sonido si el navegador lo bloquea.
+  }
+}
+
+
+function playSecretErrorSound() {
+  // Bocina de error generada por código. No toca la radio ni el reproductor principal.
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+
+    const ctx = new AudioContext();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(900, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.42);
+
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.28, ctx.currentTime + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    [0, 0.18].forEach((offset) => {
+      const oscillator = ctx.createOscillator();
+      oscillator.type = 'square';
+      oscillator.frequency.setValueAtTime(190, ctx.currentTime + offset);
+      oscillator.frequency.exponentialRampToValueAtTime(92, ctx.currentTime + offset + 0.16);
+      oscillator.connect(filter);
+      oscillator.start(ctx.currentTime + offset);
+      oscillator.stop(ctx.currentTime + offset + 0.17);
+    });
+  } catch (error) {
+    // Si el navegador bloquea audio, simplemente no suena.
+  }
+}
+
 function registerSecretNameGuess(name) {
   const raw = String(name || '').trim();
   const normalized = normalizeName(raw);
@@ -461,6 +538,7 @@ function registerSecretNameGuess(name) {
   }
 
   if (!FRIEND_NAMES.includes(normalized)) {
+    playSecretErrorSound();
     showToast('Ese no era nombre en clave. Seguid rascando.');
     return false;
   }
@@ -479,6 +557,7 @@ function registerSecretNameGuess(name) {
   renderChallenges();
   renderRouletteWheel();
   updateRouletteUI();
+  playSecretSuccessSound();
 
   if (isUltimateUnlocked()) {
     showToast('CANDADO FINAL ABIERTO: Contratar a Steisy desbloqueado.');
@@ -1487,7 +1566,6 @@ if (secretNameForm) secretNameForm.addEventListener('submit', submitSecretNameGu
 if (committeeCopyNamesButton) committeeCopyNamesButton.addEventListener('click', copyDiscoveredSecretNames);
 if (committeeResetNamesButton) committeeResetNamesButton.addEventListener('click', resetSecretNames);
 if (committeeResetSessionButton) committeeResetSessionButton.addEventListener('click', resetPurchasesOnly);
-if (committeeCloseGateButton) committeeCloseGateButton.addEventListener('click', closeGateFromCommittee);
 jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
