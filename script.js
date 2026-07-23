@@ -452,43 +452,74 @@ function isUltimateUnlocked() {
 
 
 function playSecretSuccessSound() {
-  // Se activa tras un submit/tap del usuario, así que iPhone/Android suelen permitirlo.
+  // Primero intenta reproducir un archivo real tipo "ou yeah".
+  // Sube tu audio como assets/audio/ou-yeah.mp3.
+  // Si no existe o el navegador lo bloquea, usa la voz sintética de respaldo.
+  const fallbackVoice = () => {
+    try {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance('Ouuuu yeah');
+        utterance.lang = 'en-US';
+        utterance.rate = 0.72;
+        utterance.pitch = 0.78;
+        utterance.volume = 1;
+        window.speechSynthesis.speak(utterance);
+        return;
+      }
+    } catch (error) {
+      // Si la voz falla, usamos el beep de respaldo.
+    }
+
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      const ctx = new AudioContext();
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
+      gain.connect(ctx.destination);
+
+      [220, 330, 440].forEach((frequency, index) => {
+        const oscillator = ctx.createOscillator();
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + index * 0.08);
+        oscillator.connect(gain);
+        oscillator.start(ctx.currentTime + index * 0.08);
+        oscillator.stop(ctx.currentTime + 0.68);
+      });
+    } catch (error) {
+      // Sin sonido si el navegador lo bloquea.
+    }
+  };
+
   try {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance('Ouuuu yeah');
-      utterance.lang = 'en-US';
-      utterance.rate = 0.72;
-      utterance.pitch = 0.78;
-      utterance.volume = 1;
-      window.speechSynthesis.speak(utterance);
-      return;
+    const sources = ['assets/audio/ou-yeah.mp3', 'assets/audio/ou-yeah.m4a'];
+    let index = 0;
+    const effect = new Audio(sources[index]);
+    effect.volume = 1;
+    effect.preload = 'auto';
+
+    effect.addEventListener('error', () => {
+      index += 1;
+      if (index < sources.length) {
+        effect.src = sources[index];
+        effect.load();
+        const retry = effect.play();
+        if (retry && typeof retry.catch === 'function') retry.catch(fallbackVoice);
+      } else {
+        fallbackVoice();
+      }
+    });
+
+    const playPromise = effect.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(fallbackVoice);
     }
   } catch (error) {
-    // Si la voz falla, usamos el beep de respaldo.
-  }
-
-  try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-
-    const ctx = new AudioContext();
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
-    gain.connect(ctx.destination);
-
-    [220, 330, 440].forEach((frequency, index) => {
-      const oscillator = ctx.createOscillator();
-      oscillator.type = 'sawtooth';
-      oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + index * 0.08);
-      oscillator.connect(gain);
-      oscillator.start(ctx.currentTime + index * 0.08);
-      oscillator.stop(ctx.currentTime + 0.68);
-    });
-  } catch (error) {
-    // Sin sonido si el navegador lo bloquea.
+    fallbackVoice();
   }
 }
 
