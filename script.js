@@ -402,6 +402,10 @@ const ultimateSecretCopy = document.getElementById('ultimate-secret-copy');
 const ultimateLockIcon = document.getElementById('ultimate-lock-icon');
 const resetSecretNamesButton = document.getElementById('reset-secret-names-button');
 const copySecretNamesButton = document.getElementById('copy-secret-names-button');
+const bulkSecretNamesButton = document.getElementById('bulk-secret-names-button');
+const clearBulkSecretNamesButton = document.getElementById('clear-bulk-secret-names-button');
+const bulkSecretNamesInput = document.getElementById('bulk-secret-names-input');
+const bulkSecretResult = document.getElementById('bulk-secret-result');
 const secretNameForm = document.getElementById('secret-name-form');
 const secretNameInput = document.getElementById('secret-name-input');
 
@@ -712,6 +716,98 @@ function updateSecretHunt() {
       : 'Candado activo. Descubrid todos los nombres en clave para revelar la putada más tocha.';
   }
 }
+
+
+function extractSecretNameCandidates(text) {
+  if (!text) return [];
+
+  const rawPieces = text
+    .replace(/\r/g, '\n')
+    .split(/[\n,;|]+/)
+    .map(piece => piece
+      .replace(/^\s*[-*•]\s*/g, '')
+      .replace(/^\s*\d+[\).\-\s]+/g, '')
+      .replace(/^nombre\s*:\s*/i, '')
+      .trim()
+    )
+    .filter(Boolean);
+
+  return rawPieces
+    .filter(piece => !/^ANTONVERSE/i.test(piece))
+    .filter(piece => !/^Descubiertos\s*:/i.test(piece))
+    .filter(piece => !/^Faltan\s*:/i.test(piece))
+    .filter(piece => piece.length <= 90);
+}
+
+function importBulkSecretNames() {
+  if (!bulkSecretNamesInput) return;
+
+  const candidates = extractSecretNameCandidates(bulkSecretNamesInput.value);
+  if (!candidates.length) {
+    playSecretErrorSound();
+    if (bulkSecretResult) bulkSecretResult.textContent = 'No he detectado ningún nombre en la lista pegada.';
+    showToast('No he detectado nombres para importar.');
+    return;
+  }
+
+  const discovered = getDiscoveredNameSet();
+  let added = 0;
+  let repeated = 0;
+  let invalid = 0;
+
+  candidates.forEach(candidate => {
+    const normalized = normalizeName(candidate);
+
+    if (!FRIEND_NAMES.includes(normalized)) {
+      invalid += 1;
+      return;
+    }
+
+    if (discovered.has(normalized)) {
+      repeated += 1;
+      return;
+    }
+
+    discovered.add(normalized);
+    added += 1;
+  });
+
+  if (!added) {
+    playSecretErrorSound();
+    if (bulkSecretResult) {
+      bulkSecretResult.textContent = `Importación sin cambios. Repetidos: ${repeated}. No válidos: ${invalid}.`;
+    }
+    showToast('No se añadió ningún nombre nuevo.');
+    return;
+  }
+
+  state.discoveredNames = Array.from(discovered);
+  persistState();
+  updateSecretHunt();
+  renderChallenges();
+  renderRouletteWheel();
+  updateRouletteUI();
+  playSecretSuccessSound();
+
+  const total = getSecretNameTotal();
+  const progress = state.discoveredNames.length;
+
+  if (bulkSecretResult) {
+    bulkSecretResult.textContent = `Añadidos ${added} nombre${added === 1 ? '' : 's'}. Repetidos: ${repeated}. No válidos: ${invalid}. Progreso: ${progress}/${total}.`;
+  }
+
+  if (isUltimateUnlocked()) {
+    showToast('Importación completada. CANDADO FINAL ABIERTO.');
+  } else {
+    showToast(`Importación completada: +${added}. Progreso ${progress}/${total}.`);
+  }
+}
+
+function clearBulkSecretNames() {
+  if (bulkSecretNamesInput) bulkSecretNamesInput.value = '';
+  if (bulkSecretResult) bulkSecretResult.textContent = 'Caja limpiada. Pega otra lista cuando quieras.';
+}
+
 
 function resetSecretNames() {
   const confirmed = window.confirm('¿Resetear los nombres en clave descubiertos en este móvil? El candado final volverá a cerrarse.');
@@ -1655,6 +1751,8 @@ phraseButton.addEventListener('click', setRandomPhrase);
 resetButton.addEventListener('click', resetSession);
 if (resetSecretNamesButton) resetSecretNamesButton.addEventListener('click', resetSecretNames);
 if (copySecretNamesButton) copySecretNamesButton.addEventListener('click', copyDiscoveredSecretNames);
+if (bulkSecretNamesButton) bulkSecretNamesButton.addEventListener('click', importBulkSecretNames);
+if (clearBulkSecretNamesButton) clearBulkSecretNamesButton.addEventListener('click', clearBulkSecretNames);
 if (secretNameForm) secretNameForm.addEventListener('submit', submitSecretNameGuess);
 if (committeeCopyNamesButton) committeeCopyNamesButton.addEventListener('click', copyDiscoveredSecretNames);
 if (committeeResetNamesButton) committeeResetNamesButton.addEventListener('click', resetSecretNames);

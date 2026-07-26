@@ -213,6 +213,18 @@
               </div>
               <p class="tiny-note">Introduce nombres en clave. Los ejemplos no se muestran por seguridad.</p>
             </form>
+
+            <div class="bulk-secret-box">
+              <p class="card-label">IMPORTAR DESCUBIERTOS</p>
+              <h3>Pegar lista de otro móvil</h3>
+              <p class="tiny-note">Pega aquí la lista copiada desde otro móvil. La web detectará los nombres válidos y los añadirá de golpe.</p>
+              <textarea id="bulk-secret-names-input" class="bulk-secret-textarea" rows="5" placeholder="Ejemplo:&#10;1. macoy&#10;2. caqui&#10;3. dulce"></textarea>
+              <div class="button-row compact">
+                <button id="bulk-secret-names-button" class="primary-button" type="button">Importar nombres</button>
+                <button id="clear-bulk-secret-names-button" class="ghost-button" type="button">Limpiar caja</button>
+              </div>
+              <p id="bulk-secret-result" class="bulk-secret-result">No has pegado ninguna lista todavía.</p>
+            </div>
           </article>
 
           <article id="ultimate-secret-card" class="secret-card ultimate-secret locked">
