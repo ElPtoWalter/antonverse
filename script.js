@@ -368,6 +368,7 @@ const volumeSlider = document.getElementById('volume-slider');
 const nowPlaying = document.getElementById('now-playing');
 const radioTrackSelect = document.getElementById('radio-track-select');
 const radioModeCopy = document.getElementById('radio-mode-copy');
+const radioTrackCount = document.getElementById('radio-track-count');
 
 const tokenCount = document.getElementById('token-count');
 const tokenMax = document.getElementById('token-max');
@@ -1334,15 +1335,25 @@ function copySummary() {
 function renderRadioSelector() {
   if (!radioTrackSelect) return;
 
-  radioTrackSelect.innerHTML = [
-    '<option value="random">Aleatorio Antonverse</option>',
-    ...radioTracks.map((track, index) => `<option value="${index}">${escapeHtml(track.title)}</option>`)
-  ].join('');
+  const options = [
+    '<option value="random">🎲 Aleatorio Antonverse</option>',
+    ...radioTracks.map((track, index) => `<option value="${index}">${index + 1}. ${escapeHtml(track.title)}</option>`)
+  ];
+
+  radioTrackSelect.innerHTML = options.join('');
+
+  if (radioTrackCount) {
+    radioTrackCount.textContent = String(radioTracks.length);
+  }
 
   if (currentTrackIndex >= 0) {
     radioTrackSelect.value = String(currentTrackIndex);
   } else {
     radioTrackSelect.value = 'random';
+  }
+
+  if (radioModeCopy && radioTracks.length) {
+    radioModeCopy.textContent = `Selector cargado: ${radioTracks.length} versiones disponibles.`;
   }
 }
 
@@ -1426,6 +1437,7 @@ function playRadio() {
 
 function nextRadioTrack() {
   playRandomTrack(true);
+  renderRadioSelector();
   showToast('Radio Antonverse FM ha cambiado de condena musical.');
 }
 
@@ -1608,6 +1620,7 @@ function hydrateUI() {
   renderChallenges();
   renderPurchases();
   if (currentTrackIndex === -1) playRandomTrack(false);
+  renderRadioSelector();
   updateRouletteUI();
   activateAppTab('inicio');
 }
