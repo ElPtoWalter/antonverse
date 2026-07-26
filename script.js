@@ -243,7 +243,17 @@ const galleryImages = [
   { src: 'assets/images/anton_sofa_mochila.webp', title: 'Antón: reunión de vecinos versión premium' },
   { src: 'assets/images/anton_sabina.webp', title: 'Antón: 19 días y 500 noches' },
   { src: 'assets/images/anton_buuaaah_comic.webp', title: 'Antón: BUUUUAAAAH modo cómic' },
-  { src: 'assets/images/anton_carta_bloqueo.webp', title: 'Antón: carta trampa definitiva' }
+  { src: 'assets/images/anton_carta_bloqueo.webp', title: 'Antón: carta trampa definitiva' },
+  { src: 'assets/images/anton_gesto_consigliere.webp', title: 'Antón: explicación de comité con el Consigliere' },
+  { src: 'assets/images/anton_guardia_civil_duo.webp', title: 'Antón: patrulla de la dignidad' },
+  { src: 'assets/images/anton_reunion_vecinos.webp', title: 'Antón: junta extraordinaria del desastre' },
+  { src: 'assets/images/anton_sofa_confesion.webp', title: 'Antón: sofá de confesiones incómodas' },
+  { src: 'assets/images/anton_manos_lqsa.webp', title: 'Antón: contad con mi pollita' },
+  { src: 'assets/images/anton_langosta_collage.webp', title: 'Antón: modo langosta en la playa' },
+  { src: 'assets/images/anton_playa_botellon_collage.webp', title: 'Antón: botellón y tokens de playa' },
+  { src: 'assets/images/anton_playa_pose_collage.webp', title: 'Antón: posados oficiales de playa' },
+  { src: 'assets/images/anton_verano_flamenco_collage.webp', title: 'Antón: verano premium sin dignidad' },
+  { src: 'assets/images/anton_barbacoa_body.webp', title: 'Antón: parrillero del multiverso' }
 ];
 
 
@@ -532,39 +542,60 @@ function playSecretSuccessSound() {
 
 
 function playSecretErrorSound() {
-  // Bocina de error generada por código. No toca la radio ni el reproductor principal.
+  // Primero reproduce el audio real de fallo. Si no carga, usa la bocina generada.
+  const fallbackHorn = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(900, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.42);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.28, ctx.currentTime + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      [0, 0.18].forEach((offset) => {
+        const oscillator = ctx.createOscillator();
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(190, ctx.currentTime + offset);
+        oscillator.frequency.exponentialRampToValueAtTime(92, ctx.currentTime + offset + 0.16);
+        oscillator.connect(filter);
+        oscillator.start(ctx.currentTime + offset);
+        oscillator.stop(ctx.currentTime + offset + 0.17);
+      });
+    } catch (error) {}
+  };
+
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
+    const sources = ['assets/audio/error.ogg', 'assets/audio/error.mp3'];
+    let index = 0;
+    const effect = new Audio(sources[index]);
+    effect.volume = 1;
+    effect.preload = 'auto';
 
-    const ctx = new AudioContext();
-    const gain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(900, ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.42);
-
-    gain.gain.setValueAtTime(0.001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.28, ctx.currentTime + 0.025);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
-
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-
-    [0, 0.18].forEach((offset) => {
-      const oscillator = ctx.createOscillator();
-      oscillator.type = 'square';
-      oscillator.frequency.setValueAtTime(190, ctx.currentTime + offset);
-      oscillator.frequency.exponentialRampToValueAtTime(92, ctx.currentTime + offset + 0.16);
-      oscillator.connect(filter);
-      oscillator.start(ctx.currentTime + offset);
-      oscillator.stop(ctx.currentTime + offset + 0.17);
+    effect.addEventListener('error', () => {
+      index += 1;
+      if (index < sources.length) {
+        effect.src = sources[index];
+        effect.load();
+        const retry = effect.play();
+        if (retry && typeof retry.catch === 'function') retry.catch(fallbackHorn);
+      } else {
+        fallbackHorn();
+      }
     });
+
+    const playPromise = effect.play();
+    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(fallbackHorn);
   } catch (error) {
-    // Si el navegador bloquea audio, simplemente no suena.
+    fallbackHorn();
   }
 }
+
 
 function registerSecretNameGuess(name) {
   const raw = String(name || '').trim();
