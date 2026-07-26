@@ -2024,3 +2024,32 @@ blockquote {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ===== Antonverse v34: selector de radio seguro ===== */
+.radio-picker {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.radio-track-select {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  padding: 0.72rem 0.85rem;
+  background: rgba(12, 8, 30, 0.9);
+  color: white;
+  font-weight: 900;
+  outline: none;
+}
+
+.radio-track-select:focus {
+  border-color: rgba(67, 243, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(67, 243, 255, 0.12);
+}
+
+.radio-track-select option {
+  background: #160d2f;
+  color: white;
+}

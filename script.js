@@ -123,7 +123,6 @@ const FRIEND_NAMES = [
   'il consigliere',
   'caqui',
   'pocoyo',
-  '...',
   'pol',
   'sara',
   'yomen',
@@ -134,21 +133,14 @@ const FRIEND_NAMES = [
   'puta',
   'nat',
   'natrix',
-  'padre del parlita',
   'negri',
   'no me duele',
   'valen',
   'dynamic gamers',
-  'dynamic gaymers',
   'dios',
   'se mutran de tu menda',
   'cabeza',
-  'el caqui',
-  'el parlita',
-  'dynamic gamer',
-  'dynamic gaymer',
   'nomeduele',
-  'ilconsigliere',
   'dres',
   'dresete',
   'el gran figure',
@@ -168,8 +160,15 @@ const FRIEND_NAMES = [
   'dulce',
   'el gitanico',
   'ha!',
-  'se come el bote',
-  'na tu ni de coña'
+  'na tu ni de coña',
+  'peloli',
+  'buaj',
+  'contad con mi pollita',
+  'cartoncartoncarton',
+  'se come el bote tu',
+  'hahaha',
+  'megustanlastrabas',
+  'el amigo del padre del hijo del parlita',
 ];
 
 const phrases = [
@@ -367,6 +366,9 @@ const musicNext = document.getElementById('music-next');
 const musicMute = document.getElementById('music-mute');
 const volumeSlider = document.getElementById('volume-slider');
 const nowPlaying = document.getElementById('now-playing');
+const radioTrackSelect = document.getElementById('radio-track-select');
+const radioModeCopy = document.getElementById('radio-mode-copy');
+
 const tokenCount = document.getElementById('token-count');
 const tokenMax = document.getElementById('token-max');
 const meterFill = document.getElementById('meter-fill');
@@ -1002,6 +1004,7 @@ function buyChallenge(id) {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  renderRadioSelector();
   if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
   showToast(`Has comprado: ${challenge.text}`);
@@ -1327,6 +1330,46 @@ function copySummary() {
     .catch(() => showToast('No se pudo copiar. Hazlo a mano como en la prehistoria.'));
 }
 
+
+function renderRadioSelector() {
+  if (!radioTrackSelect) return;
+
+  radioTrackSelect.innerHTML = [
+    '<option value="random">Aleatorio Antonverse</option>',
+    ...radioTracks.map((track, index) => `<option value="${index}">${escapeHtml(track.title)}</option>`)
+  ].join('');
+
+  if (currentTrackIndex >= 0) {
+    radioTrackSelect.value = String(currentTrackIndex);
+  } else {
+    radioTrackSelect.value = 'random';
+  }
+}
+
+function chooseRadioTrack() {
+  if (!radioTrackSelect) return;
+
+  const value = radioTrackSelect.value;
+
+  if (value === 'random') {
+    playRandomTrack(true);
+    if (radioModeCopy) radioModeCopy.textContent = 'Modo aleatorio: la radio elegirá una versión al azar.';
+    showToast('Radio en modo aleatorio.');
+    return;
+  }
+
+  const index = Number(value);
+  if (!Number.isInteger(index) || index < 0 || index >= radioTracks.length) {
+    showToast('Esa versión no existe.');
+    return;
+  }
+
+  setRadioTrack(index, true);
+  if (radioModeCopy) radioModeCopy.textContent = `Versión elegida: ${radioTracks[index].title}`;
+  showToast(`Versión elegida: ${radioTracks[index].title}`);
+}
+
+
 function getRandomTrackIndex(excludeIndex = -1) {
   if (radioTracks.length <= 1) return 0;
 
@@ -1349,6 +1392,12 @@ function setRadioTrack(index, shouldPlay = false) {
   bgMusic.load();
   if (nowPlaying) {
     nowPlaying.textContent = `Ahora suena: ${track.title}`;
+  }
+  if (radioTrackSelect) {
+    radioTrackSelect.value = String(currentTrackIndex);
+  }
+  if (radioModeCopy) {
+    radioModeCopy.textContent = `Sonando: ${track.title}`;
   }
 
   if (shouldPlay) {
@@ -1601,6 +1650,7 @@ jokerButton.addEventListener('click', useJoker);
 copySummaryButton.addEventListener('click', copySummary);
 musicToggle.addEventListener('click', toggleMusic);
 musicNext.addEventListener('click', nextRadioTrack);
+if (radioTrackSelect) radioTrackSelect.addEventListener('change', chooseRadioTrack);
 bgMusic.addEventListener('ended', nextRadioTrack);
 musicMute.addEventListener('click', toggleMute);
 rouletteSpin.addEventListener('click', () => spinRoulette(false));

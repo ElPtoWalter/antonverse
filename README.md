@@ -1,29 +1,50 @@
-# Antonverse v31 · Ou Yeah real añadido
+# Antonverse v34 · radio mejorada + nombres finales
 
-Versión ajustada. No cambia la URL ni el QR.
+Versión basada en la v31 estable. No incluye modo online ni Supabase.
 
-Cambios:
-- Añadido el audio real que has subido.
-- El archivo queda preparado en:
-  assets/audio/ou-yeah.mp3
-- También se incluye una copia de respaldo:
-  assets/audio/ou-yeah.m4a
-- La web intenta reproducir primero el MP3 y, si falla, prueba el M4A.
-- Si no puede reproducir ninguno, usa la voz sintética de respaldo "Ouuuu yeah".
-- La bocina de error se mantiene para nombres incorrectos.
-- La radio Antonverse no se toca:
-  - no se pausa;
-  - no se reinicia;
-  - no cambia de canción.
+Cambios de nombres:
+Quitados:
+- ...
+- el caqui
+- el parlita
+- dynamic gaymers
+- ilconsigliere
+- se come el bote
+- padre del parlita
+- dynamic gaymer
+- dynamic gamer
 
-Conversión MP3:
-- Correcta
+Añadidos:
+- peloli
+- buaj
+- contad con mi pollita
+- cartoncartoncarton
+- se come el bote tu
+- hahaha
+- megustanlastrabas
+- el amigo del padre del hijo del parlita
+
+Mejora de radio:
+- Añadido selector de versión concreta.
+- Mantiene modo aleatorio.
+- No toca la tienda, ruleta, galería, nombres, contador ni cuenta atrás.
+
+Mantiene:
+- cuenta atrás;
+- código DulceSweet;
+- web por pestañas;
+- tienda;
+- ruleta;
+- galería ampliada;
+- panel de nombres en clave;
+- contador de fotos;
+- copiar nombres descubiertos;
+- candado final "Contratar a Steisy";
+- ou-yeah real;
+- bocina de error.
 
 Para subir:
 1. Sube `index.html`, `style.css`, `script.js` y `README.md` a la raíz.
-2. Sube también estos archivos a `assets/audio/`:
-   - ou-yeah.mp3
-   - ou-yeah.m4a
-3. Si todavía no subiste las fotos nuevas de v26/v27, sube también el contenido de `assets/images/`.
+2. Si ya tenías subidas las fotos y audios, no hace falta tocar `assets`.
 
 El QR de las camisetas no cambia.
