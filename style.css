@@ -2478,8 +2478,17 @@ body.ultimate-overlay-open {
 }
 
 .ultimate-reveal-overlay.is-active .ultimate-lock-shell {
-  animation: ultimateLockShake 0.28s ease-in-out 4;
+  animation: ultimateLockShake 0.22s ease-in-out 6;
 }
+
+.ultimate-reveal-overlay.is-active .ultimate-reveal-stage {
+  animation: ultimateStageTension 0.72s ease-in-out both;
+}
+
+.ultimate-reveal-overlay.is-breaking .ultimate-reveal-stage {
+  animation: ultimateScreenImpact 0.58s cubic-bezier(.2,.8,.2,1) both;
+}
+
 
 .ultimate-reveal-overlay.is-breaking .ultimate-chain-left {
   transform: translate(-82px, -50%) rotate(-16deg) scaleX(0.84);
@@ -2512,7 +2521,15 @@ body.ultimate-overlay-open {
 }
 
 .ultimate-reveal-overlay.is-revealed .ultimate-reveal-title {
-  animation: ultimateBoomPop 0.7s ease;
+  animation: ultimateTitleSlam 0.72s cubic-bezier(.2, 1.4, .25, 1) both;
+}
+
+.ultimate-reveal-overlay.is-flashing .ultimate-reveal-flash {
+  animation: ultimateWhiteFlash 0.65s ease-out both;
+}
+
+.ultimate-reveal-overlay.is-flashing .ultimate-sparks span {
+  animation: ultimateSparkBurst 0.9s cubic-bezier(.18,.89,.32,1.28) both;
 }
 
 @keyframes ultimateBackdropPulse {
@@ -2544,7 +2561,7 @@ body.ultimate-overlay-open {
   100% { transform: scale(0.5); opacity: 0; }
 }
 
-@keyframes ultimateBoomPop {
+@keyframes ultimateOldPopUnused {
   0% { transform: scale(0.7); opacity: 0; }
   55% { transform: scale(1.08); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }

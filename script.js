@@ -516,48 +516,85 @@ function playUltimateRevealSound() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
     const ctx = new AudioContext();
+    const now = ctx.currentTime;
+
     const master = ctx.createGain();
-    master.gain.setValueAtTime(0.001, ctx.currentTime);
-    master.gain.exponentialRampToValueAtTime(0.42, ctx.currentTime + 0.04);
-    master.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.35);
+    master.gain.setValueAtTime(0.001, now);
+    master.gain.exponentialRampToValueAtTime(0.55, now + 0.035);
+    master.gain.exponentialRampToValueAtTime(0.001, now + 2.1);
     master.connect(ctx.destination);
 
-    const now = ctx.currentTime;
-    [0, 0.08, 0.16].forEach((offset, index) => {
+    // Golpe grave inicial tipo "tráiler".
+    const impact = ctx.createOscillator();
+    const impactGain = ctx.createGain();
+    impact.type = 'sine';
+    impact.frequency.setValueAtTime(72, now);
+    impact.frequency.exponentialRampToValueAtTime(34, now + 0.85);
+    impactGain.gain.setValueAtTime(0.0001, now);
+    impactGain.gain.exponentialRampToValueAtTime(0.7, now + 0.035);
+    impactGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+    impact.connect(impactGain);
+    impactGain.connect(master);
+    impact.start(now);
+    impact.stop(now + 1.35);
+
+    // Tres golpes metálicos de cadena.
+    [0.18, 0.34, 0.52].forEach((offset, index) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(120 + index * 26, now + offset);
-      osc.frequency.exponentialRampToValueAtTime(62, now + offset + 0.32);
+      const filter = ctx.createBiquadFilter();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(220 + index * 75, now + offset);
+      osc.frequency.exponentialRampToValueAtTime(110 + index * 30, now + offset + 0.18);
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(950 + index * 450, now + offset);
+      filter.Q.value = 5;
       gain.gain.setValueAtTime(0.0001, now + offset);
-      gain.gain.exponentialRampToValueAtTime(0.25, now + offset + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.38);
-      osc.connect(gain);
+      gain.gain.exponentialRampToValueAtTime(0.28, now + offset + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.25);
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(master);
       osc.start(now + offset);
-      osc.stop(now + offset + 0.4);
+      osc.stop(now + offset + 0.28);
     });
 
-    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.45, ctx.sampleRate);
+    // Ruptura con ruido corto.
+    const noiseBuffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.62), ctx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
     for (let i = 0; i < output.length; i += 1) {
-      output[i] = (Math.random() * 2 - 1) * (1 - i / output.length);
+      const fade = 1 - i / output.length;
+      output[i] = (Math.random() * 2 - 1) * fade * fade;
     }
     const noise = ctx.createBufferSource();
     const noiseFilter = ctx.createBiquadFilter();
     const noiseGain = ctx.createGain();
     noise.buffer = noiseBuffer;
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.setValueAtTime(880, now);
-    noiseFilter.Q.value = 0.8;
-    noiseGain.gain.setValueAtTime(0.0001, now + 0.34);
-    noiseGain.gain.exponentialRampToValueAtTime(0.2, now + 0.42);
-    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.78);
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(460, now + 0.66);
+    noiseGain.gain.setValueAtTime(0.0001, now + 0.66);
+    noiseGain.gain.exponentialRampToValueAtTime(0.32, now + 0.7);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.16);
     noise.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
     noiseGain.connect(master);
-    noise.start(now + 0.34);
-    noise.stop(now + 0.82);
+    noise.start(now + 0.66);
+    noise.stop(now + 1.2);
+
+    // Brillo final ascendente.
+    [523.25, 659.25, 783.99].forEach((frequency, index) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(frequency, now + 1.02 + index * 0.04);
+      gain.gain.setValueAtTime(0.0001, now + 1.02 + index * 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.16, now + 1.08 + index * 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.85);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(now + 1.02 + index * 0.04);
+      osc.stop(now + 1.9);
+    });
   } catch (error) {
     // Si el navegador bloquea el efecto, seguimos sin romper nada.
   }
@@ -570,7 +607,7 @@ function closeUltimateReveal(options = {}) {
     ultimateRevealCloseTimer = null;
   }
   ultimateRevealOverlay.classList.add('hidden');
-  ultimateRevealOverlay.classList.remove('is-active', 'is-breaking', 'is-revealed');
+  ultimateRevealOverlay.classList.remove('is-active', 'is-breaking', 'is-flashing', 'is-revealed');
   ultimateRevealOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('ultimate-overlay-open');
 
@@ -587,11 +624,11 @@ function closeUltimateReveal(options = {}) {
 function triggerUltimateReveal() {
   if (!ultimateRevealOverlay || isUltimateRevealOpen()) return;
 
-  if (ultimateRevealTitle) ultimateRevealTitle.textContent = 'PAAAAAM';
+  if (ultimateRevealTitle) ultimateRevealTitle.textContent = 'PUTADA FINAL DESBLOQUEADA';
   if (ultimateRevealText) ultimateRevealText.textContent = 'Candado reventado. El comité ha liberado la condena definitiva: Contratar a Steisy.';
 
   ultimateRevealOverlay.classList.remove('hidden');
-  ultimateRevealOverlay.classList.remove('is-breaking', 'is-revealed');
+  ultimateRevealOverlay.classList.remove('is-breaking', 'is-revealed', 'is-flashing');
   ultimateRevealOverlay.classList.add('is-active');
   ultimateRevealOverlay.setAttribute('aria-hidden', 'false');
   document.body.classList.add('ultimate-overlay-open');
@@ -601,12 +638,17 @@ function triggerUltimateReveal() {
   window.setTimeout(() => {
     if (!ultimateRevealOverlay || ultimateRevealOverlay.classList.contains('hidden')) return;
     ultimateRevealOverlay.classList.add('is-breaking');
-  }, 720);
+  }, 680);
+
+  window.setTimeout(() => {
+    if (!ultimateRevealOverlay || ultimateRevealOverlay.classList.contains('hidden')) return;
+    ultimateRevealOverlay.classList.add('is-flashing');
+  }, 980);
 
   window.setTimeout(() => {
     if (!ultimateRevealOverlay || ultimateRevealOverlay.classList.contains('hidden')) return;
     ultimateRevealOverlay.classList.add('is-revealed');
-  }, 1320);
+  }, 1340);
 
   ultimateRevealCloseTimer = window.setTimeout(() => {
     closeUltimateReveal({ focusCard: true });
