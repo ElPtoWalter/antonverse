@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
 };
 
 const GATE_OPEN_AT = new Date('2026-07-31T12:00:00+02:00');
+const GATE_CLOSE_AT = new Date('2026-08-02T23:59:00+02:00');
 const GATE_ADMIN_CODE = 'DulceSweet';
 
 const radioTracks = [
@@ -358,6 +359,11 @@ let wheelRotation = 0;
 let wheelChallenges = [];
 let wheelSegmentAngle = 0;
 
+const closedScreen = document.getElementById('closed-screen');
+const closedCodeForm = document.getElementById('closed-code-form');
+const closedCodeInput = document.getElementById('closed-code-input');
+const closedCodeMessage = document.getElementById('closed-code-message');
+
 const lockedScreen = document.getElementById('locked-screen');
 const gateCodeForm = document.getElementById('gate-code-form');
 const gateCodeInput = document.getElementById('gate-code-input');
@@ -366,6 +372,12 @@ const countdownDays = document.getElementById('countdown-days');
 const countdownHours = document.getElementById('countdown-hours');
 const countdownMinutes = document.getElementById('countdown-minutes');
 const countdownSeconds = document.getElementById('countdown-seconds');
+
+const closureDays = document.getElementById('closure-days');
+const closureHours = document.getElementById('closure-hours');
+const closureMinutes = document.getElementById('closure-minutes');
+const closureSeconds = document.getElementById('closure-seconds');
+const closureCopy = document.getElementById('closure-copy');
 
 const appShell = document.getElementById('app-shell');
 const entryScreen = document.getElementById('entry-screen');
@@ -1615,15 +1627,29 @@ function escapeHtml(text) {
 
 let gateTimer = null;
 
+function hasGateOverride() {
+  return localStorage.getItem(STORAGE_KEYS.gateOverride) === 'true';
+}
+
+function isBeforeOpening() {
+  return Date.now() < GATE_OPEN_AT.getTime();
+}
+
+function isAfterClosure() {
+  return Date.now() >= GATE_CLOSE_AT.getTime();
+}
+
 function isGateOpen() {
-  return Date.now() >= GATE_OPEN_AT.getTime() || localStorage.getItem(STORAGE_KEYS.gateOverride) === 'true';
+  return !isBeforeOpening() || hasGateOverride();
 }
 
 function updateCountdown() {
   const distance = GATE_OPEN_AT.getTime() - Date.now();
 
   if (distance <= 0) {
-    unlockGate();
+    if (!isAfterClosure() || hasGateOverride()) {
+      unlockGate();
+    }
     return;
   }
 
@@ -1639,22 +1665,94 @@ function updateCountdown() {
   if (countdownSeconds) countdownSeconds.textContent = String(seconds).padStart(2, '0');
 }
 
+function updateClosureCountdown() {
+  if (!closureDays || !closureHours || !closureMinutes || !closureSeconds) return;
+
+  const distance = GATE_CLOSE_AT.getTime() - Date.now();
+
+  if (distance <= 0) {
+    closureDays.textContent = '00';
+    closureHours.textContent = '00';
+    closureMinutes.textContent = '00';
+    closureSeconds.textContent = '00';
+    if (closureCopy) closureCopy.textContent = 'Antonverse cerrado. Solo el comité puede reabrirlo desde este móvil.';
+    return;
+  }
+
+  const totalSeconds = Math.floor(distance / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  closureDays.textContent = String(days).padStart(2, '0');
+  closureHours.textContent = String(hours).padStart(2, '0');
+  closureMinutes.textContent = String(minutes).padStart(2, '0');
+  closureSeconds.textContent = String(seconds).padStart(2, '0');
+
+  if (closureCopy) closureCopy.textContent = 'Cuando llegue a cero, el QR enseñará la pantalla de archivo cerrado.';
+}
+
+function closeArchive() {
+  clearInterval(gateTimer);
+  if (closedScreen) closedScreen.classList.remove('hidden');
+  if (lockedScreen) lockedScreen.classList.add('hidden');
+  if (entryScreen) entryScreen.classList.add('hidden');
+  if (appShell) appShell.classList.add('hidden');
+}
+
 function lockGate() {
+  if (closedScreen) closedScreen.classList.add('hidden');
   if (lockedScreen) lockedScreen.classList.remove('hidden');
   if (entryScreen) entryScreen.classList.add('hidden');
   if (appShell) appShell.classList.add('hidden');
 
   updateCountdown();
+  updateClosureCountdown();
   clearInterval(gateTimer);
-  gateTimer = window.setInterval(updateCountdown, 1000);
+  gateTimer = window.setInterval(() => {
+    updateCountdown();
+    updateClosureCountdown();
+
+    if (!hasGateOverride() && isAfterClosure()) {
+      closeArchive();
+    }
+  }, 1000);
 }
 
 function unlockGate() {
   clearInterval(gateTimer);
+  if (closedScreen) closedScreen.classList.add('hidden');
   if (lockedScreen) lockedScreen.classList.add('hidden');
   if (entryScreen && appShell?.classList.contains('hidden')) {
     entryScreen.classList.remove('hidden');
   }
+  updateClosureCountdown();
+  gateTimer = window.setInterval(() => {
+    updateClosureCountdown();
+
+    if (!hasGateOverride() && isAfterClosure()) {
+      closeArchive();
+    }
+  }, 1000);
+}
+
+function handleClosedCode(event) {
+  if (event) event.preventDefault();
+
+  const code = String(closedCodeInput?.value || '').trim();
+  if (code === GATE_ADMIN_CODE) {
+    localStorage.setItem(STORAGE_KEYS.gateOverride, 'true');
+    if (closedCodeMessage) closedCodeMessage.textContent = 'Código aceptado. Archivo reabierto para el comité.';
+    unlockGate();
+    updateCommitteePanel();
+    showToast('Archivo reabierto para el comité.');
+    return;
+  }
+
+  if (closedCodeMessage) closedCodeMessage.textContent = 'Código incorrecto. El Antonverse sigue cerrado.';
+  playSecretErrorSound();
+  showToast('Código incorrecto.');
 }
 
 function handleGateCode(event) {
@@ -1671,17 +1769,29 @@ function handleGateCode(event) {
   }
 
   if (gateCodeMessage) gateCodeMessage.textContent = 'Código incorrecto. Antón sigue fuera.';
+  playSecretErrorSound();
   showToast('Código incorrecto.');
 }
 
 function initGate() {
   if (!lockedScreen) return;
 
-  if (isGateOpen()) {
+  if (hasGateOverride()) {
     unlockGate();
-  } else {
-    lockGate();
+    return;
   }
+
+  if (isBeforeOpening()) {
+    lockGate();
+    return;
+  }
+
+  if (isAfterClosure()) {
+    closeArchive();
+    return;
+  }
+
+  unlockGate();
 }
 
 
@@ -1730,8 +1840,15 @@ function activateAppTab(tabName = 'inicio', options = {}) {
 }
 
 function handleEntry() {
+  if (!hasGateOverride() && isAfterClosure()) {
+    closeArchive();
+    return;
+  }
+
+  if (closedScreen) closedScreen.classList.add('hidden');
   entryScreen.classList.add('hidden');
   appShell.classList.remove('hidden');
+  updateClosureCountdown();
   playRandomTrack(true);
 
   if (state.name === 'Invitado misterioso') {
@@ -1776,6 +1893,7 @@ if (bgMusic) {
 }
 
 if (gateCodeForm) gateCodeForm.addEventListener('submit', handleGateCode);
+if (closedCodeForm) closedCodeForm.addEventListener('submit', handleClosedCode);
 enterButton.addEventListener('click', handleEntry);
 renameButton.addEventListener('click', renamePlayer);
 phraseButton.addEventListener('click', setRandomPhrase);
@@ -1832,4 +1950,5 @@ jumpTabButtons.forEach(button => {
 });
 
 hydrateUI();
+updateClosureCountdown();
 initGate();

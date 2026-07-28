@@ -11,6 +11,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <section id="closed-screen" class="lock-screen closed-screen hidden">
+    <div class="lock-box final-card sparkle">
+      <p class="eyebrow blink">📁 EXPEDIENTE CERRADO 📁</p>
+      <h1>ANTONVERSE</h1>
+      <h2>La despedida ha terminado</h2>
+      <p class="lock-copy">El multiverso queda archivado por orden del comité. Si escaneas el QR después del cierre, esta será la pantalla final.</p>
+
+      <details class="gate-code">
+        <summary>Acceso del comité</summary>
+        <form id="closed-code-form">
+          <input id="closed-code-input" type="password" placeholder="Código del comité" autocomplete="off" />
+          <button type="submit" class="primary-button">Reabrir archivo</button>
+        </form>
+        <p id="closed-code-message" class="tiny-note">Solo para revisar la web tras la despedida.</p>
+      </details>
+    </div>
+  </section>
+
   <section id="locked-screen" class="lock-screen">
     <div class="lock-box sparkle">
       <p class="eyebrow blink">🔒 ACCESO CERRADO 🔒</p>
@@ -84,6 +102,7 @@
           <button class="app-tab" type="button" data-tab-target="nombres">🔐 Nombres</button>
           <button class="app-tab" type="button" data-tab-target="galeria">📸 Galería</button>
           <button class="app-tab" type="button" data-tab-target="compras">📜 Compras</button>
+          <button class="app-tab" type="button" data-tab-target="tute">🎴 Tute IA</button>
         </div>
       </nav>
 
@@ -100,6 +119,16 @@
             </div>
           </div>
 
+          <div class="dashboard-card tute-mini-card">
+            <p class="card-label">MINIJUEGO EXTERNO</p>
+            <h2>Tute IA</h2>
+            <p class="muted">Cuando el comité necesite descanso táctico, partida rápida al tute contra la IA.</p>
+            <div class="button-row compact">
+              <a class="primary-button link-button" href="https://elptowalter.github.io/tute-ia/" target="_blank" rel="noopener noreferrer">Abrir Tute IA</a>
+              <button class="ghost-button jump-tab-button" type="button" data-jump-tab="tute">Ver sección</button>
+            </div>
+          </div>
+
           <div class="dashboard-card token-card">
             <p class="card-label">TOKENS RESTANTES</p>
             <div class="token-counter"><span id="token-count">5</span><small>/ <span id="token-max">5</span></small></div>
@@ -113,6 +142,19 @@
             <p class="card-label">RANGO DE MALDAD</p>
             <h2 id="rank-title">Cobarde administrativo</h2>
             <p id="rank-subcopy" class="muted">Aún no has gastado tokens.</p>
+          </div>
+
+          <div class="dashboard-card closure-card">
+            <p class="card-label">CIERRE PROGRAMADO</p>
+            <h2>Cuenta atrás para cerrar la web</h2>
+            <p class="muted">El Antonverse se cerrará el domingo 2 de agosto a las 23:59.</p>
+            <div id="closure-countdown" class="closure-countdown">
+              <span><strong id="closure-days">--</strong><small>días</small></span>
+              <span><strong id="closure-hours">--</strong><small>horas</small></span>
+              <span><strong id="closure-minutes">--</strong><small>min</small></span>
+              <span><strong id="closure-seconds">--</strong><small>seg</small></span>
+            </div>
+            <p id="closure-copy" class="tiny-note">Cuando llegue a cero, el QR enseñará la pantalla de archivo cerrado.</p>
           </div>
 
           <div id="committee-panel" class="dashboard-card committee-card hidden">
@@ -332,6 +374,44 @@
         <div id="purchases-empty" class="empty-state">Todavía no has comprado nada. Qué decepción.</div>
         <div id="purchases-list" class="purchases-list"></div>
       </section>
+      <section class="panel tab-section hidden" data-tab-section="tute">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">CASINO DEL ANTONVERSE</p>
+            <h2>Tute IA</h2>
+          </div>
+          <p class="section-copy">Acceso directo al minijuego de tute. Se abre aparte para no romper la web principal ni la radio.</p>
+        </div>
+
+        <div class="tute-launch-card sparkle">
+          <div class="tute-badge">🎴</div>
+          <div>
+            <p class="card-label">MODO CARTAS</p>
+            <h3>Partidita rápida antes de la siguiente condena</h3>
+            <p>Esto lleva a tu otra web de Tute IA. El Antonverse sigue abierto en esta pestaña y el QR no cambia.</p>
+            <div class="button-row compact">
+              <a class="primary-button link-button big-link" href="https://elptowalter.github.io/tute-ia/" target="_blank" rel="noopener noreferrer">Abrir Tute IA</a>
+              <button class="ghost-button" type="button" data-jump-tab="inicio">Volver al Antonverse</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tute-rules-grid">
+          <article>
+            <h4>Para qué sirve</h4>
+            <p>Un descanso entre retos, una partida rápida o una excusa para decidir quién compra la siguiente putada.</p>
+          </article>
+          <article>
+            <h4>No mezcla datos</h4>
+            <p>El juego abre en otra página. No toca tokens, compras, nombres secretos ni candado final.</p>
+          </article>
+          <article>
+            <h4>Modo comité</h4>
+            <p>Podéis usarlo como desempate: perdedor compra reto, ganador elige canción o ruleta.</p>
+          </article>
+        </div>
+      </section>
+
     </main>
 
     <footer class="footer">
