@@ -463,8 +463,26 @@ function normalizeName(name) {
     .replace(/\s+/g, ' ');
 }
 
+function looseNormalizeName(name) {
+  return normalizeName(name)
+    .replace(/[!¡?¿.,:;'"`´’“”]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getCanonicalFriendName(name) {
+  const normalized = normalizeName(name);
+
+  if (FRIEND_NAMES.includes(normalized)) {
+    return normalized;
+  }
+
+  const loose = looseNormalizeName(name);
+  return FRIEND_NAMES.find(friendName => looseNormalizeName(friendName) === loose) || '';
+}
+
 function isFriendName(name) {
-  return FRIEND_NAMES.includes(normalizeName(name));
+  return Boolean(getCanonicalFriendName(name));
 }
 
 function getSecretNameTotal() {
@@ -472,7 +490,11 @@ function getSecretNameTotal() {
 }
 
 function getDiscoveredNameSet() {
-  return new Set((state.discoveredNames || []).map(normalizeName));
+  return new Set(
+    (state.discoveredNames || [])
+      .map(getCanonicalFriendName)
+      .filter(Boolean)
+  );
 }
 
 function isUltimateUnlocked() {
@@ -618,7 +640,9 @@ function registerSecretNameGuess(name) {
     return false;
   }
 
-  if (!FRIEND_NAMES.includes(normalized)) {
+  const canonicalName = getCanonicalFriendName(raw);
+
+  if (!canonicalName) {
     playSecretErrorSound();
     showToast('Ese no era nombre en clave. Seguid rascando.');
     return false;
@@ -626,12 +650,12 @@ function registerSecretNameGuess(name) {
 
   const discovered = getDiscoveredNameSet();
 
-  if (discovered.has(normalized)) {
+  if (discovered.has(canonicalName)) {
     showToast('Ese nombre en clave ya estaba descubierto. No suma otra vez.');
     return true;
   }
 
-  discovered.add(normalized);
+  discovered.add(canonicalName);
   state.discoveredNames = Array.from(discovered);
   persistState();
   updateSecretHunt();
@@ -643,7 +667,7 @@ function registerSecretNameGuess(name) {
   if (isUltimateUnlocked()) {
     showToast('CANDADO FINAL ABIERTO: Contratar a Steisy desbloqueado.');
   } else {
-    showToast(`Nombre en clave descubierto: ${raw}. Progreso ${state.discoveredNames.length}/${getSecretNameTotal()}.`);
+    showToast(`Nombre en clave descubierto: ${canonicalName}. Progreso ${state.discoveredNames.length}/${getSecretNameTotal()}.`);
   }
 
   return true;
@@ -702,9 +726,11 @@ function readStorage() {
   }
 
   if (Array.isArray(savedDiscoveredNames)) {
-    state.discoveredNames = savedDiscoveredNames
-      .map(normalizeName)
-      .filter(name => FRIEND_NAMES.includes(name));
+    state.discoveredNames = Array.from(new Set(
+      savedDiscoveredNames
+        .map(getCanonicalFriendName)
+        .filter(Boolean)
+    ));
   }
 }
 
@@ -797,28 +823,31 @@ function importBulkSecretNames() {
   let added = 0;
   let repeated = 0;
   let invalid = 0;
+  const invalidNames = [];
 
   candidates.forEach(candidate => {
-    const normalized = normalizeName(candidate);
+    const canonicalName = getCanonicalFriendName(candidate);
 
-    if (!FRIEND_NAMES.includes(normalized)) {
+    if (!canonicalName) {
       invalid += 1;
+      invalidNames.push(candidate);
       return;
     }
 
-    if (discovered.has(normalized)) {
+    if (discovered.has(canonicalName)) {
       repeated += 1;
       return;
     }
 
-    discovered.add(normalized);
+    discovered.add(canonicalName);
     added += 1;
   });
 
   if (!added) {
     playSecretErrorSound();
     if (bulkSecretResult) {
-      bulkSecretResult.textContent = `Importación sin cambios. Repetidos: ${repeated}. No válidos: ${invalid}.`;
+      const invalidCopy = invalidNames.length ? ` No reconocidos: ${invalidNames.slice(0, 5).join(', ')}.` : '';
+      bulkSecretResult.textContent = `Importación sin cambios. Repetidos: ${repeated}. No válidos: ${invalid}.${invalidCopy}`;
     }
     showToast('No se añadió ningún nombre nuevo.');
     return;
@@ -836,7 +865,8 @@ function importBulkSecretNames() {
   const progress = state.discoveredNames.length;
 
   if (bulkSecretResult) {
-    bulkSecretResult.textContent = `Añadidos ${added} nombre${added === 1 ? '' : 's'}. Repetidos: ${repeated}. No válidos: ${invalid}. Progreso: ${progress}/${total}.`;
+    const invalidCopy = invalidNames.length ? ` No reconocidos: ${invalidNames.slice(0, 5).join(', ')}.` : '';
+    bulkSecretResult.textContent = `Añadidos ${added} nombre${added === 1 ? '' : 's'}. Repetidos: ${repeated}. No válidos: ${invalid}. Progreso: ${progress}/${total}.${invalidCopy}`;
   }
 
   if (isUltimateUnlocked()) {
