@@ -358,6 +358,8 @@ let currentTrackIndex = -1;
 let wheelRotation = 0;
 let wheelChallenges = [];
 let wheelSegmentAngle = 0;
+let lastUltimateUnlockedState = null;
+let ultimateRevealCloseTimer = null;
 
 const closedScreen = document.getElementById('closed-screen');
 const closedCodeForm = document.getElementById('closed-code-form');
@@ -430,6 +432,10 @@ const bulkSecretNamesInput = document.getElementById('bulk-secret-names-input');
 const bulkSecretResult = document.getElementById('bulk-secret-result');
 const secretNameForm = document.getElementById('secret-name-form');
 const secretNameInput = document.getElementById('secret-name-input');
+const ultimateRevealOverlay = document.getElementById('ultimate-reveal-overlay');
+const ultimateRevealTitle = document.getElementById('ultimate-reveal-title');
+const ultimateRevealText = document.getElementById('ultimate-reveal-text');
+const ultimateRevealButton = document.getElementById('ultimate-reveal-button');
 
 const committeePanel = document.getElementById('committee-panel');
 const committeeCopyNamesButton = document.getElementById('committee-copy-names-button');
@@ -499,6 +505,112 @@ function getDiscoveredNameSet() {
 
 function isUltimateUnlocked() {
   return getDiscoveredNameSet().size >= getSecretNameTotal();
+}
+
+function isUltimateRevealOpen() {
+  return Boolean(ultimateRevealOverlay && !ultimateRevealOverlay.classList.contains('hidden'));
+}
+
+function playUltimateRevealSound() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.001, ctx.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.42, ctx.currentTime + 0.04);
+    master.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.35);
+    master.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+    [0, 0.08, 0.16].forEach((offset, index) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(120 + index * 26, now + offset);
+      osc.frequency.exponentialRampToValueAtTime(62, now + offset + 0.32);
+      gain.gain.setValueAtTime(0.0001, now + offset);
+      gain.gain.exponentialRampToValueAtTime(0.25, now + offset + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.38);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.4);
+    });
+
+    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.45, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < output.length; i += 1) {
+      output[i] = (Math.random() * 2 - 1) * (1 - i / output.length);
+    }
+    const noise = ctx.createBufferSource();
+    const noiseFilter = ctx.createBiquadFilter();
+    const noiseGain = ctx.createGain();
+    noise.buffer = noiseBuffer;
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(880, now);
+    noiseFilter.Q.value = 0.8;
+    noiseGain.gain.setValueAtTime(0.0001, now + 0.34);
+    noiseGain.gain.exponentialRampToValueAtTime(0.2, now + 0.42);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.78);
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(master);
+    noise.start(now + 0.34);
+    noise.stop(now + 0.82);
+  } catch (error) {
+    // Si el navegador bloquea el efecto, seguimos sin romper nada.
+  }
+}
+
+function closeUltimateReveal(options = {}) {
+  if (!ultimateRevealOverlay) return;
+  if (ultimateRevealCloseTimer) {
+    window.clearTimeout(ultimateRevealCloseTimer);
+    ultimateRevealCloseTimer = null;
+  }
+  ultimateRevealOverlay.classList.add('hidden');
+  ultimateRevealOverlay.classList.remove('is-active', 'is-breaking', 'is-revealed');
+  ultimateRevealOverlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('ultimate-overlay-open');
+
+  if (options.focusCard && ultimateSecretCard) {
+    activateAppTab('nombres', { scroll: true });
+    window.setTimeout(() => {
+      ultimateSecretCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      ultimateSecretCard.classList.add('sparkle');
+      window.setTimeout(() => ultimateSecretCard.classList.remove('sparkle'), 1100);
+    }, 160);
+  }
+}
+
+function triggerUltimateReveal() {
+  if (!ultimateRevealOverlay || isUltimateRevealOpen()) return;
+
+  if (ultimateRevealTitle) ultimateRevealTitle.textContent = 'PAAAAAM';
+  if (ultimateRevealText) ultimateRevealText.textContent = 'Candado reventado. El comité ha liberado la condena definitiva: Contratar a Steisy.';
+
+  ultimateRevealOverlay.classList.remove('hidden');
+  ultimateRevealOverlay.classList.remove('is-breaking', 'is-revealed');
+  ultimateRevealOverlay.classList.add('is-active');
+  ultimateRevealOverlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('ultimate-overlay-open');
+
+  playUltimateRevealSound();
+
+  window.setTimeout(() => {
+    if (!ultimateRevealOverlay || ultimateRevealOverlay.classList.contains('hidden')) return;
+    ultimateRevealOverlay.classList.add('is-breaking');
+  }, 720);
+
+  window.setTimeout(() => {
+    if (!ultimateRevealOverlay || ultimateRevealOverlay.classList.contains('hidden')) return;
+    ultimateRevealOverlay.classList.add('is-revealed');
+  }, 1320);
+
+  ultimateRevealCloseTimer = window.setTimeout(() => {
+    closeUltimateReveal({ focusCard: true });
+  }, 6200);
 }
 
 
@@ -747,7 +859,7 @@ function getPurchasedIds() {
 }
 
 
-function updateSecretHunt() {
+function updateSecretHunt(options = {}) {
   const total = getSecretNameTotal();
   const discovered = Array.from(getDiscoveredNameSet());
   const count = discovered.length;
@@ -784,6 +896,12 @@ function updateSecretHunt() {
       ? 'PUTADA FINAL DESBLOQUEADA. Ya aparece en la tienda y en la ruleta para nombres en clave.'
       : 'Candado activo. Descubrid todos los nombres en clave para revelar la putada más tocha.';
   }
+
+  if (lastUltimateUnlockedState === false && unlocked && !options.skipReveal) {
+    triggerUltimateReveal();
+  }
+
+  lastUltimateUnlockedState = unlocked;
 }
 
 
@@ -888,6 +1006,7 @@ function resetSecretNames() {
 
   state.discoveredNames = [];
   persistState();
+  closeUltimateReveal();
   rouletteSelection = null;
   updateSecretHunt();
   renderChallenges();
@@ -1402,6 +1521,7 @@ function renamePlayer() {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  updateSecretHunt({ skipReveal: true });
   if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
 
@@ -1429,6 +1549,7 @@ function resetSession() {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  updateSecretHunt({ skipReveal: true });
   if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
   showToast('Sesión reseteada. Vuelves a empezar con tokens limpios.');
@@ -1475,6 +1596,7 @@ function useJoker() {
   updateDashboard();
   renderChallenges();
   renderPurchases();
+  updateSecretHunt({ skipReveal: true });
   if (currentTrackIndex === -1) playRandomTrack(false);
   updateRouletteUI();
   showToast(`Comodín usado. Nuevo reto: ${replacement.text}`);
@@ -1893,6 +2015,7 @@ function hydrateUI() {
   renderGallery();
   renderChallenges();
   renderPurchases();
+  updateSecretHunt({ skipReveal: true });
   if (currentTrackIndex === -1) playRandomTrack(false);
   renderRadioSelector();
   updateRouletteUI();
@@ -1954,7 +2077,10 @@ lightbox.addEventListener('click', event => {
   if (event.target === lightbox) closeLightbox();
 });
 window.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeLightbox();
+  if (event.key === 'Escape') {
+    closeLightbox();
+    if (isUltimateRevealOpen()) closeUltimateReveal({ focusCard: false });
+  }
 });
 
 costFilterButtons.forEach(button => {
@@ -1978,6 +2104,28 @@ jumpTabButtons.forEach(button => {
     activateAppTab(button.dataset.jumpTab, { scroll: true });
   });
 });
+
+if (ultimateRevealButton) {
+  ultimateRevealButton.addEventListener('click', () => {
+    closeUltimateReveal({ focusCard: true });
+  });
+}
+
+if (ultimateRevealOverlay) {
+  ultimateRevealOverlay.addEventListener('click', event => {
+    if (event.target === ultimateRevealOverlay || event.target.classList.contains('ultimate-reveal-backdrop')) {
+      closeUltimateReveal({ focusCard: true });
+    }
+  });
+}
+
+if (ultimateSecretCard) {
+  ultimateSecretCard.addEventListener('click', () => {
+    if (isUltimateUnlocked()) {
+      triggerUltimateReveal();
+    }
+  });
+}
 
 hydrateUI();
 updateClosureCountdown();
