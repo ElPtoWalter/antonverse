@@ -170,6 +170,8 @@ const FRIEND_NAMES = [
   'hahaha',
   'megustanlastrabas',
   'el amigo del padre del hijo del parlita',
+  'vezas',
+  'ana',
 ];
 
 const phrases = [
@@ -254,7 +256,19 @@ const galleryImages = [
   { src: 'assets/images/anton_playa_botellon_collage.webp', title: 'Antón: botellón y tokens de playa' },
   { src: 'assets/images/anton_playa_pose_collage.webp', title: 'Antón: posados oficiales de playa' },
   { src: 'assets/images/anton_verano_flamenco_collage.webp', title: 'Antón: verano premium sin dignidad' },
-  { src: 'assets/images/anton_barbacoa_body.webp', title: 'Antón: parrillero del multiverso' }
+  { src: 'assets/images/anton_barbacoa_body.webp', title: 'Antón: parrillero del multiverso' },
+  { src: 'assets/images/anton_boca_streamer.webp', title: 'Antón: entrenador de Boca en directo' },
+  { src: 'assets/images/anton_carlooos_kirk.webp', title: 'Antón: Carlooos Kirk internacional' },
+  { src: 'assets/images/anton_macoy_mencion.webp', title: 'Antón: cuando se menciona a Macoy' },
+  { src: 'assets/images/anton_dictador_mbappe.webp', title: 'Antón: dictador de Mbappé' },
+  { src: 'assets/images/anton_doble_parlita_fiestas.webp', title: 'Antón: doble aparición del amigo del parlita' },
+  { src: 'assets/images/anton_fiesta_minecraft.webp', title: 'Antón: Minecraft y comité en fiestas' },
+  { src: 'assets/images/anton_seleccion_team.webp', title: 'Antón: se siente parte del equipo' },
+  { src: 'assets/images/anton_concentracion_champions.webp', title: 'Antón: concentración Champions' },
+  { src: 'assets/images/anton_jardin_comite.webp', title: 'Antón: jardín del comité' },
+  { src: 'assets/images/anton_noche_comite.webp', title: 'Antón: comité nocturno' },
+  { src: 'assets/images/anton_grupo_final_boss.webp', title: 'Antón: grupo final boss' },
+  { src: 'assets/images/anton_tiktok_noche.webp', title: 'Antón: directo nocturno TikTok' }
 ];
 
 
