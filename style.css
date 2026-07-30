@@ -2871,3 +2871,168 @@ a.big-button,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* ===== Antonverse v47: botones de enlaces grandes y visibles ===== */
+.quick-links-card {
+  border-color: rgba(255, 231, 97, 0.48);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 231, 97, 0.15), transparent 35%),
+    radial-gradient(circle at 100% 100%, rgba(67, 243, 255, 0.12), transparent 35%),
+    rgba(255,255,255,0.06);
+}
+
+.mega-link-stack {
+  display: grid;
+  gap: 0.72rem;
+  margin-top: 0.9rem;
+}
+
+.mega-link-button,
+.mega-link-button:visited,
+.mega-link-button:hover,
+.mega-link-button:active {
+  width: 100%;
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.82rem;
+  padding: 0.82rem 0.9rem;
+  border-radius: 22px;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  border: 2px solid rgba(255,255,255,0.18);
+  box-shadow:
+    0 16px 32px rgba(0,0,0,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.16);
+  transform: translateZ(0);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.mega-link-button::before {
+  content: '';
+  position: absolute;
+  inset: -70% -30%;
+  background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,0.24) 50%, transparent 62%);
+  transform: translateX(-55%);
+  transition: transform 0.55s ease;
+  pointer-events: none;
+}
+
+.mega-link-button:hover,
+.mega-link-button:focus-visible {
+  transform: translateY(-3px) scale(1.012);
+  box-shadow:
+    0 20px 42px rgba(0,0,0,0.42),
+    0 0 28px rgba(255, 231, 97, 0.16),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  filter: saturate(1.08);
+}
+
+.mega-link-button:hover::before,
+.mega-link-button:focus-visible::before {
+  transform: translateX(55%);
+}
+
+.mega-link-button strong {
+  display: block;
+  font-family: 'Bangers', 'Comic Sans MS', cursive;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.35rem, 4.5vw, 2.05rem);
+  line-height: 0.95;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.9);
+}
+
+.mega-link-button small {
+  display: block;
+  margin-top: 0.25rem;
+  color: rgba(255,255,255,0.86);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.mega-link-button b {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.26);
+  border: 1px solid rgba(255,255,255,0.18);
+  font-size: 1.15rem;
+}
+
+.mega-link-icon {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.16);
+  font-size: 1.7rem;
+  box-shadow: inset 0 0 22px rgba(255,255,255,0.08);
+}
+
+.tiktok-cta {
+  background:
+    radial-gradient(circle at 15% 30%, rgba(67,243,255,0.55), transparent 28%),
+    radial-gradient(circle at 85% 75%, rgba(255,77,196,0.55), transparent 34%),
+    linear-gradient(135deg, #151122, #391247 54%, #0e0a19);
+}
+
+.tute-cta {
+  background:
+    radial-gradient(circle at 18% 25%, rgba(255,231,97,0.46), transparent 30%),
+    radial-gradient(circle at 82% 80%, rgba(67,243,255,0.42), transparent 32%),
+    linear-gradient(135deg, #171122, #203454 56%, #0c0816);
+}
+
+.compact-mega {
+  min-height: 62px;
+  padding: 0.68rem 0.75rem;
+  margin-top: 0.45rem;
+}
+
+.compact-mega .mega-link-icon {
+  width: 42px;
+  border-radius: 15px;
+  font-size: 1.35rem;
+}
+
+.compact-mega strong {
+  font-size: clamp(1.15rem, 4vw, 1.55rem);
+}
+
+.compact-mega b {
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+}
+
+.tiktok-profile-card .mega-link-button,
+.tute-launch-card .mega-link-button {
+  max-width: 460px;
+}
+
+@media (max-width: 560px) {
+  .mega-link-button {
+    min-height: 72px;
+    grid-template-columns: auto 1fr auto;
+    padding: 0.72rem;
+  }
+
+  .mega-link-icon {
+    width: 44px;
+    border-radius: 15px;
+    font-size: 1.45rem;
+  }
+
+  .mega-link-button b {
+    width: 30px;
+    height: 30px;
+  }
+}
