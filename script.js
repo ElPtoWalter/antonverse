@@ -361,6 +361,11 @@ const challenges = [
   { id: "friends-multiverso", text: "Modo multiverso: durante 5 minutos actúa como la versión de Antón que elija el comprador", cost: 10, level: "Solo amigos", source: "friends", friendsOnly: true },
   { id: "friends-combo-verguenza", text: "Combo vergüenza: 3 panderetas + 10 flexiones + 1 chupito", cost: 10, level: "Solo amigos", source: "friends", friendsOnly: true },
   { id: "friends-penitencia", text: "Pack penitencia: cada amigo elige un ejercicio corto y Antón los hace seguidos", cost: 15, level: "Solo amigos", source: "friends", friendsOnly: true },
+  { id: "r-onlyfans-suscriptor", text: "Hacerte cuenta de OnlyFans y obtener un suscriptor", cost: 15, level: "FINAL BOSS", source: "normal" },
+  { id: "r-baile-tiktok", text: "Baile de TikTok", cost: 4, level: "TikTok", source: "normal" },
+  { id: "r-tiktok-escena-lqsa", text: "TikTok Escena LQSA", cost: 2, level: "TikTok", source: "normal" },
+  { id: "r-trend-tiktok", text: "Trend TikTok", cost: 3, level: "TikTok", source: "normal" },
+  { id: "r-cante-grupal-himno", text: "Cante grupal del himno de la despedida", cost: 5, level: "Grupo", source: "normal" },
   { id: "ultimate-steisy", text: "Contratar a Steisy", cost: 15, level: "FINAL BOSS", source: "friends", friendsOnly: true, ultimateOnly: true }
 ];
 
