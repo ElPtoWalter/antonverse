@@ -132,11 +132,9 @@ const FRIEND_NAMES = [
   'nil',
   'putero',
   'puta',
-  'nat',
   'natrix',
   'negri',
   'no me duele',
-  'valen',
   'dynamic gamers',
   'dios',
   'se mutran de tu menda',
@@ -144,13 +142,13 @@ const FRIEND_NAMES = [
   'nomeduele',
   'dres',
   'dresete',
+  'ojos de pollo',
   'el gran figure',
   'se muestran de tu menda',
   'na que que tal',
-  'samuelto',
   'las conyescas',
-  'el vasco',
   'ddt boy',
+  'el follador de la pradera',
   'ace',
   'josan',
   'josito',
@@ -172,6 +170,16 @@ const FRIEND_NAMES = [
   'el amigo del padre del hijo del parlita',
   'vezas',
   'ana',
+  'meadito',
+  'bocaditos',
+  'el pensador',
+  'bigote arrocet',
+  'delicadito',
+  'peseta',
+  'fuck her rigth on the pussy',
+  '…',
+  'Porque tengo novia y la quiero mucho que si no',
+  'edy',
 ];
 
 const phrases = [
@@ -495,6 +503,10 @@ function getCanonicalFriendName(name) {
 
   if (FRIEND_NAMES.includes(normalized)) {
     return normalized;
+  }
+
+  if ((normalized === '...' || normalized === '…') && FRIEND_NAMES.includes('…')) {
+    return '…';
   }
 
   const loose = looseNormalizeName(name);
