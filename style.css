@@ -3036,3 +3036,94 @@ a.big-button,
     height: 30px;
   }
 }
+
+
+/* ===== Antonverse v48: TikTok y Tute grandes sin accesos duplicados ===== */
+.quick-links-card {
+  display: none !important;
+}
+
+.featured-link-card {
+  min-height: 295px;
+  justify-content: space-between;
+  border-width: 2px;
+  position: relative;
+  isolation: isolate;
+}
+
+.featured-link-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.08), transparent 38%),
+    radial-gradient(circle at 92% 12%, rgba(255,231,97,0.14), transparent 24%);
+  z-index: -1;
+}
+
+.featured-link-card h2 {
+  font-size: clamp(2.25rem, 5.4vw, 3.45rem);
+  line-height: 0.9;
+}
+
+.featured-link-card .muted {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.home-mega {
+  min-height: 96px;
+  margin-top: auto;
+}
+
+.home-mega .mega-link-icon {
+  width: 62px;
+  border-radius: 22px;
+  font-size: 2rem;
+}
+
+.home-mega strong {
+  font-size: clamp(1.7rem, 5vw, 2.45rem);
+}
+
+.home-mega small {
+  font-size: 0.95rem;
+}
+
+.home-mega b {
+  width: 42px;
+  height: 42px;
+  font-size: 1.35rem;
+}
+
+.section-link-button {
+  margin-top: 0.72rem;
+  width: 100%;
+  border-color: rgba(255,255,255,0.16);
+}
+
+@media (min-width: 900px) {
+  .dashboard .tiktok-mini-card,
+  .dashboard .tute-mini-card {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1120px) {
+  .dashboard .tiktok-mini-card,
+  .dashboard .tute-mini-card {
+    min-height: 325px;
+  }
+}
+
+@media (max-width: 899px) {
+  .featured-link-card {
+    min-height: 260px;
+  }
+
+  .home-mega {
+    min-height: 84px;
+  }
+}
